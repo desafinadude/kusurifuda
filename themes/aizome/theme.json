@@ -3,6 +3,11 @@
   "id": "aizome",
   "name": "Aizome Indigo",
   "extends": "../kusurifuda/theme.json",
+  "textures": {
+    "page": {
+      "image": ""
+    }
+  },
   "colors": {
     "lacquer": "#1B2638",
     "lacquer-2": "#22314A",
