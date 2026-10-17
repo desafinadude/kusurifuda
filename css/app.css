@@ -578,3 +578,60 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .gainrow.joins .pel{width:auto;height:30px;font-size:16px;padding:0 6px}
 .pel.mini{width:15px;justify-content:center;padding:0}
 .gainrow.joins{border-color:var(--gold)}
+
+/* ---- phone: portraits, mon coins, a bigger map, one-row brew controls ---- */
+.mon{width:1em;height:1em;flex-shrink:0;fill:var(--gold);stroke:color-mix(in srgb,var(--gold) 40%,#000);stroke-width:1.4}
+.mon circle{stroke-width:.8}
+.monv{display:inline-flex;align-items:center;gap:3px;font-family:var(--serif);font-weight:800;line-height:1;white-space:nowrap}
+.monv .mon{width:15px;height:15px}
+.monv.big{font-size:20px}.monv.big .mon{width:24px;height:24px}
+.pc .ph .monv{font-size:12px}.pc .ph .monv .mon{width:13px;height:13px}
+.tabl .pc .ph .monv{font-size:15px}.tabl .pc .ph .monv .mon{width:17px;height:17px}
+.ppor{display:flex;align-items:flex-end;justify-content:center;width:28px;height:28px;flex-shrink:0;border-radius:6px;overflow:hidden;border:1.5px solid var(--ink)}
+.ppor svg{width:84%;height:84%;fill:color-mix(in srgb,var(--parch-hi) 80%,transparent)}
+.ppor .ai{width:100%;height:100%}
+.ppor.big{width:46px;height:46px;border-radius:9px}
+.goal.mong{width:auto;height:44px;border:0;border-radius:0;box-shadow:none;overflow:visible;display:flex;align-items:center;gap:5px}
+.goal.mong .mon{width:28px;height:28px}
+.goal.mong span{position:static;font-size:20px;color:var(--parch-hi)}
+.port .vrow .pc.vc{flex:1;min-width:0;width:auto;height:62px;justify-content:space-between;gap:4px}
+.pc.vc .ph{gap:6px}
+.pc.vc .ail{font-size:12.5px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc.vc:has(.hints) .ail{padding-right:20px}
+.port .bhead{gap:10px;min-height:48px}
+.port .bhead .t b{font-size:18px}
+.port .bhead .t small{font-size:15px;font-weight:500;color:var(--ink)}
+.sakic .ai{width:24px;height:24px}
+.port .boardp{margin:0 -4px;padding:8px}
+.port .board{width:calc(min(100cqw,100cqh) - 26px)}
+.port .board .cmp{width:22px;height:22px;border-radius:50%;background:var(--ec);color:var(--parch-hi)!important;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:12px;z-index:1}
+.port .board .cmp.n{top:-11px;left:calc(50% - 11px);right:auto}
+.port .board .cmp.s{bottom:-11px;left:calc(50% - 11px);right:auto}
+.port .board .cmp.e{right:-11px;top:calc(50% - 11px)}
+.port .board .cmp.w{left:-11px;top:calc(50% - 11px)}
+.port .strip:not(.rvs){flex-direction:row;align-items:center;min-height:50px;gap:6px}
+.port .strip:not(.rvs) .srow{flex:0 1 auto;min-width:0}
+.port .strip:not(.rvs) .srow:has(.stxt.bad),.port .strip:not(.rvs) .srow:has(.known){flex:1}
+.port .strip:not(.rvs) .stxt:not(.bad){position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.port .strip:not(.rvs) .ctrls{flex:1;min-width:0}
+.port .strip:not(.rvs) .ctrls .cr{flex:1;justify-content:flex-end}
+.port .strip:not(.rvs) .cbtn.go{flex:1;justify-content:center;height:42px}
+.port .seqs{max-width:none}
+.sbtn.turn{width:42px;height:42px;border:1.5px solid var(--ink);background:transparent}
+.port .acts.one{grid-template-columns:1fr;height:52px}
+.port .acts.one .ab{flex-direction:row;gap:10px;font-size:16px}
+.port .acts.one .ab .k{font-size:22px}
+.port .tray.mk{height:auto;flex-direction:column;align-items:stretch;gap:8px}
+.tlrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.tchip{height:66px;border-radius:9px;border:1px solid var(--line);background:var(--ink);color:var(--parch);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px;font-size:10px;font-weight:700;min-width:0}
+.tchip .ai{width:26px;height:26px;flex-shrink:0}
+.tchip .tn{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tchip .monv{font-size:12px}.tchip .monv .mon{width:12px;height:12px}
+.tchip.mine{border-color:var(--gold)}
+.tchip.mine .ok{color:var(--gold);height:12px}
+.tchip.rival{background:var(--rival-deep);border-color:var(--rival);opacity:.6}
+.tchip.buy:disabled{opacity:.5}
+.stamp.por{border:0;box-shadow:none;transform:none;width:64px;height:64px}
+.stamp.por .ppor{width:64px;height:64px;border-radius:12px;border-width:2px}
+.stamp.por .cst{position:absolute;right:-8px;bottom:-8px;width:28px;height:28px;border-radius:6px;background:var(--shu);color:var(--parch-hi);border:2px solid var(--parch);font-size:16px;display:flex;align-items:center;justify-content:center;transform:rotate(-8deg)}
+.gainrow svg.mon.em{width:44px;height:44px;border:0;border-radius:0}

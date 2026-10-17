@@ -218,6 +218,13 @@
     "turn.2": "⇅",
     "turn.3": "↺"
   },
+  "textures": {
+    "page": {
+      "image": "assets/table.svg",
+      "size": "480px 480px",
+      "color": "#1E150D"
+    }
+  },
   "colors": {
     "lacquer": "#16120E",
     "lacquer-2": "#1E1913",

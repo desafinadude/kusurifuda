@@ -441,6 +441,7 @@
     "clearAria": "Clear the whole route",
     "undo": "Undo",
     "direction": "Direction",
+    "turnAny": "Turn the kitsune a quarter turn",
     "usedThisBrew": "(used this brew)"
   },
   "hand": {

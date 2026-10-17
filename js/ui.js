@@ -127,7 +127,11 @@
     hint: () => sv("M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z", 18, "var(--gold)"),
     check: (w = 10) => sv("M5 12.5l4.5 4.5L19 7.5", w),
     blind: () => '<span class="cbk"></span>',
+    turn: () => sv("M20 12a8 8 0 1 0-2.4 5.7M20 5v7h-7", 22),
   };
+  // a mon coin (a theme can draw its own as icon.mon) and a value next to one
+  const monIc = (cls = "") => (ASSET["icon.mon"] ? art("icon.mon", "mon" + (cls ? " " + cls : "")) : `<svg class="mon${cls ? " " + cls : ""}" viewBox="0 0 26 26" aria-hidden="true"><path fill-rule="evenodd" d="M13 1.5a11.5 11.5 0 1 0 0 23 11.5 11.5 0 1 0 0-23zM10 10h6v6h-6z"/><circle cx="13" cy="13" r="8.5" fill="none"/></svg>`);
+  const monVal = (n, cls = "") => `<span class="monv${cls ? " " + cls : ""}">${monIc()}<b>${n}</b></span>`;
 
   // ---------- UI state ----------
   const U = {
@@ -263,8 +267,11 @@
   function patCard(pt, k, o = {}) {
     const tuck = pt.cursed !== null && pt.cursed !== undefined ? `<span class="tuck${pt.cursed === 0 ? " mine" : ""}" aria-label="${attr(t(pt.cursed === 0 ? "patient.cursedByYou" : "patient.cursedByRival"))}">${art("oni")}</span>` : "";
     const show = o.preview || pt;
+    const aria = attr(t("patient.label", { name: whoOf(pt), ailment: ailOf(pt), value: pt.val }) + (pt.cursed != null ? ", " + t("patient.cursed") : ""));
+    if (o.chip) return `<button class="pc vc paper${o.cls ? " " + o.cls : ""}${fresh("p" + pt.id + (o.zone || ""))}" data-a="sel" data-i="${k}" aria-label="${aria}">
+      <div class="ph">${ptPortrait(pt)}${monVal(pt.val)}</div><span class="ail">${esc(ailOf(pt))}</span>${tuck}${hintBadges(pt)}</button>`;
     return `<button class="pc paper${o.cls ? " " + o.cls : ""}${fresh("p" + pt.id + (o.zone || ""))}" data-a="${o.act || "sel"}" data-i="${k}" aria-label="${attr(t("patient.label", { name: whoOf(pt), ailment: ailOf(pt), value: pt.val }) + (pt.cursed != null ? ", " + t("patient.cursed") : ""))}" ${o.pressed != null ? `aria-pressed="${o.pressed}"` : ""}>
-      <div class="ph"><span class="badge">${pt.val}</span><span class="nm">${esc(whoOf(pt, !o.full))}</span>${o.full ? ptChip(pt) : ptChip(pt, false, true)}</div>
+      <div class="ph">${monVal(pt.val)}<span class="nm">${esc(whoOf(pt, !o.full))}</span>${o.full ? ptChip(pt) : ptChip(pt, false, true)}</div>
       ${mapSVG(show, { px: o.px || 63, icons: !!o.icons })}
       ${o.ail ? `<span class="ail">${esc(ailOf(pt))}</span>` : ""}${tuck}${hintBadges(show)}${o.extra || ""}</button>`;
   }
@@ -274,6 +281,11 @@
     if (mini) return `<span class="pel mini" style="background:${EL(pt.el).color}" title="${attr(t("patient.moveAria", { el: elName(pt.el), move: moveName(pt.mv) }))}">${elIc(pt.el)}</span>`;
     const c = KF.wardCard({ id: pt.id, el: pt.el, mv: pt.mv || "step", who: pt.who });
     return `<span class="pel${big ? " big" : ""}" style="background:${EL(pt.el).color}" title="${attr(t("patient.moveAria", { el: elName(pt.el), move: moveName(c.mv) }))}">${elIc(pt.el)}${pathSVG(c, c.steps, big ? 18 : 13)}</span>`;
+  }
+  // a patient's portrait: art named patient.<n> (n = their place in content.patients), else a figure on their element's colour
+  function ptPortrait(pt, cls = "") {
+    const a = "patient." + pt.who, bg = pt.el ? EL(pt.el).color : "var(--brown)";
+    return `<span class="ppor${cls ? " " + cls : ""}" style="background:${bg}" aria-hidden="true">${ASSET[a] || SPR[a] ? art(a, "", { slice: true }) : '<svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4.2"/><path d="M4 23c0-5 3.6-8.2 8-8.2s8 3.2 8 8.2z"/></svg>'}</span>`;
   }
   // a numbered chip for a played card; its colour is split between the elements its path used
   function chipFor(c, steps, n, o = {}) {
@@ -310,7 +322,7 @@
     const row = (p, cls, label, pi) => `<div class="row${g.cur === pi && !g.over ? " cur" : ""}"><span class="who ${cls}">${crest(pi)}${esc(label)}</span><div class="bar ${cls}" style="grid-template-columns:repeat(${E},minmax(0,1fr))">${Array.from({ length: E }, (_, i) => `<i class="${i < p.fame ? "on" : ""}${(i + 1) % 5 === 0 ? " five" : ""}"></i>`).join("")}</div><span class="num" data-fame="${pi}">${p.fame}</span></div>`;
     return `<button class="fame" data-a="rival" aria-label="${attr(t("top.fameAria", { you: me().fame, rival: bot().fame }))}">${row(me(), "y", t("who.you"), 0)}${row(bot(), "r", t("who.rival"), 1)}</button>`;
   }
-  const goal = () => `<div class="goal" role="img" aria-label="${attr(t("top.goal", { n: RU().endFame }))}">${art("emblem")}<span>${RU().endFame}</span></div>`;
+  const goal = () => U.layout === "port" ? `<div class="goal mong" role="img" aria-label="${attr(t("top.goal", { n: RU().endFame }))}">${monIc()}<span>${RU().endFame}</span></div>` : `<div class="goal" role="img" aria-label="${attr(t("top.goal", { n: RU().endFame }))}">${art("emblem")}<span>${RU().endFame}</span></div>`;
   const menuBtn = () => `<button class="iconbtn" data-a="menu" aria-label="${attr(t("menu.title"))}">${ICON.menu()}</button>`;
   function turnLabel() { const g = G(); if (g.over) return t("status.gameOver"); return t(g.cur === 0 ? "top.roundYou" : "top.roundRival", { n: g.round }); }
 
@@ -327,15 +339,16 @@
       svg = mapSVG(pt, { icons: true, trail: rivalTurn ? null : rs.rp.trail, pos: showPos ? rs.rp.pos : null, prev: rivalTurn ? null : rs.prev, label: t("board.mapAria", { name: whoOf(pt), cure: gl("cure") }) });
     }
     const cursedChip = pt.cursed != null ? `<span class="chip cur">${art("oni")}${t("board.cursed")}</span>` : "";
-    const sakChip = pt.bonus ? `<span class="chip sak">${art("sakura")}+${KF.limit(G().cur, "sakuraBonus")}</span>` : "";
+    const port = U.layout === "port";
+    const sakChip = pt.bonus && port ? `<span class="sakic" role="img" aria-label="${attr(t("status.sakura"))}">${art("sakura")}</span>` : pt.bonus ? `<span class="chip sak">${art("sakura")}+${KF.limit(G().cur, "sakuraBonus")}</span>` : "";
     const elChip = pt.el ? `<span class="chip elc" title="${attr(KF.needEl(pt) ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }))}" style="--ec:${EL(pt.el).color}">${ptChip(pt, true)}${KF.needEl(pt) ? `<span>${t("patient.needs", { el: elName(pt.el) })}</span>` : ""}</span>` : "";
     const rvChip = rivalTurn ? `<span class="chip rvc">${gl("rival") || ASSET["icon.rival"] ? ic("rival") + " " : ""}${t("board.rivalTurn")}</span>` : "";
     const n = g.village.length, dots = n > 1 && !rivalTurn && !U.bo ? `<div class="dots" aria-hidden="true">${g.village.map((_, i) => `<i class="${i === U.sel ? "on" : ""}"></i>`).join("")}</div>` : "";
     const worth = U.layout === "tabl" ? " · " + t("board.worth", { n: pt.val }) : "";
     return `<section class="boardp paper${rivalTurn ? " rv" : ""}"><div class="frame"></div><div class="motif">${art("boardMotif")}</div>
-      <div class="bhead"><span class="badge ring">${pt.val}</span><div class="t"><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}${worth}</small></div>${rvChip}${rivalTurn ? "" : hintBadges(pt, "inhead") + elChip + cursedChip + sakChip}</div>
+      <div class="bhead">${port ? ptPortrait(pt, "big") : `<span class="badge ring">${pt.val}</span>`}<div class="t"><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}${worth}</small></div>${rvChip}${rivalTurn ? "" : hintBadges(pt, "inhead") + elChip + cursedChip + sakChip}${port ? monVal(pt.val, "big") : ""}</div>
       <div class="bwrap" ${n > 1 ? `aria-roledescription="${attr(t("board.swipe"))}"` : ""}><div class="board${U.shake ? " shake" : ""}${U.enter ? (U.enter > 0 ? " from-r" : " from-l") : ""}"><div class="bsvg">${svg}</div>
-        ${["up", "right", "down", "left"].map((d, i) => { const e = KF.elOfDir(d); return e ? `<span class="cmp ${"nesw"[i]}" aria-hidden="true" style="color:${EL(e).ink}">${elIc(e)}</span>` : ""; }).join("")}
+        ${["up", "right", "down", "left"].map((d, i) => { const e = KF.elOfDir(d); return e ? `<span class="cmp ${"nesw"[i]}" aria-hidden="true" style="color:${EL(e).ink};--ec:${EL(e).color}">${elIc(e)}</span>` : ""; }).join("")}
         ${rivalTurn && U.rv && U.rv.pop ? `<div class="rvpop paper">${U.rv.pop}</div>` : ""}</div>${dots}</div>
       ${rivalTurn ? rivalStrip() : strip(rs)}</section>`;
   }
@@ -356,11 +369,11 @@
     if (!canAct() || !rs) return "";
     const left = [], right = [];
     const pc = U.pend && cardAt(U.pend.g, U.pend.i);
-    if (pc && KF.isAny(pc)) left.push(dirPicker());
+    if (pc && KF.isAny(pc)) left.push(U.layout === "port" ? `<button class="sbtn turn" data-a="dturn" aria-label="${attr(t("brew.turnAny"))}">${ICON.turn()}</button>` : dirPicker());
     else left.push(toolToggles());
     if (U.pend) {
       const ok = rs.prev && !rs.prev.fail;
-      right.push(`<button class="cbtn" data-a="pcancel">${ICON.x()}${t("brew.cancel")}</button>`);
+      if (U.layout !== "port") right.push(`<button class="cbtn" data-a="pcancel">${ICON.x()}${t("brew.cancel")}</button>`);
       right.push(`<button class="cbtn go" data-a="pplay" ${ok ? "" : "disabled"}>${ICON.ok()}${t("brew.play")}</button>`);
     } else if (U.route.length) {
       right.push(`<button class="cbtn" data-a="clear" aria-label="${attr(t("brew.clearAria"))}">${ICON.clear()}${t("brew.clear")}</button>`);
@@ -466,11 +479,25 @@
       const n = nTake();
       return `<div class="acts" style="grid-template-columns:1fr 1.2fr 1.4fr">${ab("back", ICON.back(), t("act.back"))}${ab("blind", ICON.blind(), t("act.drawBlind", { n }), { cls: "row" })}${ab("take", "", `${k("market")}${t("act.takeN", { n, have: U.mkt.length })}`, { cls: "primary", dis: U.mkt.length !== n })}</div>`;
     }
+    if (U.layout === "port") {
+      if (mine && g.turn.acted) return `<div class="acts one">${ab("end", "", `${k("endTurn")}${t("act.endTurn")}`, { cls: "primary glow" })}</div>`;
+      const go = rs && rs.ready && mine;
+      return `<div class="acts one">${ab("brew", "", `${k("cure")}${t("act.brew")}`, { cls: "primary" + (go ? " glow" : ""), dis: !go })}</div>`;
+    }
     if (mine && g.turn.acted) {
       return `<div class="acts">${ab("plant", ICON.plant(), t("act.plant"), { dis: plantDis })}${ab("tools", ICON.tools(), t("act.tools"))}${ab("log", ICON.log(), t("act.log"))}${ab("end", "", `${k("endTurn")}${t("act.endTurn")}`, { cls: "primary glow" })}</div>`;
     }
     const ready = rs && rs.ready && mine;
     return `<div class="acts">${ab("gather", ICON.gather(), t("act.gather"), { dis: !mine })}${ab("plant", ICON.plant(), t("act.plant"), { dis: plantDis })}${ab("tools", ICON.tools(), t("act.tools"), { dis: g.cur !== 0 || U.busy })}${ab("brew", "", `${k("cure")}${t("act.brew")}`, { cls: "primary" + (ready ? " glow" : ""), dis: !ready })}</div>`;
+  }
+
+  function toolChips() {
+    const g = G(), b = bot();
+    return RU().toolIds.map((id) => {
+      const mine = me().tools[id], riv = b.tools[id], can = myTurn() && !g.turn.bought && KF.canBuy(0, id);
+      const st = mine ? t("tools.yours") : riv ? t("tools.rivalOwns") : can ? t("tools.tapToBuy") : g.turn.bought ? t("tools.onePerTurn") : t("tools.need", { n: KF.cost(id) });
+      return `<button class="tchip ${mine ? "mine" : riv ? "rival" : "buy"}" data-a="buy" data-i="${id}" ${can ? "" : "disabled"} aria-label="${attr(`${toolName(id)}: ${toolText(id, true)}. ${st}`)}">${art(toolArt(id))}<span class="tn">${esc(toolName(id))}</span>${mine ? `<span class="ok">${ICON.check(12)}</span>` : monVal(KF.cost(id))}</button>`;
+    }).join("");
   }
 
   // ---------- screens ----------
@@ -481,14 +508,14 @@
     if (tb === "hand") tray = `<div class="crow${me().hand.length >= 5 ? " spread" : ""}">${handCards(rowU(me().hand.length, avail, 1, 1), "h")}</div>`;
     else if (tb === "ward") tray = `<div class="crow${me().ward.length >= 5 ? " spread" : ""}">${wardCards(rowU(Math.max(1, me().ward.length), avail, 1, 1), "w")}</div>`;
     else if (tb === "garden") tray = `<div class="crow">${gardenCards(1, "g", () => `<button class="ic plotc" style="--u:1" data-a="plant" ${!myTurn() || g.turn.planted ? "disabled" : ""} aria-label="${attr(t("garden.plantAria"))}">${ICON.plant(22)}${t("garden.plant")}</button>`)}</div>`;
-    else tray = `<div class="crow spread">${marketCards(rowU(g.market.length, avail, 1, 1), "m")}</div>`;
+    else tray = `<div class="crow spread">${marketCards(rowU(g.market.length, avail, 1, 1), "m")}</div><div class="tlrow">${toolChips()}</div>`;
     return `<div class="scr port lacquer">
       <header class="top">${menuBtn()}${fameBars()}${goal()}</header>
-      <section class="vill"><div class="lbl"><span>${withGl(t("label.village"), "village")}</span><span>${t("label.deck", { n: g.pats.length })}</span></div>
-        <div class="vrow">${g.village.map((pt, k) => patCard(pt, k, { cls: k === U.sel ? "sel" : "" })).join("") || `<span class="empty">${t("label.villageEmpty")}</span>`}</div></section>
+      <section class="vill" aria-label="${attr(t("label.village"))}">
+        <div class="vrow">${g.village.map((pt, k) => patCard(pt, k, { cls: k === U.sel ? "sel" : "", chip: true })).join("") || `<span class="empty">${t("label.villageEmpty")}</span>`}</div></section>
       ${boardPanel()}
       <nav class="tabs" aria-label="${attr(t("label.yourCards"))}">${tabBtn("hand", t("tabs.hand", { n: me().hand.length, max: KF.limit(0, "handLimit") }))}${tabBtn("garden", t("tabs.garden", { n: me().garden.length, max: KF.limit(0, "gardenMax") }))}${RU().ward.enabled ? tabBtn("ward", t("tabs.ward", { n: wardReady() })) : ""}${tabBtn("market", t("tabs.market", { n: g.market.length }))}</nav>
-      <div class="tray">${tray}</div>
+      <div class="tray${tb === "market" ? " mk" : ""}">${tray}</div>
       ${phoneActs()}
     </div>`;
   }
@@ -705,8 +732,8 @@
         : `<div class="btns"><button class="btn primary" data-a="rdone">${t("reward.continue")}</button></div>`;
       const subs = [res.known ? t("reward.known", { name: esc(whoOf({ who: res.known }, true)) }) : "", sak ? `${art("sakura")}${t("reward.sakura", { n: sak })}` : "", res.luck ? t("reward.lucky", { n: res.luck }) : ""].filter(Boolean);
       const joins = RU().ward.enabled && pt.el ? `<div class="gainrow joins">${ptChip(pt, true)}<div><b>${t("reward.joins", { name: esc(whoOf(pt, true)) })}</b><small>${t("reward.joinsSub", { move: moveName(pt.mv), text: moveText(pt.mv, pt.el) })}</small></div></div>` : "";
-      return `<div class="sh"><div class="stamp">${ic("cured")}</div><div><h2>${t("reward.title", { name: esc(whoOf(pt)) })}</h2><div class="sub">${subs.length ? subs.join(" · ") : esc(ailOf(pt))}</div></div></div>
-        <div class="gainrow">${art("emblem", "em")}<div><b>${t("reward.fame", { n: gain })}</b><small>${t("reward.track", { from: p.fame - gain, to: p.fame })}</small></div></div>${joins}
+      return `<div class="sh"><div class="stamp por">${ptPortrait(pt)}<span class="cst">${ic("cured")}</span></div><div><h2>${t("reward.title", { name: esc(whoOf(pt)) })}</h2><div class="sub">${subs.length ? subs.join(" · ") : esc(ailOf(pt))}</div></div></div>
+        <div class="gainrow">${monIc("em")}<div><b>${t("reward.fame", { n: gain })}</b><small>${t("reward.track", { from: p.fame - gain, to: p.fame })}</small></div></div>${joins}
         ${curse}${btns}`;
     },
     plant(s) {
@@ -979,7 +1006,7 @@
     if (U.mkt.length) U.mkt = [];
     U.msg = null;
     const p = U.pend;
-    if (p && p.g === g && p.i === i) return commitPend();
+    if (p && p.g === g && p.i === i) return KF.isAny(cardAt(g, i)) ? turnAny() : commitPend();
     if (U.pend && U.pend.g === "w" && g !== "w") U.pend = null;
     U.pend = { g, i, dir: null };
     const c = cardAt(g, i);
@@ -987,6 +1014,13 @@
     // a kitsune starts on the step that gets closest to the cure
     if (KF.isAny(c)) { const rs = routeState(); let best = null; for (const d of Object.values(KF.DIRV)) { const s = KF.stepCells(rs.pt, rs.rp.pos, [d]); if (s.fail) continue; const dd = KF.md(s.pos, rs.pt.t); if (!best || dd < best.dd) best = { d, dd }; } U.pend.dir = best ? best.d : null; }
     render();
+  }
+  // turn a kitsune's step a quarter turn clockwise
+  function turnAny() {
+    const p = U.pend; if (!p) return;
+    const order = ["up", "right", "down", "left"].map((d) => KF.DIRV[d]);
+    const k = p.dir ? order.findIndex((v) => v[0] === p.dir[0] && v[1] === p.dir[1]) : -1;
+    p.dir = order[(k + 1) % 4].slice(); U.msg = null; SFX.tap("V"); render();
   }
   async function commitPend() {
     const steps = pendSteps(); if (!steps) return say(t("msg.pickDirFirst"), true);
@@ -1074,6 +1108,7 @@
       case "known": doKnown(); return;
       case "gview": U.gview = U.gview === "ward" ? "garden" : "ward"; SFX.open(); render(); return;
       case "dir": { if (!U.pend) return; U.pend.dir = i.split(",").map(Number); U.msg = null; SFX.tap("V"); render(); return; }
+      case "dturn": turnAny(); return;
       case "pplay": if (U.pend) commitPend(); return;
       case "pcancel": U.pend = null; U.turnSel = {}; U.msg = null; SFX.cancel(); render(); return;
       case "chip": { U.route.length = +i; U.pend = null; U.msg = null; SFX.undo(); render(); return; }

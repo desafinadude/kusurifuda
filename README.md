@@ -82,6 +82,12 @@ New game opens a setup sheet: pick a character, a guild (house in Moonwort) and 
 - `node build/abilities.js 200` plays each ability against none. Current: every ability wins
   66–74% against a plain bot, so they are roughly even with each other.
 
+### Patient portraits and the mon coin
+The phone layout shows each patient's portrait and a mon coin next to every value. Give a theme an
+asset named `patient.<n>` (n = the patient's place in `content.patients`) to draw a portrait;
+without one the patient gets a figure on their element's colour. An asset named `icon.mon`
+replaces the built-in coin.
+
 ### Icons
 Every symbol on screen (element signs, the cure, oni, sakura, tool marks, the decorative
 glyphs) is drawn from an SVG: an asset named `icon.<key>` — `icon.el.W`, `icon.tl.ladle`,
