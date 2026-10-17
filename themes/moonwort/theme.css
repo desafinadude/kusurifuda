@@ -1,0 +1,4 @@
+/* Moonwort Academy extras. Backgrounds come from "textures" and "cards" in theme.json. */
+h1,h2,.brand{letter-spacing:.02em}
+/* the board's own thin frame is drawn by the card face */
+.boardp .frame{display:none}

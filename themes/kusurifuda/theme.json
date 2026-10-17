@@ -1,0 +1,304 @@
+{
+  "_about": "A theme: colours, fonts, decorative glyphs and art. Paths are relative to this file. 'extends' another theme to change only part of it. Run build/build.py after adding or changing art to refresh sprites.svg.",
+  "id": "kusurifuda",
+  "name": "Lacquer & Parchment",
+  "colorScheme": "dark",
+  "sound": "kusurifuda",
+  "fonts": {
+    "display": {
+      "family": "Shippori Mincho B1",
+      "fallback": "\"Hiragino Mincho ProN\",\"Yu Mincho\",serif",
+      "faces": {
+        "500": "fonts/shippori-500.woff2",
+        "700": "fonts/shippori-700.woff2",
+        "800": "fonts/shippori-800.woff2"
+      }
+    },
+    "body": {
+      "family": "Zen Kaku Gothic New",
+      "fallback": "\"Hiragino Sans\",\"Yu Gothic\",system-ui,sans-serif",
+      "faces": {
+        "400": "fonts/zen-400.woff2",
+        "500": "fonts/zen-500.woff2",
+        "700": "fonts/zen-700.woff2"
+      }
+    }
+  },
+  "sprites": "sprites.svg",
+  "assets": {
+    "art.W": "assets/water.svg",
+    "art.F": "assets/fire.svg",
+    "art.E": "assets/earth.svg",
+    "art.A": "assets/wind.svg",
+    "art.V": "assets/kitsune.svg",
+    "oni": "assets/oni.svg",
+    "sakura": "assets/sakura.svg",
+    "emblem": "assets/emblem.svg",
+    "boardMotif": "assets/boardbg.svg",
+    "tool.ladle": "assets/ladle.svg",
+    "tool.mortar": "assets/mortar.svg",
+    "tool.charm": "assets/charm.svg",
+    "tool.basket": "assets/basket.svg",
+    "icon.sakura": "icons/sakura.svg",
+    "icon.turn.1": "icons/turn-1.svg",
+    "icon.turn.2": "icons/turn-2.svg",
+    "icon.turn.3": "icons/turn-3.svg",
+    "icon.brand": "icons/brand.svg",
+    "icon.cure": "icons/cure.svg",
+    "icon.oni": "icons/oni.svg",
+    "icon.rival": "icons/rival.svg",
+    "icon.cured": "icons/cured.svg",
+    "icon.endTurn": "icons/endTurn.svg",
+    "icon.market": "icons/market.svg",
+    "icon.village": "icons/village.svg",
+    "icon.garden": "icons/garden.svg",
+    "icon.hand": "icons/hand.svg",
+    "icon.fame": "icons/fame.svg",
+    "icon.tools": "icons/tools.svg",
+    "icon.rules": "icons/rules.svg",
+    "icon.win": "icons/win.svg",
+    "icon.lose": "icons/lose.svg",
+    "icon.tie": "icons/tie.svg",
+    "icon.log.buy": "icons/log-buy.svg",
+    "icon.log.cure": "icons/log-cure.svg",
+    "icon.log.gather": "icons/log-gather.svg",
+    "icon.log.blind": "icons/log-blind.svg",
+    "icon.log.curse": "icons/log-curse.svg",
+    "icon.log.plant": "icons/log-plant.svg",
+    "icon.el.W": "icons/el-W.svg",
+    "icon.el.F": "icons/el-F.svg",
+    "icon.el.E": "icons/el-E.svg",
+    "icon.el.A": "icons/el-A.svg",
+    "icon.el.V": "icons/el-V.svg",
+    "icon.tl.ladle": "icons/tl-ladle.svg",
+    "icon.tl.mortar": "icons/tl-mortar.svg",
+    "icon.tl.charm": "icons/tl-charm.svg",
+    "icon.tl.basket": "icons/tl-basket.svg",
+    "char.herbalist": "people/herbalist.svg",
+    "char.merchant": "people/merchant.svg",
+    "char.miko": "people/miko.svg",
+    "char.kunoichi": "people/kunoichi.svg",
+    "guild.plum": "people/guild-plum.svg",
+    "guild.wisteria": "people/guild-wisteria.svg",
+    "guild.pine": "people/guild-pine.svg",
+    "guild.wave": "people/guild-wave.svg"
+  },
+  "elements": {
+    "W": {
+      "glyph": "水",
+      "color": "#2F5D8A",
+      "ink": "#2F5D8A",
+      "art": "art.W"
+    },
+    "F": {
+      "glyph": "火",
+      "color": "#B23A24",
+      "ink": "#B23A24",
+      "art": "art.F"
+    },
+    "E": {
+      "glyph": "土",
+      "color": "#7A5626",
+      "ink": "#7A5626",
+      "art": "art.E"
+    },
+    "A": {
+      "glyph": "風",
+      "color": "#43664A",
+      "ink": "#43664A",
+      "art": "art.A"
+    },
+    "V": {
+      "glyph": "狐",
+      "color": "#D29A34",
+      "ink": "#8A5E10",
+      "art": "art.V"
+    }
+  },
+  "tools": {
+    "ladle": {
+      "glyph": "杓",
+      "art": "tool.ladle"
+    },
+    "mortar": {
+      "glyph": "鉢",
+      "art": "tool.mortar"
+    },
+    "charm": {
+      "glyph": "狐",
+      "art": "tool.charm"
+    },
+    "basket": {
+      "glyph": "籠",
+      "art": "tool.basket"
+    }
+  },
+  "characters": [
+    {
+      "id": "herbalist",
+      "ability": "green",
+      "art": "char.herbalist"
+    },
+    {
+      "id": "merchant",
+      "ability": "trade",
+      "art": "char.merchant"
+    },
+    {
+      "id": "miko",
+      "ability": "blessed",
+      "art": "char.miko"
+    },
+    {
+      "id": "kunoichi",
+      "ability": "trickster",
+      "art": "char.kunoichi"
+    }
+  ],
+  "guilds": [
+    {
+      "id": "plum",
+      "art": "guild.plum",
+      "color": "#B23A24",
+      "element": "F"
+    },
+    {
+      "id": "wisteria",
+      "art": "guild.wisteria",
+      "color": "#9A4E8A",
+      "element": "A"
+    },
+    {
+      "id": "pine",
+      "art": "guild.pine",
+      "color": "#43664A",
+      "element": "E"
+    },
+    {
+      "id": "wave",
+      "art": "guild.wave",
+      "color": "#2F5D8A",
+      "element": "W"
+    }
+  ],
+  "playerColors": [
+    "#B23A24",
+    "#9A6512",
+    "#43664A",
+    "#2F5D8A",
+    "#9A4E8A",
+    "#1E7A7A"
+  ],
+  "glyphs": {
+    "_about": "Decorative kanji. They are part of the look, not the language, so they live here. Set any to \"\" to hide it.",
+    "brand": "薬札",
+    "cure": "薬",
+    "oni": "鬼",
+    "sakura": "✿",
+    "rival": "敵",
+    "cured": "治",
+    "endTurn": "終",
+    "market": "市",
+    "village": "村",
+    "garden": "庭",
+    "hand": "手札",
+    "fame": "文",
+    "tools": "道具",
+    "rules": "遊び方",
+    "win": "勝利",
+    "lose": "敗北",
+    "tie": "引分",
+    "log.buy": "買",
+    "log.cure": "治",
+    "log.gather": "取",
+    "log.blind": "引",
+    "log.curse": "鬼",
+    "log.plant": "植",
+    "turn.1": "↻",
+    "turn.2": "⇅",
+    "turn.3": "↺"
+  },
+  "colors": {
+    "lacquer": "#16120E",
+    "lacquer-2": "#1E1913",
+    "ink": "#1E1914",
+    "deep": "#0B0907",
+    "parch": "#EADBB8",
+    "parch-hi": "#F4E8CC",
+    "tab": "#F1E4C6",
+    "shu": "#B23A24",
+    "shu-hi": "#C8462E",
+    "shu-line": "#E07A5F",
+    "you": "#F08A6E",
+    "gold": "#D6AC4E",
+    "rival": "#7C78C0",
+    "rival-hi": "#A9A6E0",
+    "rival-line": "#3B3858",
+    "muted": "#A8977A",
+    "soft": "#C9B894",
+    "brown": "#5A4B38",
+    "line": "#5A4A35",
+    "line-2": "#3A3024",
+    "rival-deep": "#4E4A8C",
+    "paper-hi": "#F6EAD0",
+    "shu-deep": "#8A2E1C",
+    "plot-line": "#6B5638",
+    "rival-ink": "#3B3881",
+    "oni-card": "#2A0F0C",
+    "rival-text": "#F4F2FF",
+    "rival-pale": "#E2E0F7",
+    "rival-soft": "#C9C6EE",
+    "rival-mid": "#8F8BD6",
+    "paper-line": "#8D7E66",
+    "shu-dim": "#6E3326",
+    "sakura-bg": "#F2D2CC",
+    "sakura-line": "#C9798A",
+    "sakura-ink": "#8E2A43",
+    "ok-bg": "#DCE8D8",
+    "ok-ink": "#2E4A33",
+    "switch-off": "#B9A983",
+    "rival-dim": "#8D89B8",
+    "shu-shadow": "#5E1A0E",
+    "rival-sub": "#5D5A86",
+    "track-five": "#55472F",
+    "tool-line": "#4A3D2C",
+    "rival-ink-2": "#2E2A6B",
+    "track-empty": "#2E261E",
+    "track-cell": "#241D16",
+    "tabs-bg": "#0E0B08",
+    "frame": "#966E2D",
+    "scrim": "#080604",
+    "fiber": "#6E481C",
+    "paper-tone": "#966428",
+    "card-back": "#141010",
+    "hint": "#3E8A4C",
+    "hint-ink": "#FFFFFF"
+  },
+  "map": {
+    "cell": "#EEDFBE",
+    "cell-alt": "#E3D0A5",
+    "oni": "#2B211C",
+    "cure": "#D6AC4E",
+    "sakura": "#F2D2CC",
+    "trail": "#EFC79E",
+    "trail-rival": "#D9D5EE",
+    "route": "#B23A24",
+    "route-rival": "#5C58A8",
+    "marker": "#C8462E",
+    "marker-rival": "#7C78C0",
+    "marker-ring": "#F4E8CC",
+    "ink": "#1E1914",
+    "grid": "rgba(70,48,20,.3)"
+  },
+  "iconsFromFont": {
+    "_about": "build/build.py draws these glyphs from the font into icons/*.svg. List keys in 'skip' that you have replaced with your own drawings.",
+    "font": "ShipporiMinchoB1-ExtraBold.ttf",
+    "skip": [
+      "sakura",
+      "turn.1",
+      "turn.2",
+      "turn.3"
+    ]
+  },
+  "_people": "characters: who you can play; 'ability' is a key of rules.json abilities, names live in the language file under content.characters. guilds: a crest and a suggested colour. playerColors: the colours you can pick (the rival keeps the theme's rival colour)."
+}

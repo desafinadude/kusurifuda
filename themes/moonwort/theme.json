@@ -1,0 +1,696 @@
+{
+  "_about": "Moonwort Academy: a candle-lit potions classroom at a school for young witches and wizards. Original art and names. 'text' replaces strings for one language while this theme is on.",
+  "id": "moonwort",
+  "name": "Moonwort Academy",
+  "colorScheme": "dark",
+  "stylesheet": "theme.css",
+  "sound": "academy",
+  "fonts": {
+    "display": {
+      "family": "Cinzel",
+      "fallback": "\"Trajan Pro\",Georgia,serif",
+      "faces": {
+        "400 900": "fonts/cinzel.woff2"
+      },
+      "source": "Cinzel[wght].ttf"
+    },
+    "body": {
+      "family": "EB Garamond",
+      "fallback": "Garamond,Georgia,serif",
+      "faces": {
+        "400 800": "fonts/garamond.woff2"
+      },
+      "source": "EBGaramond[wght].ttf"
+    },
+    "_about": "source: the OFL TTF in build/fonts that build.py subsets into the face file. A variable font can have one face with a weight range like \"400 900\"."
+  },
+  "sprites": "sprites.svg",
+  "assets": {
+    "art.W": "assets/water.svg",
+    "art.F": "assets/fire.svg",
+    "art.E": "assets/earth.svg",
+    "art.A": "assets/wind.svg",
+    "art.V": "assets/kitsune.svg",
+    "oni": "assets/oni.svg",
+    "sakura": "assets/sakura.svg",
+    "emblem": "assets/emblem.svg",
+    "boardMotif": "assets/boardbg.svg",
+    "tool.ladle": "assets/ladle.svg",
+    "tool.mortar": "assets/mortar.svg",
+    "tool.charm": "assets/charm.svg",
+    "tool.basket": "assets/basket.svg",
+    "icon.brand": "icons/brand.svg",
+    "icon.cure": "icons/cure.svg",
+    "icon.cured": "icons/cured.svg",
+    "icon.el.A": "icons/el-A.svg",
+    "icon.el.E": "icons/el-E.svg",
+    "icon.el.F": "icons/el-F.svg",
+    "icon.el.V": "icons/el-V.svg",
+    "icon.el.W": "icons/el-W.svg",
+    "icon.endTurn": "icons/endTurn.svg",
+    "icon.fame": "icons/fame.svg",
+    "icon.garden": "icons/garden.svg",
+    "icon.hand": "icons/hand.svg",
+    "icon.log.blind": "icons/log-blind.svg",
+    "icon.log.buy": "icons/log-buy.svg",
+    "icon.log.cure": "icons/log-cure.svg",
+    "icon.log.curse": "icons/log-curse.svg",
+    "icon.log.gather": "icons/log-gather.svg",
+    "icon.log.plant": "icons/log-plant.svg",
+    "icon.lose": "icons/lose.svg",
+    "icon.market": "icons/market.svg",
+    "icon.oni": "icons/oni.svg",
+    "icon.rival": "icons/rival.svg",
+    "icon.rules": "icons/rules.svg",
+    "icon.sakura": "icons/sakura.svg",
+    "icon.tie": "icons/tie.svg",
+    "icon.tl.basket": "icons/tl-basket.svg",
+    "icon.tl.charm": "icons/tl-charm.svg",
+    "icon.tl.ladle": "icons/tl-ladle.svg",
+    "icon.tl.mortar": "icons/tl-mortar.svg",
+    "icon.tools": "icons/tools.svg",
+    "icon.turn.1": "icons/turn-1.svg",
+    "icon.turn.2": "icons/turn-2.svg",
+    "icon.turn.3": "icons/turn-3.svg",
+    "icon.village": "icons/village.svg",
+    "icon.win": "icons/win.svg",
+    "char.herbologist": "people/herbologist.svg",
+    "char.bookworm": "people/bookworm.svg",
+    "char.hexer": "people/hexer.svg",
+    "char.owlkeeper": "people/owlkeeper.svg",
+    "guild.lanternwick": "people/house-lanternwick.svg",
+    "guild.fernhollow": "people/house-fernhollow.svg",
+    "guild.tidecrest": "people/house-tidecrest.svg",
+    "guild.emberfell": "people/house-emberfell.svg"
+  },
+  "elements": {
+    "W": {
+      "glyph": "🜄",
+      "color": "#2C5A8C",
+      "ink": "#2C5A8C",
+      "art": "art.W"
+    },
+    "F": {
+      "glyph": "🜂",
+      "color": "#9A2E3A",
+      "ink": "#9A2E3A",
+      "art": "art.F"
+    },
+    "E": {
+      "glyph": "🜃",
+      "color": "#6A5A2A",
+      "ink": "#6A5A2A",
+      "art": "art.E"
+    },
+    "A": {
+      "glyph": "🜁",
+      "color": "#3E6A5A",
+      "ink": "#3E6A5A",
+      "art": "art.A"
+    },
+    "V": {
+      "glyph": "⚝",
+      "color": "#C9A23E",
+      "ink": "#7E5E12",
+      "art": "art.V"
+    }
+  },
+  "tools": {
+    "ladle": {
+      "glyph": "⚚",
+      "art": "tool.ladle"
+    },
+    "mortar": {
+      "glyph": "⚒",
+      "art": "tool.mortar"
+    },
+    "charm": {
+      "glyph": "⚝",
+      "art": "tool.charm"
+    },
+    "basket": {
+      "glyph": "⚖",
+      "art": "tool.basket"
+    }
+  },
+  "characters": [
+    {
+      "id": "herbologist",
+      "ability": "green",
+      "art": "char.herbologist"
+    },
+    {
+      "id": "bookworm",
+      "ability": "scholar",
+      "art": "char.bookworm"
+    },
+    {
+      "id": "hexer",
+      "ability": "trickster",
+      "art": "char.hexer"
+    },
+    {
+      "id": "owlkeeper",
+      "ability": "forager",
+      "art": "char.owlkeeper"
+    }
+  ],
+  "guilds": [
+    {
+      "id": "lanternwick",
+      "art": "guild.lanternwick",
+      "color": "#94621A",
+      "element": "A"
+    },
+    {
+      "id": "fernhollow",
+      "art": "guild.fernhollow",
+      "color": "#3E7A4E",
+      "element": "E"
+    },
+    {
+      "id": "tidecrest",
+      "art": "guild.tidecrest",
+      "color": "#2C6A7C",
+      "element": "W"
+    },
+    {
+      "id": "emberfell",
+      "art": "guild.emberfell",
+      "color": "#A8323F",
+      "element": "F"
+    }
+  ],
+  "playerColors": [
+    "#A8323F",
+    "#94621A",
+    "#3E7A4E",
+    "#2C6A7C",
+    "#7A3E8E",
+    "#5A5A8E"
+  ],
+  "glyphs": {
+    "brand": "⚗",
+    "cure": "⚗",
+    "oni": "⛤",
+    "sakura": "⚹",
+    "rival": "☾",
+    "cured": "⚕",
+    "endTurn": "☽",
+    "market": "⚖",
+    "village": "⌂",
+    "garden": "⚘",
+    "hand": "",
+    "fame": "⚜",
+    "tools": "⚒",
+    "rules": "☿",
+    "win": "⚜",
+    "lose": "☾",
+    "tie": "⚖",
+    "log.buy": "⚖",
+    "log.cure": "⚕",
+    "log.gather": "⚘",
+    "log.blind": "☽",
+    "log.curse": "⛤",
+    "log.plant": "⚘",
+    "turn.1": "↻",
+    "turn.2": "⇅",
+    "turn.3": "↺"
+  },
+  "colors": {
+    "lacquer": "#14121F",
+    "lacquer-2": "#1C1A2C",
+    "ink": "#1A1726",
+    "deep": "#08070E",
+    "parch": "#E6D6B0",
+    "parch-hi": "#F2E6C8",
+    "tab": "#EEE0BE",
+    "shu": "#8E2433",
+    "shu-hi": "#A8323F",
+    "shu-line": "#D0707A",
+    "you": "#E8838C",
+    "gold": "#D9B45A",
+    "rival": "#8FA6C8",
+    "rival-hi": "#BBCBE2",
+    "rival-line": "#34405A",
+    "muted": "#A49A84",
+    "soft": "#C8BC9C",
+    "brown": "#4E4636",
+    "line": "#4C4560",
+    "line-2": "#2E2A40",
+    "rival-deep": "#4B6288",
+    "paper-hi": "#F4E9CE",
+    "shu-deep": "#6E1A26",
+    "plot-line": "#5E5470",
+    "rival-ink": "#2E4468",
+    "oni-card": "#1E1030",
+    "rival-text": "#F2F6FC",
+    "rival-pale": "#DDE6F2",
+    "rival-soft": "#C2D0E4",
+    "rival-mid": "#8FA6C8",
+    "paper-line": "#8A7D64",
+    "shu-dim": "#5E2632",
+    "sakura-bg": "#F2E2B0",
+    "sakura-line": "#C9A23E",
+    "sakura-ink": "#7E5E12",
+    "ok-bg": "#DCE6D4",
+    "ok-ink": "#2C4630",
+    "switch-off": "#ADA286",
+    "rival-dim": "#8C9AB4",
+    "shu-shadow": "#4A0E18",
+    "rival-sub": "#5A6C8A",
+    "track-five": "#4A4460",
+    "tool-line": "#3C3650",
+    "rival-ink-2": "#243858",
+    "track-empty": "#25223A",
+    "track-cell": "#1E1B30",
+    "tabs-bg": "#0C0B14",
+    "frame": "#9C7E3A",
+    "scrim": "#06050C",
+    "fiber": "#6A5226",
+    "paper-tone": "#8E6A30",
+    "card-back": "#120F1C",
+    "hint": "#3E8A5C",
+    "hint-ink": "#FFFFFF"
+  },
+  "map": {
+    "cell": "rgba(240,226,190,.72)",
+    "cell-alt": "rgba(214,194,146,.62)",
+    "oni": "#2A1E3A",
+    "cure": "#D9B45A",
+    "sakura": "#F2E2B0",
+    "trail": "#EFC2B8",
+    "trail-rival": "#D2DCEA",
+    "route": "#8E2433",
+    "route-rival": "#4B6288",
+    "marker": "#A8323F",
+    "marker-ring": "#F2E6C8",
+    "marker-rival": "#8FA6C8",
+    "ink": "#1A1726",
+    "grid": "rgba(60,40,30,.28)"
+  },
+  "text": {
+    "en": {
+      "terms": {
+        "mon": "gold",
+        "Mon": "Gold"
+      },
+      "app": {
+        "edition": "Moonwort Edition"
+      },
+      "content": {
+        "elements": {
+          "W": "Water",
+          "F": "Fire",
+          "E": "Earth",
+          "A": "Air",
+          "V": "Starlight"
+        },
+        "ingredients": {
+          "W": [
+            "Moonwell Water",
+            "Siren Scale",
+            "Frogspawn"
+          ],
+          "F": [
+            "Salamander Ash",
+            "Dragon Pepper",
+            "Ember Moss"
+          ],
+          "E": [
+            "Mandrake Root",
+            "Toadstool",
+            "Knotted Truffle"
+          ],
+          "A": [
+            "Owl Feather",
+            "Wolfsbane",
+            "Bat Wing"
+          ],
+          "V": "Wishing Star"
+        },
+        "ailments": [
+          "Cauldron burns",
+          "Shivers",
+          "Sleeplessness",
+          "Exam nerves",
+          "A croaking cough",
+          "Bad luck",
+          "Moon-madness",
+          "Broom sickness",
+          "Lovesickness",
+          "Forgetfulness",
+          "Shrinking",
+          "Nightmares",
+          "Bubble hiccups",
+          "Talking in rhymes",
+          "Homesickness",
+          "Green hair"
+        ],
+        "patients": [
+          {
+            "full": "A First-Year",
+            "short": "First-Year"
+          },
+          {
+            "full": "The Groundskeeper",
+            "short": "Groundskeeper"
+          },
+          {
+            "full": "The Astronomy Mistress",
+            "short": "Astronomer"
+          },
+          {
+            "full": "A Prefect",
+            "short": "Prefect"
+          },
+          {
+            "full": "The Caretaker",
+            "short": "Caretaker"
+          },
+          {
+            "full": "The Headmistress",
+            "short": "Headmistress"
+          },
+          {
+            "full": "The Tower Ghost",
+            "short": "Tower Ghost"
+          },
+          {
+            "full": "The Librarian",
+            "short": "Librarian"
+          },
+          {
+            "full": "The Broom-Race Captain",
+            "short": "Race Captain"
+          },
+          {
+            "full": "The Owl Keeper",
+            "short": "Owl Keeper"
+          },
+          {
+            "full": "A Portrait in the Hall",
+            "short": "Portrait"
+          },
+          {
+            "full": "The Choirmaster",
+            "short": "Choirmaster"
+          },
+          {
+            "full": "The Divination Teacher",
+            "short": "Seer"
+          },
+          {
+            "full": "The Gargoyle at the Door",
+            "short": "Gargoyle"
+          },
+          {
+            "full": "The Herbalist",
+            "short": "Herbalist"
+          },
+          {
+            "full": "The Charms Master",
+            "short": "Charms Master"
+          },
+          {
+            "full": "A Lost Familiar",
+            "short": "Familiar"
+          },
+          {
+            "full": "The School Cook",
+            "short": "Cook"
+          },
+          {
+            "full": "A Visiting Alchemist",
+            "short": "Alchemist"
+          },
+          {
+            "full": "The Boatman",
+            "short": "Boatman"
+          },
+          {
+            "full": "The Duelling Coach",
+            "short": "Duelling Coach"
+          },
+          {
+            "full": "The Night Porter",
+            "short": "Night Porter"
+          },
+          {
+            "full": "A Sleepwalking Student",
+            "short": "Sleepwalker"
+          },
+          {
+            "full": "The Wandmaker",
+            "short": "Wandmaker"
+          },
+          {
+            "full": "The Matron",
+            "short": "Matron"
+          },
+          {
+            "full": "The Map Keeper",
+            "short": "Map Keeper"
+          },
+          {
+            "full": "A Talking Hat Stand",
+            "short": "Hat Stand"
+          },
+          {
+            "full": "The Fortune-Teller",
+            "short": "Fortune-Teller"
+          },
+          {
+            "full": "The Old Dragon",
+            "short": "Old Dragon"
+          },
+          {
+            "full": "The Scribe",
+            "short": "Scribe"
+          },
+          {
+            "full": "The Bell-Tower Bat",
+            "short": "Bell Bat"
+          },
+          {
+            "full": "The Travelling Bard",
+            "short": "Bard"
+          }
+        ],
+        "tools": {
+          "ladle": {
+            "name": "Stirring Rod",
+            "text": "Once per brew, play one card turned a quarter turn.",
+            "short": "Play one card a quarter turn"
+          },
+          "mortar": {
+            "name": "Pestle",
+            "text": "Once per brew, play one card backwards (a half turn).",
+            "short": "Play one card backwards"
+          },
+          "charm": {
+            "name": "Wand",
+            "text": "Once per brew, take one extra step in any direction.",
+            "short": "One free step, any way"
+          },
+          "basket": {
+            "name": "Satchel",
+            "text": "When you gather, take 3 cards instead of 2.",
+            "short": "Gather 3 instead of 2"
+          }
+        },
+        "characters": {
+          "herbologist": {
+            "name": "Bramble",
+            "title": "the Herbologist"
+          },
+          "bookworm": {
+            "name": "Quill",
+            "title": "the Bookworm"
+          },
+          "hexer": {
+            "name": "Morwenna",
+            "title": "the Hexer"
+          },
+          "owlkeeper": {
+            "name": "Pip",
+            "title": "the Owl Keeper"
+          }
+        },
+        "guilds": {
+          "lanternwick": {
+            "name": "Lanternwick",
+            "motto": "We light the way"
+          },
+          "fernhollow": {
+            "name": "Fernhollow",
+            "motto": "Patience grows roots"
+          },
+          "tidecrest": {
+            "name": "Tidecrest",
+            "motto": "Deep water, clear mind"
+          },
+          "emberfell": {
+            "name": "Emberfell",
+            "motto": "Brave as the flame"
+          }
+        }
+      },
+      "label": {
+        "village": "Infirmary",
+        "villageEmpty": "The infirmary is empty",
+        "gardenN": "Greenhouse · {n}/{max}",
+        "garden": "Greenhouse"
+      },
+      "tabs": {
+        "garden": "Greenhouse {n}/{max}"
+      },
+      "status": {
+        "hitsOni": "That path hits a jinx {oni}",
+        "sakura": "star ⚹",
+        "spentStay": "Hand cards are spent · greenhouse cards stay"
+      },
+      "garden": {
+        "plantAria": "Plant a card in the empty greenhouse pot"
+      },
+      "plant": {
+        "sub": "Greenhouse cards are never used up · once per turn",
+        "full": "Greenhouse is full · replace which?"
+      },
+      "stash": {
+        "oniLeft": "Jinxes · {n} left"
+      },
+      "reward": {
+        "sakura": "Star passed · +{n} {{mon}}",
+        "oniLeft": "{n} jinxes left · optional",
+        "curseQ": "Hex a patient?",
+        "noCurse": "No hex",
+        "curseName": "Hex {name}",
+        "pickToCurse": "Pick someone to hex"
+      },
+      "rival": {
+        "garden": "Greenhouse",
+        "gardenN": "Greenhouse {n}",
+        "noOni": "No jinxes",
+        "oni": "Jinxes",
+        "fromGarden": "from its greenhouse",
+        "sakura": "+{n} star",
+        "curses": "Hexes {name} {oni}",
+        "lineCurse": "Hexed {name}: map turned {turn}",
+        "plants": "Plants a card in its greenhouse",
+        "linePlant": "Planted {card} in its greenhouse"
+      },
+      "log": {
+        "sakura": "+{n} for the star.",
+        "curse": {
+          "you": "You hex {name}: the map turns {turn}.",
+          "rival": "Rival hexes {name}: the map turns {turn}."
+        }
+      },
+      "patient": {
+        "cursed": "hexed",
+        "cursedByYou": "Hexed by you",
+        "cursedByRival": "Hexed by your rival"
+      },
+      "board": {
+        "cursed": "Hexed"
+      },
+      "toast": {
+        "goal": "Cure the infirmary's patients to reach {n} {{mon}}."
+      },
+      "settings": {
+        "soundSub": "Bells, chimes and drums",
+        "openSub": "Both hands are face up, so hexes aren't blind guesses."
+      },
+      "rules": {
+        "goal": {
+          "p": "Rival potion-makers race to {end} {{mon}}. Every patient is a small map: cure them by playing ingredient cards whose paths walk your marker from the centre ◯ to the cure {cure}."
+        },
+        "brew": {
+          "p": "Pick a patient (tap it, or swipe the map), then tap a card to preview its path. Play it, or cancel and try another. Tap a numbered chip to go back to that card. Paths go: {dirs}; a Wishing Star {kitsune} is one step any way. The signs in a card's corner show every direction its path takes. Order matters. Paths can't enter a jinx {oniG} square or leave the map. Finish <b>exactly</b> on {cure}, using at least {min} hand card. Hand cards are spent; greenhouse cards stay."
+        },
+        "fame": {
+          "p": "A cured patient is worth its number in {{mon}}. Passing a star {sakura} adds {sak}."
+        },
+        "curse": {
+          "p": "After a cure you may spend one of your {oni} jinx cards to hex an infirmary patient's map. The cure and the jinxes move; ingredient directions don't. A hexed patient can't be hexed again.",
+          "h": "Hexes"
+        },
+        "end": {
+          "h": "Greenhouse, hand, end",
+          "p": "The greenhouse holds {garden}; planting into a full greenhouse discards one. Hand limit {hand} at the end of your turn. When someone reaches {end}, the round finishes so both play equally; it also ends after the infirmary empties. Most {{mon}} wins; ties go to most cures."
+        },
+        "guild": {
+          "h": "Houses",
+          "p": "Your house has an element. Once per brew you may play one greenhouse card of that element twice, so plant those."
+        }
+      },
+      "abilities": {
+        "green": {
+          "text": "Your greenhouse holds one more card and starts with two in it."
+        },
+        "trickster": {
+          "name": "Hexcraft",
+          "text": "Two extra jinx cards, and one more card to start."
+        },
+        "forager": {
+          "name": "Owl post",
+          "text": "Your owl brings one more card whenever you gather."
+        }
+      },
+      "setup": {
+        "guild": "House",
+        "guildSub": "Your house crest and colour"
+      },
+      "guildAbility": {
+        "name": "House craft",
+        "text": "Once per brew, play one {el} greenhouse card twice."
+      },
+      "ward": {
+        "empty": "Cured patients join you here",
+        "sub": "Each cured patient helps once: as a move, or as a known cure"
+      }
+    }
+  },
+  "textures": {
+    "_about": "Tiled or stretched images behind surfaces. size: a CSS background-size; a pixel size tiles.",
+    "page": {
+      "image": "textures/page.svg",
+      "size": "240px"
+    },
+    "paper": {
+      "image": "textures/paper.svg",
+      "size": "300px",
+      "color": "#E6D6B0"
+    },
+    "panel": {
+      "image": "textures/panel.svg",
+      "size": "200px"
+    },
+    "sheet": {
+      "image": "textures/paper.svg",
+      "size": "300px",
+      "color": "#E6D6B0"
+    }
+  },
+  "cards": {
+    "_about": "Card faces drawn behind the content: the maze sits on 'patient' and 'board', the path on 'ingredient'. Give an element (W, F, E, A, V) its own face. layout 'full' uses the face as the whole card (no separate art header).",
+    "patient": {
+      "image": "cards/patient.svg"
+    },
+    "board": {
+      "image": "cards/board.svg"
+    },
+    "ingredient": {
+      "layout": "full",
+      "W": "cards/ingredient-W.svg",
+      "F": "cards/ingredient-F.svg",
+      "E": "cards/ingredient-E.svg",
+      "A": "cards/ingredient-A.svg",
+      "V": "cards/ingredient-V.svg"
+    },
+    "back": {
+      "image": "cards/back.svg"
+    }
+  }
+}

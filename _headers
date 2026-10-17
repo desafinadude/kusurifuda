@@ -1,0 +1,7 @@
+# Netlify / Cloudflare Pages. Other hosts: serve sw.js with no-cache and
+# manifest.webmanifest as application/manifest+json.
+/sw.js
+  Cache-Control: no-cache
+/manifest.webmanifest
+  Content-Type: application/manifest+json
+  Cache-Control: no-cache

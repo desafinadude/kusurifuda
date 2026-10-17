@@ -1,0 +1,884 @@
+{
+  "terms": {
+    "_about": "Words a theme may rename everywhere at once. Use {{mon}} in any string.",
+    "mon": "mon",
+    "Mon": "Mon"
+  },
+  "_about": "Every word in the game. To translate: copy this file (e.g. ja.json), translate the values, keep the keys and the {placeholders}, and add it to config.json. Entries with one/other are plurals; add the forms your language needs (zero, two, few, many). Inline <b> is allowed.",
+  "app": {
+    "title": "Kusurifuda · Map Edition",
+    "name": "Kusurifuda",
+    "edition": "Map Edition"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back",
+    "done": "Done"
+  },
+  "who": {
+    "you": "You",
+    "rival": "Rival"
+  },
+  "content": {
+    "elements": {
+      "W": "Water",
+      "F": "Fire",
+      "E": "Earth",
+      "A": "Wind",
+      "V": "Kitsune"
+    },
+    "ingredients": {
+      "W": [
+        "Lotus Root",
+        "Nameko",
+        "Koi Scale"
+      ],
+      "F": [
+        "Tōgarashi",
+        "Reishi",
+        "Hotaru"
+      ],
+      "E": [
+        "Ninjin",
+        "Matsutake",
+        "Tanuki Fur"
+      ],
+      "A": [
+        "Sakura Petal",
+        "Kikurage",
+        "Crane Feather"
+      ],
+      "V": "Kitsune Tail"
+    },
+    "patients": [
+      {
+        "full": "A Rice Farmer",
+        "short": "Rice Farmer"
+      },
+      {
+        "full": "The Inn Mistress",
+        "short": "Inn Mistress"
+      },
+      {
+        "full": "A Fisherwoman",
+        "short": "Fisherwoman"
+      },
+      {
+        "full": "The Falconer",
+        "short": "Falconer"
+      },
+      {
+        "full": "A Ninja",
+        "short": "Ninja"
+      },
+      {
+        "full": "Princess Kaguya",
+        "short": "Princess Kaguya"
+      },
+      {
+        "full": "A Pearl Diver",
+        "short": "Pearl Diver"
+      },
+      {
+        "full": "The Bathhouse Keeper",
+        "short": "Bathhouse Keeper"
+      },
+      {
+        "full": "A Wandering Rōnin",
+        "short": "Rōnin"
+      },
+      {
+        "full": "A Sumo Wrestler",
+        "short": "Sumo Wrestler"
+      },
+      {
+        "full": "A Clockmaker",
+        "short": "Clockmaker"
+      },
+      {
+        "full": "A Street Juggler",
+        "short": "Street Juggler"
+      },
+      {
+        "full": "The Swordsmith",
+        "short": "Swordsmith"
+      },
+      {
+        "full": "The Dragon King",
+        "short": "Dragon King"
+      },
+      {
+        "full": "A Lantern Seller",
+        "short": "Lantern Seller"
+      },
+      {
+        "full": "The Firework Maker",
+        "short": "Firework Maker"
+      },
+      {
+        "full": "A Kappa",
+        "short": "Kappa"
+      },
+      {
+        "full": "A Mountain Monk",
+        "short": "Mountain Monk"
+      },
+      {
+        "full": "A Tanuki",
+        "short": "Tanuki"
+      },
+      {
+        "full": "The Ferryman",
+        "short": "Ferryman"
+      },
+      {
+        "full": "The Court Astrologer",
+        "short": "Court Astrologer"
+      },
+      {
+        "full": "The Shōgun",
+        "short": "Shōgun"
+      },
+      {
+        "full": "The Tea Master",
+        "short": "Tea Master"
+      },
+      {
+        "full": "A Potter",
+        "short": "Potter"
+      },
+      {
+        "full": "The Harbourmaster",
+        "short": "Harbourmaster"
+      },
+      {
+        "full": "The Silk Weaver",
+        "short": "Silk Weaver"
+      },
+      {
+        "full": "A Kite Maker",
+        "short": "Kite Maker"
+      },
+      {
+        "full": "A Fortune Teller",
+        "short": "Fortune Teller"
+      },
+      {
+        "full": "The Emperor",
+        "short": "Emperor"
+      },
+      {
+        "full": "A Calligrapher",
+        "short": "Calligrapher"
+      },
+      {
+        "full": "The Bell Ringer",
+        "short": "Bell Ringer"
+      },
+      {
+        "full": "A Wandering Poet",
+        "short": "Wandering Poet"
+      }
+    ],
+    "ailments": [
+      "Fever",
+      "Chills",
+      "Sleeplessness",
+      "Heartache",
+      "A cough",
+      "Bad luck",
+      "Fox possession",
+      "A stiff back",
+      "Lovesickness",
+      "Forgetfulness",
+      "Toothache",
+      "Nightmares",
+      "Hiccups",
+      "Stage fright",
+      "Homesickness",
+      "A sore throat"
+    ],
+    "tools": {
+      "ladle": {
+        "name": "Ladle",
+        "text": "Once per brew, play one card turned a quarter turn.",
+        "short": "Play one card a quarter turn"
+      },
+      "mortar": {
+        "name": "Mortar",
+        "text": "Once per brew, play one card backwards (a half turn).",
+        "short": "Play one card backwards"
+      },
+      "charm": {
+        "name": "Kitsune Charm",
+        "text": "Once per brew, take one extra step in any direction.",
+        "short": "One free step, any way"
+      },
+      "basket": {
+        "name": "Basket",
+        "text": "When you gather, take 3 cards instead of 2.",
+        "short": "Gather 3 instead of 2"
+      }
+    },
+    "characters": {
+      "herbalist": {
+        "name": "Hana",
+        "title": "the Herbalist"
+      },
+      "merchant": {
+        "name": "Kanbei",
+        "title": "the Merchant"
+      },
+      "miko": {
+        "name": "Sayo",
+        "title": "the Shrine Maiden"
+      },
+      "kunoichi": {
+        "name": "Kaede",
+        "title": "the Kunoichi"
+      }
+    },
+    "guilds": {
+      "plum": {
+        "name": "Plum Blossom Guild",
+        "motto": "First to bloom"
+      },
+      "wisteria": {
+        "name": "Wisteria Guild",
+        "motto": "Patient and long-reaching"
+      },
+      "pine": {
+        "name": "Pine Guild",
+        "motto": "Green through every winter"
+      },
+      "wave": {
+        "name": "Wave Guild",
+        "motto": "Steady as the tide"
+      }
+    }
+  },
+  "abilities": {
+    "_about": "What each ability in rules.json does, in words. A theme can rename them.",
+    "green": {
+      "name": "Green thumb",
+      "text": "Your garden holds one more card and starts with two planted."
+    },
+    "trade": {
+      "name": "Good bargains",
+      "text": "Tools cost you 1 {{mon}} less."
+    },
+    "blessed": {
+      "name": "Blessed",
+      "text": "You start with 2 {{mon}}."
+    },
+    "trickster": {
+      "name": "Tricks",
+      "text": "Two extra oni cards, and one more card to start."
+    },
+    "scholar": {
+      "name": "Well read",
+      "text": "Hand limit 2 higher, and two more cards to start."
+    },
+    "forager": {
+      "name": "Forager",
+      "text": "Take one more card whenever you gather."
+    }
+  },
+  "toolEffects": {
+    "_about": "Used for tools added in rules.json that have no text above.",
+    "turn": "Once per brew, play one card turned {turns}.",
+    "turnShort": "Turn one card {turns}",
+    "step": "Once per brew, take one extra step in any direction.",
+    "stepShort": "One free step, any way",
+    "gather": "When you gather, take {amount} cards.",
+    "gatherShort": "Gather {amount}"
+  },
+  "turns": {
+    "1": "a quarter turn clockwise",
+    "2": "a half turn",
+    "3": "a quarter turn anticlockwise"
+  },
+  "turnsShort": {
+    "1": "Quarter",
+    "2": "Half turn",
+    "3": "Quarter"
+  },
+  "dir": {
+    "up": "Up",
+    "down": "Down",
+    "left": "Left",
+    "right": "Right"
+  },
+  "top": {
+    "fameAria": "{{Mon}}: you {you}, rival {rival}. Show your rival's table",
+    "goal": "First to {n} {{mon}}",
+    "roundYou": "Round {n} · your turn",
+    "roundRival": "Round {n} · rival's turn",
+    "yourMarker": "Your marker",
+    "rivalMarker": "Rival's marker",
+    "you": "You {n}",
+    "rival": "Rival {n}"
+  },
+  "label": {
+    "village": "Village",
+    "villageEmpty": "The village is empty",
+    "deck": "Deck {n}",
+    "patientDeck": "Patient deck {n}",
+    "yourCards": "Your cards",
+    "market": "Market",
+    "marketDeck": "Market · deck {n}",
+    "deckDiscard": "Deck {n} · Discard {d}",
+    "handN": "Hand · {n}/{max}",
+    "gardenN": "Garden · {n}/{max}",
+    "toHand": "‹ Hand",
+    "toMarket": "Market ›",
+    "tools": "Tools",
+    "fame": "{{Mon}}",
+    "yourHand": "Your hand",
+    "garden": "Garden",
+    "ward": "Ward",
+    "wardN": "Ward · {n}",
+    "toWard": "Ward ›",
+    "toGarden": "‹ Garden"
+  },
+  "tabs": {
+    "hand": "Hand {n}/{max}",
+    "garden": "Garden {n}/{max}",
+    "market": "Market {n}",
+    "ward": "Ward {n}"
+  },
+  "card": {
+    "anyStep": "1 step, any way",
+    "steps": {
+      "one": "{n} step",
+      "other": "{n} steps"
+    },
+    "tagUsed": "Used",
+    "tagNext": "Next",
+    "tagTake": "Take",
+    "tagRival": "Rival",
+    "tagDiscard": "Discard",
+    "tagSpent": "Spent",
+    "tagAgain": "Again"
+  },
+  "patient": {
+    "label": "Patient {name}, {ailment}, worth {value}",
+    "cursed": "cursed",
+    "cursedByYou": "Cursed by you",
+    "cursedByRival": "Cursed by your rival",
+    "needs": "Needs {el}",
+    "needsAria": "Needs a {el} ingredient",
+    "becomes": "Cured, joins your ward as {move}",
+    "moveAria": "{el} {move}"
+  },
+  "hints": {
+    "you": "You can cure this patient now",
+    "rival": "Your rival can cure this patient now"
+  },
+  "board": {
+    "nobody": "Nobody left to cure",
+    "mapOf": "{name}'s map",
+    "mapAria": "{name}'s map. Reach {cure} from the centre.",
+    "cursed": "Cursed",
+    "rivalTurn": "Rival's turn",
+    "worth": "worth {n} {{mon}}",
+    "swipe": "Swipe left or right for the next patient",
+    "known": "Known cure · +{n}",
+    "knownAria": "You know this cure"
+  },
+  "status": {
+    "gameOver": "Game over",
+    "yourTurn": "Your turn",
+    "actionDone": "Action done",
+    "freePlant": "plant",
+    "freeBuy": "buy a tool",
+    "thenFree": "You can still {list}, or end your turn",
+    "thenEnd": "End your turn when ready",
+    "pickMore": {
+      "one": "Pick {n} more market card",
+      "other": "Pick {n} more market cards"
+    },
+    "takeThese": "Take these {n}?",
+    "thenDone": "Then your action is done",
+    "pickDirection": "Pick a direction",
+    "hitsOni": "That path hits an oni {oni}",
+    "offMap": "That path leaves the map",
+    "cancelOrTool": "Cancel, or try a tool",
+    "landsOnCure": "Lands on {cure}",
+    "playToCure": "Play it to reach the cure",
+    "sakura": "sakura ✿",
+    "stepsFrom": {
+      "one": "{n} step from {cure}",
+      "other": "{n} steps from {cure}"
+    },
+    "pickThenPlay": "Pick a direction, then Play",
+    "playOrTap": "Play it, or tap another card",
+    "tapToPreview": "Tap a card to preview it",
+    "spentStay": "Hand cards are spent · garden cards stay",
+    "spentStaySwipe": "Swipe the map for another patient",
+    "needHand": "On {cure}, but use a hand card too",
+    "needHandWhy": {
+      "one": "Every brew needs {n} hand card",
+      "other": "Every brew needs {n} hand cards"
+    },
+    "onCure": "On {cure} — brew!",
+    "cardsPlayed": {
+      "one": "{n} card played",
+      "other": "{n} cards played"
+    },
+    "tapNumber": "tap a number to go back",
+    "needEl": "Needs a {el} ingredient {glyph}",
+    "needElWhy": "Kitsune Tail counts as any element",
+    "knownHint": "Or use your known cure: +{n} {{mon}}"
+  },
+  "brew": {
+    "backTo": "Go back to card {n}",
+    "cancelPreview": "Cancel the previewed card",
+    "cancel": "Cancel",
+    "play": "Play",
+    "clear": "Clear",
+    "clearAria": "Clear the whole route",
+    "undo": "Undo",
+    "direction": "Direction",
+    "usedThisBrew": "(used this brew)"
+  },
+  "hand": {
+    "empty": "No cards in hand",
+    "tapToPreview": "Tap a card to preview it"
+  },
+  "garden": {
+    "empty": "Empty",
+    "plant": "Plant",
+    "plantHere": "Plant here",
+    "plantAria": "Plant a card into the empty garden plot",
+    "neverUsedUp": "Never used up"
+  },
+  "act": {
+    "back": "Back",
+    "gather": "Gather",
+    "plant": "Plant",
+    "tools": "Tools",
+    "log": "Log",
+    "rules": "Rules",
+    "brew": "Brew",
+    "brewSub": "Cure {name}",
+    "endTurn": "End turn",
+    "endTurnSub": "Then your rival plays",
+    "drawBlind": "Draw {n} blind",
+    "takeN": "Take {n} ({have}/{n})",
+    "takeFromMarket": "Take {n} from market",
+    "known": "Known cure",
+    "knownSub": "+{n} {{mon}} · uses {name}"
+  },
+  "tools": {
+    "cost": "{n} {{mon}}",
+    "need": "Need {n} {{mon}}",
+    "yours": "Yours",
+    "rivalOwns": "Rival owns",
+    "tapToBuy": "Tap to buy",
+    "onePerTurn": "One buy per turn",
+    "paidWithFame": "Paid with {{mon}}",
+    "buy": "Buy",
+    "onYourTurn": "Buy on your turn.",
+    "boughtThisTurn": "You've bought a tool this turn.",
+    "how": "One tool per turn. Pay with {{mon}}: your marker moves back. You have {n}."
+  },
+  "stash": {
+    "oniLeft": "Oni · {n} left",
+    "noneYet": "None yet"
+  },
+  "reward": {
+    "title": "{name} is cured",
+    "sakura": "Sakura passed · +{n} {{mon}}",
+    "fame": "+{n} {{mon}}",
+    "track": "{from} → {to}",
+    "curseQ": "Curse a patient?",
+    "oniLeft": "{n} oni left · optional",
+    "curseWhyOpen": "Hands are open: turn the map of someone your rival can cure, so its route breaks. The whole map turns; ingredient directions stay the same.",
+    "curseWhyOpenHints": "Purple ticks show who your rival can cure next turn. Turn that map so its route breaks; the tick disappears in the preview when it works.",
+    "curseWhyHidden": "Turn one map so your rival's planned route breaks. The whole map turns; ingredient directions stay the same.",
+    "turnMap": "Turn the map",
+    "preview": "Preview",
+    "new": "New",
+    "noCurse": "No curse",
+    "curseName": "Curse {name}",
+    "pickToCurse": "Pick someone to curse",
+    "continue": "Continue",
+    "lucky": "Lucky step · +{n} {{mon}}",
+    "known": "A known cure, remembered from {name}",
+    "joins": "{name} joins your ward",
+    "joinsSub": "{move}: {text}"
+  },
+  "plant": {
+    "title": "Plant a card",
+    "sub": "Garden cards are never used up · once per turn",
+    "fromHand": "From your hand",
+    "full": "Garden is full · replace which?",
+    "clearsRoute": "Planting clears the route you are building.",
+    "do": "Plant"
+  },
+  "discard": {
+    "title": "Too many cards",
+    "sub": "Hand limit {max} · discard {n}",
+    "do": "Discard {n} and end turn"
+  },
+  "newq": {
+    "title": "Start a new game?",
+    "sub": "This game will be lost.",
+    "keep": "Keep playing"
+  },
+  "setup": {
+    "title": "New game",
+    "sub": "Choose who you play as. Your rival picks someone else.",
+    "character": "Character",
+    "guild": "Guild",
+    "guildSub": "Your guild crest and colour",
+    "colour": "Colour",
+    "colourN": "Colour {n}",
+    "start": "Start the game",
+    "rival": "Your rival is {name}",
+    "you": "You play {name}",
+    "asTitle": "{name}, {title}",
+    "guildEl": "{el}"
+  },
+  "menu": {
+    "title": "Menu",
+    "howToPlay": "How to play",
+    "log": "Game log",
+    "rivalTable": "Rival's table",
+    "newGame": "New game",
+    "install": "Install the app",
+    "installSub": "Plays offline",
+    "theme": "Theme",
+    "you": "You play {name}"
+  },
+  "settings": {
+    "title": "Settings",
+    "sound": "Sound",
+    "soundSub": "Koto, bells and taiko",
+    "soundOn": "Sound on",
+    "soundOff": "Sound off",
+    "hints": "Hints",
+    "hintsSub": "A green tick on every patient you can cure with the cards you hold.",
+    "hintsSubOpen": "A green tick on every patient you can cure now, and a purple one where your rival can.",
+    "theme": "Theme",
+    "language": "Language",
+    "house": "House rules",
+    "houseSub": "for your next new game",
+    "open": "Open hands",
+    "openSub": "Both hands are face up, so curses aren't blind guesses.",
+    "startWith": "Start a new game with these rules",
+    "thisGame": "This game uses these rules.",
+    "target": "{{Mon}} to win",
+    "targetSub": "First to this many wins"
+  },
+  "sheets": {
+    "reward": "Patient cured",
+    "plant": "Plant a card",
+    "tools": "Tools",
+    "discard": "Discard",
+    "menu": "Menu",
+    "newq": "New game",
+    "rules": "How to play",
+    "log": "Game log",
+    "rival": "Rival's table",
+    "over": "Game over",
+    "install": "Install",
+    "themes": "Choose a theme",
+    "setup": "Choose your character"
+  },
+  "themeNames": {
+    "_about": "Optional: names for the themes in config.json. A theme without one shows the name in its theme.json.",
+    "kusurifuda": "Lacquer & Parchment",
+    "aizome": "Aizome Indigo",
+    "moonwort": "Moonwort Academy"
+  },
+  "themeDesc": {
+    "_about": "Optional: one line under each theme in the theme picker.",
+    "kusurifuda": "An Edo apothecary: black lacquer, washi and kanji, with koto and taiko.",
+    "aizome": "The same apothecary dyed in indigo.",
+    "moonwort": "A candle-lit potions classroom: alchemical signs, jinxes and stars, with celesta and chapel bells."
+  },
+  "themes": {
+    "title": "Theme",
+    "sub": "Changes the look, the sounds and some names. Your game carries on.",
+    "current": "In use",
+    "use": "Use this theme"
+  },
+  "rules": {
+    "title": "How to play",
+    "sub": "2 players · first to {n} {{mon}}",
+    "openHands": "open hands",
+    "dirOne": "{el} {glyph} mostly {dir}",
+    "goal": {
+      "h": "Goal",
+      "p": "Rival apothecaries race to {end} {{mon}}. Every patient is a small map: cure them by playing ingredient cards whose paths walk your marker from the centre ◯ to the cure {cure}."
+    },
+    "turn": {
+      "h": "Your turn",
+      "p": "Do <b>one</b> action: <b>Gather</b> {gather} market cards (or draw {gather} blind), or <b>Brew</b> a cure. Once each per turn, before or after, you may also <b>plant</b> a hand card in your garden and <b>buy a tool</b>."
+    },
+    "brew": {
+      "h": "Brewing",
+      "p": "Pick a patient (tap it, or swipe the map), then tap a card to preview its path. Play it, or cancel and try another. Tap a numbered chip to go back to that card. Paths go: {dirs}; a Kitsune Tail {kitsune} is one step any way. The glyphs in a card's corner show every direction its path takes. Order matters. Paths can't enter an oni {oniG} square or leave the map. Finish <b>exactly</b> on {cure}, using at least {min} hand card. Hand cards are spent; garden cards stay."
+    },
+    "fame": {
+      "h": "{{Mon}}",
+      "p": "A cured patient is worth its number in {{mon}}. Passing a sakura {sakura} adds {sak}."
+    },
+    "tools": {
+      "h": "Tools",
+      "p": "One of each in a two-player game, paid for with {{mon}} (your marker moves back). Each works once per brew."
+    },
+    "curse": {
+      "h": "Curses",
+      "p": "After a cure you may spend one of your {oni} oni cards to turn a village patient's map. The cure and the oni move; ingredient directions don't. A cursed patient can't be cursed again."
+    },
+    "curseOpen": "Hands are open, so look for the patient your rival can cure next turn.",
+    "curseHidden": "Hands are hidden, so it's a guess.",
+    "end": {
+      "h": "Garden, hand, end",
+      "p": "Garden holds {garden}; planting into a full garden discards one. Hand limit {hand} at the end of your turn. When someone reaches {end}, the round finishes so both play equally; it also ends after the village runs out. Most {{mon}} wins; ties go to most cures."
+    },
+    "gotIt": "Got it",
+    "patients": {
+      "h": "Patients",
+      "p": "Every patient has an element (its sign on the card) and a move. Once cured they join your <b>ward</b>, and each ward patient helps you <b>once</b>: play its move in any brew, like a garden card, or use it as a known cure. Moves: <b>Step</b> 1 square, <b>Stride</b> 2, <b>Leap</b> 2 squares over whatever is between, <b>Any way</b> 1 square any direction, <b>Lucky step</b> 1 square and +1 {{mon}}."
+    },
+    "needEl": "A cure needs at least one ingredient of the patient's element (the big sign in a card's corner). The Kitsune Tail {kitsune} counts as any element.",
+    "known": {
+      "h": "Known cures",
+      "p": "If an unused ward patient had the same ailment, you can cure the new patient without ingredients for half its value (at least 1). That uses up the ward patient."
+    },
+    "guild": {
+      "h": "Guilds",
+      "p": "Your guild has an element. Once per brew you may play one garden card of that element twice, so plant those."
+    }
+  },
+  "log": {
+    "round": "R{n}",
+    "newYou": "New game. You go first.",
+    "newRival": "New game. Your rival goes first.",
+    "sakura": "+{n} for the sakura.",
+    "buy": {
+      "you": "You buy the {tool} for {n} {{mon}}.",
+      "rival": "Rival buys the {tool} for {n} {{mon}}."
+    },
+    "cure": {
+      "you": "You cure {name} ({ailment}): +{n} {{mon}}.",
+      "rival": "Rival cures {name} ({ailment}): +{n} {{mon}}."
+    },
+    "gather": {
+      "you": "You take {cards}.",
+      "rival": "Rival takes {cards}."
+    },
+    "blind": {
+      "you": "You draw {n} blind.",
+      "rival": "Rival draws {n} blind."
+    },
+    "plant": {
+      "you": "You plant {card}.",
+      "rival": "Rival plants {card}."
+    },
+    "curse": {
+      "you": "You curse {name}: the map turns {turn}.",
+      "rival": "Rival curses {name}: the map turns {turn}."
+    },
+    "known": {
+      "you": "You cure {name} ({ailment}) with a known remedy: +{n} {{mon}}.",
+      "rival": "Rival cures {name} ({ailment}) with a known remedy: +{n} {{mon}}."
+    },
+    "lucky": "+{n} lucky."
+  },
+  "rival": {
+    "turn": "Rival's turn",
+    "thinking": "Thinking",
+    "speedUp": "Speed up the rival's turn",
+    "fast": "Fast ▸▸",
+    "skip": "Skip ▸",
+    "showTable": "Show your rival's table",
+    "hand": "Hand",
+    "handN": "Hand {n}",
+    "garden": "Garden",
+    "gardenN": "Garden {n}",
+    "handOpen": "Hand · open",
+    "hidden": "(hand hidden)",
+    "noOni": "No oni",
+    "oni": "Oni",
+    "none": "none",
+    "summary": {
+      "one": "{{Mon}} {fame} · {n} cure · hand {hand}",
+      "other": "{{Mon}} {fame} · {n} cures · hand {hand}"
+    },
+    "lastTurn": "Last turn: {what}",
+    "buys": "Buys the {tool}",
+    "pays": "Pays {n} {{mon}} · {what}",
+    "popBuys": "buys the {tool}",
+    "lineBuy": "Bought the {tool} for {n} {{mon}}",
+    "brewsFor": "Brews for {name}",
+    "worth": "{ailment} · worth {n}",
+    "fromGarden": "from its garden",
+    "cures": "Cures {name}",
+    "gains": "+{n} {{mon}}",
+    "sakura": "+{n} sakura",
+    "lineCure": "Cured {name}: +{n} {{mon}}",
+    "takes": {
+      "one": "Takes {n} card from the market",
+      "other": "Takes {n} cards from the market"
+    },
+    "popTakes": {
+      "one": "takes {n} card",
+      "other": "takes {n} cards"
+    },
+    "lineTake": "Took {cards} from the market",
+    "drawsBlind": {
+      "one": "Draws {n} card blind",
+      "other": "Draws {n} cards blind"
+    },
+    "fromDeck": "From the top of the deck",
+    "popBlind": "draws {n} blind",
+    "lineBlind": {
+      "one": "Drew {n} card blind",
+      "other": "Drew {n} cards blind"
+    },
+    "curses": "Curses {name} {oni}",
+    "turnsMap": "Turns the map {turn} {glyph}",
+    "lineCurse": "Cursed {name}: map turned {turn}",
+    "plants": "Plants a card in its garden",
+    "plantsSub": "{card} · never used up",
+    "popPlants": "plants a card",
+    "linePlant": "Planted {card} in its garden",
+    "passed": "Passed",
+    "whatItDid": "What your rival did",
+    "fromWard": "from its ward",
+    "echo": "played twice (guild)",
+    "knows": "Knows the cure for {ailment}",
+    "knowsSub": "Remembers it from {name}",
+    "lineKnown": "Cured {name} with a known remedy: +{n} {{mon}}",
+    "ward": "Ward",
+    "wardN": "Ward {n}"
+  },
+  "over": {
+    "you": "You win!",
+    "rival": "Your rival wins this time",
+    "tie": "It's a tie",
+    "cures": {
+      "one": "{who} · {n} cure",
+      "other": "{who} · {n} cures"
+    },
+    "tools": "Tools: you {you} · rival {rival}",
+    "again": "Play again"
+  },
+  "toast": {
+    "newGame": "New game",
+    "youFirst": "You go first",
+    "rivalFirst": "Your rival goes first",
+    "goal": "Cure villagers to reach {n} {{mon}}.",
+    "youTake": {
+      "one": "You take {n} card",
+      "other": "You take {n} cards"
+    },
+    "youDraw": {
+      "one": "You draw {n} card blind",
+      "other": "You draw {n} cards blind"
+    },
+    "bought": "You bought the {tool}",
+    "paid": "Paid {n} {{mon}}.",
+    "buttonUnderMap": "Its button sits under the map while you brew."
+  },
+  "msg": {
+    "waitTurn": "Wait for your turn.",
+    "actionUsed": "You've used your action this turn.",
+    "pickDirFirst": "Pick a direction first.",
+    "nothingToPlant": "No cards to plant."
+  },
+  "errors": {
+    "noPatient": "That patient has gone.",
+    "toolMisuse": "That tool can't be used there.",
+    "cardMisuse": "A card was used twice.",
+    "toolTwice": "Each tool works once per brew.",
+    "blocked": "The path is blocked.",
+    "needHand": "Use at least one card from your hand.",
+    "notOnCure": "The route doesn't end on the cure.",
+    "needElement": "This patient needs an ingredient of its element"
+  },
+  "install": {
+    "offer": "Install Kusurifuda on this device",
+    "title": "Install Kusurifuda",
+    "sub": "Gets its own icon, opens full screen, and plays offline.",
+    "done": "Installed. Open it from your home screen or app list.",
+    "now": "Install now",
+    "other": "Other devices",
+    "ios": {
+      "h": "iPhone or iPad",
+      "steps": [
+        "Open this page in Safari.",
+        "Tap Share {share} (bottom bar on iPhone, top bar on iPad).",
+        "Scroll down and tap <b>Add to Home Screen</b>, then <b>Add</b>."
+      ],
+      "note": "Chrome and Edge on iOS 16.4 or later have the same Share › Add to Home Screen."
+    },
+    "android": {
+      "h": "Android",
+      "steps": [
+        "Tap <b>Install</b> if your browser offers it.",
+        "Otherwise open the browser menu {menu} and choose <b>Install app</b> or <b>Add to Home screen</b>."
+      ],
+      "note": "Works in Chrome, Edge, Samsung Internet and Firefox."
+    },
+    "macsafari": {
+      "h": "Mac (Safari)",
+      "steps": [
+        "In the menu bar choose <b>File › Add to Dock</b>."
+      ],
+      "note": "Needs macOS Sonoma or later."
+    },
+    "desktop": {
+      "h": "Computer (Chrome or Edge)",
+      "steps": [
+        "Click the install icon at the right end of the address bar.",
+        "Or open the browser menu and choose <b>Install Kusurifuda</b> (in Chrome it sits under <b>Cast, save and share</b>)."
+      ],
+      "note": "It opens in its own window and shows up with your other apps."
+    },
+    "firefox": {
+      "h": "Firefox on a computer",
+      "steps": [
+        "Firefox on desktop can't install web apps yet. Open this page in Chrome, Edge or Safari instead."
+      ]
+    }
+  },
+  "ward": {
+    "empty": "Cured patients join you here",
+    "sub": "Each cured patient helps once: as a move, or as a known cure",
+    "left": "{n} ready"
+  },
+  "moves": {
+    "_about": "The moves cured patients give. {el} is the element's name.",
+    "step": {
+      "name": "Step",
+      "text": "1 square {dir}"
+    },
+    "stride": {
+      "name": "Stride",
+      "text": "2 squares {dir}"
+    },
+    "jump": {
+      "name": "Leap",
+      "text": "Leap 2 squares {dir}, over whatever is between"
+    },
+    "any": {
+      "name": "Any way",
+      "text": "1 square in any direction"
+    },
+    "lucky": {
+      "name": "Lucky step",
+      "text": "1 square {dir}, +1 {{mon}} if that brew cures"
+    }
+  },
+  "guildAbility": {
+    "name": "Guild craft",
+    "text": "Once per brew, play one {el} garden card twice."
+  }
+}

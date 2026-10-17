@@ -1,0 +1,171 @@
+{
+  "_about": "Game rules. Every number the engine uses lives here. Change, reload, start a new game (a saved game keeps the rules it started with).",
+  "endFame": 25,
+  "handLimit": 7,
+  "gardenMax": 3,
+  "startHand": 5,
+  "oniPerPlayer": 3,
+  "marketSize": 5,
+  "villageSize": 4,
+  "gather": 2,
+  "minHandCards": 1,
+  "sakuraBonus": 1,
+  "openHands": true,
+  "board": {
+    "_about": "Patients are maps of (2 x radius + 1) squares a side, start in the centre.",
+    "radius": 3
+  },
+  "deck": {
+    "_about": "Each element walks mostly in its own direction. Patterns are steps from the walker's view: ahead, left, right. Each pattern makes one card per element.",
+    "elements": {
+      "W": "up",
+      "F": "right",
+      "E": "down",
+      "A": "left"
+    },
+    "patterns": [
+      [
+        "ahead"
+      ],
+      [
+        "ahead",
+        "ahead"
+      ],
+      [
+        "ahead",
+        "left"
+      ],
+      [
+        "ahead",
+        "right"
+      ],
+      [
+        "left",
+        "ahead"
+      ],
+      [
+        "right",
+        "ahead"
+      ],
+      [
+        "ahead",
+        "ahead",
+        "left"
+      ],
+      [
+        "ahead",
+        "ahead",
+        "right"
+      ],
+      [
+        "ahead",
+        "ahead",
+        "ahead"
+      ]
+    ],
+    "kitsune": 4
+  },
+  "patients": {
+    "count": 30,
+    "minDistance": 3,
+    "maxDistance": 6,
+    "oniMin": 1,
+    "oniMax": 4,
+    "sakuraChance": 0.65,
+    "_value": "A patient is worth (steps from the centre - 1), plus bonusValue if it has bonusAtOni or more oni.",
+    "bonusAtOni": 3,
+    "bonusValue": 1,
+    "_moves": "How often each move type comes up on patients (weights). step: 1 square · stride: 2 · jump: 2 squares, leaping the square between · any: 1 square any way · lucky: 1 square, +1 mon if that brew cures.",
+    "moves": {
+      "step": 3,
+      "stride": 3,
+      "jump": 2,
+      "any": 1,
+      "lucky": 1
+    },
+    "_ailmentKinds": "How many different ailments are in play each game (fewer = more repeats for known cures). null = all.",
+    "ailmentKinds": 8,
+    "_requireElement": "A cure needs at least one ingredient of the patient's element (Kitsune Tail counts as any).",
+    "requireElement": true
+  },
+  "curse": {
+    "_about": "Quarter turns a curse may apply: 1 = clockwise, 2 = half, 3 = anticlockwise.",
+    "turns": [
+      1,
+      3,
+      2
+    ]
+  },
+  "ward": {
+    "_about": "Cured patients join your ward and can be played as moves. uses: times each can be played (null = once every brew, like a garden card).",
+    "enabled": true,
+    "uses": 1
+  },
+  "knownCure": {
+    "_about": "Cure a patient whose ailment you have cured before, without ingredients, for payout x its value (rounded down, at least 1). Spends that ward patient's move.",
+    "enabled": true,
+    "payout": 0.5
+  },
+  "guilds": {
+    "_about": "echo: once per brew, one garden card of your guild's element may be played twice.",
+    "echo": true
+  },
+  "tools": {
+    "_about": "Paid with fame. effect: turn (play a card rotated by one of 'turns' quarter turns), step (one free step any way), gather (take 'amount' cards when gathering). Each works once per brew. copies: how many of each exist; null = players - 1.",
+    "copies": null,
+    "list": {
+      "ladle": {
+        "cost": 3,
+        "effect": "turn",
+        "turns": [
+          1,
+          3
+        ]
+      },
+      "mortar": {
+        "cost": 2,
+        "effect": "turn",
+        "turns": [
+          2
+        ]
+      },
+      "charm": {
+        "cost": 3,
+        "effect": "step"
+      },
+      "basket": {
+        "cost": 3,
+        "effect": "gather",
+        "amount": 3
+      }
+    }
+  },
+  "abilities": {
+    "_about": "What a character's ability changes, as additions to the rules above for that player only. Themes decide which character has which ability. Keys: gardenMax, handLimit, startHand, oniPerPlayer, gather, sakuraBonus, toolCost, startFame, startGarden.",
+    "green": {
+      "gardenMax": 1,
+      "startGarden": 2
+    },
+    "trade": {
+      "toolCost": -1
+    },
+    "blessed": {
+      "startFame": 2
+    },
+    "trickster": {
+      "oniPerPlayer": 2,
+      "startHand": 1
+    },
+    "scholar": {
+      "handLimit": 2,
+      "startHand": 2
+    },
+    "forager": {
+      "gather": 1
+    }
+  },
+  "bot": {
+    "_about": "The rival stops buying tools once it is this close to winning.",
+    "stopBuyingWithin": 10
+  }
+}

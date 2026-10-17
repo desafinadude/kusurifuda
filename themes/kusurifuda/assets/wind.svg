@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 100">
+<rect width="160" height="100" fill="#43664A"></rect>
+<g fill="#F1E4C6"><rect x="-10" y="18" width="74" height="12" rx="6"></rect><rect x="100" y="12" width="76" height="12" rx="6"></rect><rect x="14" y="72" width="88" height="12" rx="6"></rect><rect x="120" y="82" width="56" height="12" rx="6"></rect></g>
+<g fill="#43664A"><rect x="20" y="22" width="30" height="4" rx="2"></rect><rect x="40" y="76" width="40" height="4" rx="2"></rect></g>
+<path d="M22 52 C38 38 64 42 66 55 C67 63 58 65 54 59 C51 54 58 51 60 55" fill="none" stroke="#F1E4C6" stroke-width="2.5" stroke-linecap="round"></path>
+<g transform="rotate(-32 112 54)">
+<path d="M112 22 C125 35 127 63 112 86 C97 63 99 35 112 22Z" fill="#F6EBD2" stroke="#16120E" stroke-width="2" stroke-linejoin="round"></path>
+<path d="M112 26 V96" stroke="#16120E" stroke-width="2" stroke-linecap="round"></path>
+<path d="M112 42 L104 36 M112 52 L103 46 M112 62 L104 57 M112 42 L120 36 M112 52 L121 46 M112 62 L120 57 M112 72 L106 68 M112 72 L118 68" stroke="#16120E" stroke-width="1.2" stroke-linecap="round"></path>
+<path d="M112 22 C117 25 120 29 119 34 L112 30 L105 34 C104 29 107 25 112 22Z" fill="#B23A24"></path>
+</g>
+</svg>

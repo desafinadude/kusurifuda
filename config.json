@@ -1,0 +1,17 @@
+{
+  "_about": "Which theme and language to use. Players can switch in Menu › Settings when more than one is listed.",
+  "theme": "kusurifuda",
+  "themes": {
+    "kusurifuda": "themes/kusurifuda/theme.json",
+    "aizome": "themes/aizome/theme.json",
+    "moonwort": "themes/moonwort/theme.json"
+  },
+  "language": "en",
+  "languages": {
+    "en": {
+      "name": "English",
+      "file": "i18n/en.json"
+    }
+  },
+  "rules": "rules.json"
+}

@@ -1,0 +1,22 @@
+{
+  "_about": "Indigo-dyed cloth instead of black lacquer. Only the background and line colours change; everything else comes from the theme it extends.",
+  "id": "aizome",
+  "name": "Aizome Indigo",
+  "extends": "../kusurifuda/theme.json",
+  "colors": {
+    "lacquer": "#1B2638",
+    "lacquer-2": "#22314A",
+    "deep": "#0D1420",
+    "line": "#3E4F6E",
+    "line-2": "#2C3A55",
+    "track-empty": "#26334B",
+    "track-cell": "#202C42",
+    "track-five": "#3B4C6C",
+    "tabs-bg": "#111A29",
+    "tool-line": "#36486A",
+    "plot-line": "#5B6E92",
+    "muted": "#9AA6BC",
+    "soft": "#BFC6D4",
+    "scrim": "#05080D"
+  }
+}

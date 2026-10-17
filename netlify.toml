@@ -1,0 +1,17 @@
+# Kusurifuda is a plain static site: nothing to build, publish the folder as it is.
+# (build/build.py is only for regenerating fonts, icons and sw.js locally.)
+[build]
+  command = ""
+  publish = "."
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "no-cache"
+
