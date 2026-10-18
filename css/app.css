@@ -680,3 +680,13 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .sheet[data-t="setup"] .sh .sub{justify-content:center}
 .sheet[data-t="setup"] .cap,.sheet[data-t="setup"] .gcraft{text-align:center}
 .sheet[data-t="setup"] .sws{justify-content:center}
+/* phone board head: icons sit by the mon value */
+.port .bhead .t small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bside{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.bic{display:flex;align-items:center;gap:5px}
+.bic .elic{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--serif);font-weight:800;font-size:12px;border:1px solid color-mix(in srgb,var(--ink) 60%,transparent)}
+.bic .elic.need{box-shadow:0 0 0 1.5px var(--parch),0 0 0 3px color-mix(in srgb,var(--ink) 55%,transparent)}
+.bic .sakic .ai{width:22px;height:22px}
+.bic .chip.cur{padding:2px 6px 2px 3px}
+.bic .chip.rvc{padding:3px 8px;font-size:11px}
+.bic .chip.cur.icon{padding:2px;width:24px;height:24px;justify-content:center}.bic .chip.cur.icon .ai{width:18px;height:18px}

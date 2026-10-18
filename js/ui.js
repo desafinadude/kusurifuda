@@ -338,7 +338,7 @@
       const showPos = !rivalTurn && (U.route.length > 0 || U.pend);
       svg = mapSVG(pt, { icons: true, trail: rivalTurn ? null : rs.rp.trail, pos: showPos ? rs.rp.pos : null, prev: rivalTurn ? null : rs.prev, label: t("board.mapAria", { name: whoOf(pt), cure: gl("cure") }) });
     }
-    const cursedChip = pt.cursed != null ? `<span class="chip cur">${art("oni")}${t("board.cursed")}</span>` : "";
+    const cursedChip = pt.cursed == null ? "" : U.layout === "port" ? `<span class="chip cur icon" role="img" aria-label="${attr(t("board.cursed"))}" title="${attr(t("board.cursed"))}">${art("oni")}</span>` : `<span class="chip cur">${art("oni")}${t("board.cursed")}</span>`;
     const port = U.layout === "port";
     const sakChip = pt.bonus && port ? `<span class="sakic" role="img" aria-label="${attr(t("status.sakura"))}">${art("sakura")}</span>` : pt.bonus ? `<span class="chip sak">${art("sakura")}+${KF.limit(G().cur, "sakuraBonus")}</span>` : "";
     const elChip = pt.el ? `<span class="chip elc" title="${attr(KF.needEl(pt) ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }))}" style="--ec:${EL(pt.el).color}">${ptChip(pt, true)}${KF.needEl(pt) ? `<span>${t("patient.needs", { el: elName(pt.el) })}</span>` : ""}</span>` : "";
@@ -352,11 +352,12 @@
         ${rivalTurn && U.rv && U.rv.pop ? `<div class="rvpop paper">${U.rv.pop}</div>` : ""}</div>${dots}</div>
       ${rivalTurn ? rivalStrip() : strip(rs)}</section>`;
   }
-  // the phone's board head: the name gets the full width; the ailment shares a line with small icons
+  // the phone's board head: name and ailment on the left; the element, sakura and curable marks as small icons by the mon
   function phoneHead(pt, rivalTurn, rvChip, chips) {
     const need = KF.needEl(pt);
-    const el = pt.el ? `<span class="elic${need ? " need" : ""}" role="img" aria-label="${attr(need ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }))}">${ptChip(pt, true)}</span>` : "";
-    return `<div class="bhead">${ptPortrait(pt, "big")}<div class="t"><b>${esc(whoOf(pt))}</b><div class="sub"><small>${esc(ailOf(pt))}</small>${rivalTurn ? rvChip : hintBadges(pt, "inhead") + el + chips}</div></div>${monVal(pt.val, "big")}</div>`;
+    const el = pt.el ? `<span class="elic${need ? " need" : ""}" role="img" style="background:${EL(pt.el).color}" aria-label="${attr(need ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }))}" title="${attr(need ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }))}">${elIc(pt.el)}</span>` : "";
+    const icons = rivalTurn ? rvChip : hintBadges(pt, "inhead") + el + chips;
+    return `<div class="bhead">${ptPortrait(pt, "big")}<div class="t"><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small></div><div class="bside">${icons ? `<div class="bic">${icons}</div>` : ""}${monVal(pt.val, "big")}</div></div>`;
   }
   function rivalStrip() {
     const r = U.rv || { say: t("rival.thinking"), sub: "" };
