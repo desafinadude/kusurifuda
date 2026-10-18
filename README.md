@@ -90,7 +90,10 @@ Edo. Win a stop to travel on; the map between games shows how far you have come.
   (`"patients": {"oniMax": 2}` leaves the other patient settings alone).
 - `rival`: how the bot plays. `depth` is the longest cure it looks for (5 = full strength), `tools` and
   `curse` set to `false` stop it buying tools or cursing, `headStart` is mon it starts with.
-- `at`: [longitude, latitude] on the map; `map.coast` is the rough coastline.
+- `at`: [longitude, latitude] on the map. The land is `quest/japan.svg` (its `land` and `border` paths); `map.project`
+  turns longitude and latitude into that drawing's coordinates. The map is cropped from
+  [Regions and Prefectures of Japan - blank.svg](https://commons.wikimedia.org/wiki/File:Regions_and_Prefectures_of_Japan_-_blank.svg)
+  by Bigmorr (public domain, based on a map by Orange Wave).
 
 Early stops are short games against a rival that only sees short cures, buys no tools and never curses,
 on maps with few oni. Later stops have longer targets, more oni and far-off cures, a full-strength

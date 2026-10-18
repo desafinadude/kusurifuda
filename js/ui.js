@@ -1300,7 +1300,7 @@
     STR = over ? merge(LANG_STR, over) : LANG_STR;
     document.title = stripTags(t("app.title"));
   }
-  let BASE_OPEN = true, BASE_END = 25, BASE_RULES = null, QUEST = null;
+  let BASE_OPEN = true, BASE_END = 25, BASE_RULES = null, QUEST = null, QMAP = null;
   async function loadAll() {
     CFG = await getJSON("config.json");
     const langs = Object.keys(CFG.languages || {});
@@ -1318,6 +1318,7 @@
     KF.configure(rules, counts);
     BASE_OPEN = !!rules.openHands; BASE_END = rules.endFame; BASE_RULES = rules;
     QUEST = null; if (CFG.quest) try { QUEST = await getJSON(CFG.quest); } catch (e) { console.warn(e); }
+    QMAP = null; if (QUEST && QUEST.map && QUEST.map.svg) try { QMAP = await readQuestMap(new URL(QUEST.map.svg, new URL(CFG.quest, location.href)).href); } catch (e) { console.warn(e); }
   }
 
   // ---------- boot ----------
@@ -1372,21 +1373,33 @@
     if (!r.openHands) out.push(t("quest.tags.hidden"));
     return out;
   }
-  // the road on a rough map: travelled stops filled, the next one ringed, the chosen one marked
+  // the map's land: only the viewBox and the land/border path data are taken from the file
+  async function readQuestMap(url) {
+    const r = await fetch(url); if (!r.ok) throw new Error(`${url}: ${r.status}`);
+    const doc = new DOMParser().parseFromString(await r.text(), "image/svg+xml"), svg = doc.querySelector("svg");
+    const vb = (svg.getAttribute("viewBox") || "").split(/[\s,]+/).map(Number);
+    const paths = [...doc.querySelectorAll("path.land,path.border")].map((p) => ({ cls: p.getAttribute("class"), d: p.getAttribute("d") || "" })).filter((p) => /^[MmLlHhVvCcSsQqTtAaZz0-9eE.,\s-]+$/.test(p.d));
+    return vb.length === 4 && vb.every(isFinite) ? { vb, paths } : null;
+  }
+  // the road on the map: travelled stops filled, the next one ringed, the chosen one marked
   function questMap(sel) {
-    const m = QUEST.map, [w, so, e, n] = m.bounds, X = (lon) => (lon - w) * 100, Y = (lat) => (n - lat) * 127;
-    const pt = (a) => `${X(a[0]).toFixed(1)},${Y(a[1]).toFixed(1)}`, stops = QUEST.stops, done = questDone();
+    const P = QUEST.map.project, stops = QUEST.stops, done = questDone();
+    const X = (a) => P.x[0] * a[0] + P.x[1] * a[1] + P.x[2], Y = (a) => P.y[0] * a[0] + P.y[1] * a[1] + P.y[2];
+    const pt = (a) => `${X(a).toFixed(1)},${Y(a).toFixed(1)}`;
+    let vb = QMAP && QMAP.vb;
+    if (!vb) { const xs = stops.map((st) => X(st.at)), ys = stops.map((st) => Y(st.at)), pad = 0.12 * (Math.max(...ys) - Math.min(...ys)); vb = [Math.min(...xs) - pad, Math.min(...ys) - pad, Math.max(...xs) - Math.min(...xs) + 2 * pad, Math.max(...ys) - Math.min(...ys) + 2 * pad]; }
+    const u = vb[2] / 170;
     const road = stops.map((st) => pt(st.at)).join(" "), walked = stops.slice(0, Math.min(done + 1, stops.length)).map((st) => pt(st.at)).join(" ");
     const dots = stops.map((st, i) => {
-      const [x, y] = [X(st.at[0]), Y(st.at[1])], open = i <= done, cls = i < done ? "done" : i === done ? "next" : "ahead";
-      const dot = `<circle class="qd ${cls}${i === sel ? " sel" : ""}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i === stops.length - 1 ? 15 : 11}"/>`;
-      return open ? `<g data-a="qsel" data-i="${i}"><title>${esc(stopName(i))}</title><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="26" fill="transparent"/>${dot}</g>` : dot;
+      const [x, y] = [X(st.at), Y(st.at)], open = i <= done, cls = i < done ? "done" : i === done ? "next" : "ahead";
+      const dot = `<circle class="qd ${cls}${i === sel ? " sel" : ""}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${((i === stops.length - 1 ? 5 : 3.4) * u).toFixed(2)}"/>`;
+      return open ? `<g data-a="qsel" data-i="${i}"><title>${esc(stopName(i))}</title><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(9 * u).toFixed(1)}" fill="transparent"/>${dot}</g>` : dot;
     }).join("");
-    const label = (i, dx, anchor) => { const st = stops[i]; return `<text class="ql" x="${(X(st.at[0]) + dx).toFixed(1)}" y="${(Y(st.at[1]) + 9).toFixed(1)}" text-anchor="${anchor}">${esc(stopName(i))}</text>`; };
-    return `<svg class="qmap" viewBox="0 0 ${X(e).toFixed(0)} ${Y(so).toFixed(0)}" role="img" aria-label="${attr(t("quest.map"))}">
-      <polygon class="land" points="${m.coast.map(pt).join(" ")}"/>
+    const label = (i, dx, anchor) => { const st = stops[i]; return `<text class="ql" x="${(X(st.at) + dx * u).toFixed(1)}" y="${(Y(st.at) + 3.5 * u).toFixed(1)}" font-size="${(10 * u).toFixed(1)}" text-anchor="${anchor}">${esc(stopName(i))}</text>`; };
+    return `<svg class="qmap" viewBox="${vb.join(" ")}" role="img" aria-label="${attr(t("quest.map"))}">
+      ${QMAP ? QMAP.paths.map((p) => `<path class="${p.cls === "border" ? "border" : "land"}" d="${attr(p.d)}"/>`).join("") : ""}
       <polyline class="road" points="${road}"/>${done ? `<polyline class="walked" points="${walked}"/>` : ""}
-      ${dots}${label(0, -22, "end")}${label(stops.length - 1, 24, "start")}</svg>`;
+      ${dots}${label(0, -7, "end")}${label(stops.length - 1, 8, "start")}</svg>`;
   }
   async function boot() {
     $("#stage").innerHTML = '<div id="scr"></div><div id="shl"></div><div id="tsl"></div>';

@@ -655,16 +655,17 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 /* ---- quest: the journey map ---- */
 .qwrap{display:grid;grid-template-columns:minmax(120px,38%) 1fr;gap:14px;align-items:start}
 .qmap{width:100%;height:auto;display:block;max-height:58vh}
-.qmap .land{fill:color-mix(in srgb,var(--brown) 16%,transparent);stroke:color-mix(in srgb,var(--brown) 55%,transparent);stroke-width:3;stroke-linejoin:round}
-.qmap .road{fill:none;stroke:var(--paper-line);stroke-width:5;stroke-dasharray:2 12;stroke-linecap:round;stroke-linejoin:round}
-.qmap .walked{fill:none;stroke:var(--shu);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
-.qmap .qd{stroke:var(--ink);stroke-width:3}
+.qmap .land{fill:color-mix(in srgb,var(--brown) 16%,transparent);stroke:color-mix(in srgb,var(--brown) 70%,transparent);stroke-width:1;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.qmap .border{fill:none;stroke:color-mix(in srgb,var(--brown) 40%,transparent);stroke-width:.6;stroke-dasharray:2 2;vector-effect:non-scaling-stroke}
+.qmap .road{fill:none;stroke:var(--paper-line);stroke-width:2;stroke-dasharray:1 4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.qmap .walked{fill:none;stroke:var(--shu);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.qmap .qd{stroke:var(--ink);stroke-width:1.2;vector-effect:non-scaling-stroke}
 .qmap .qd.done{fill:var(--shu)}
-.qmap .qd.next{fill:var(--parch-hi);stroke:var(--shu);stroke-width:6}
+.qmap .qd.next{fill:var(--parch-hi);stroke:var(--shu);stroke-width:2.4}
 .qmap .qd.ahead{fill:var(--parch-hi);stroke:color-mix(in srgb,var(--ink) 45%,transparent)}
-.qmap .qd.sel{stroke:var(--ink);stroke-width:7}
+.qmap .qd.sel{stroke:var(--ink);stroke-width:2.8}
 .qmap g[data-a]{cursor:pointer}
-.qmap .ql{font-family:var(--serif);font-weight:800;font-size:30px;fill:var(--ink)}
+.qmap .ql{font-family:var(--serif);font-weight:800;fill:var(--ink)}
 .qinfo{display:flex;flex-direction:column;gap:6px;min-width:0}
 .qinfo h3{margin:0;font-family:var(--serif);font-weight:800;font-size:24px;line-height:1.1}
 .qinfo .cap{display:flex;align-items:center;gap:4px}
