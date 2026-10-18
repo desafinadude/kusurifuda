@@ -975,7 +975,7 @@
       } else if (m.type === "gather") {
         const cs = m.idx.map((i) => g.market[i]);
         U.taking = m.ids;
-        U.rv = { say: t("rival.takes", { n: cs.length }), sub: cs.map((c) => esc(cardName(c))).join(", "), pop: pop(t("rival.popTakes", { n: cs.length }), `<div class="rvcards">${cs.map((c) => ingCard(c, { u: 0.7, noAnim: true, static: true })).join("")}</div>`) };
+        U.rv = { say: t("rival.takes", { n: cs.length }), sub: cs.map((c) => esc(cardName(c))).join(", "), pop: pop(t("rival.popTakes", { n: cs.length }), `<div class="rvcards">${cs.map((c) => ingCard(c, { u: cs.length > 2 ? 1.2 : 1.5, noAnim: true, static: true })).join("")}</div>`) };
         render(); SFX.gather(); await sleep(1700);
         KF.botDo(m); U.taking = null;
         const names = cs.map((c) => cardName(c)).join(", ");
@@ -993,7 +993,7 @@
         rvLine("curse", t("rival.lineCurse", { name: esc(whoOf(pt)), turn: t("turns." + m.rot) })); g.lastBot = stripTags(t("rival.lineCurse", { name: whoOf(pt), turn: t("turns." + m.rot) }));
       } else if (m.type === "plant") {
         const c = b.hand[m.hi];
-        U.rv = { say: t("rival.plants"), sub: t("rival.plantsSub", { card: esc(cardName(c)) }), pop: pop(t("rival.popPlants"), `<div class="rvcards">${ingCard(c, { u: 0.7, noAnim: true, static: true })}</div>`) };
+        U.rv = { say: t("rival.plants"), sub: t("rival.plantsSub", { card: esc(cardName(c)) }), pop: pop(t("rival.popPlants"), `<div class="rvcards">${ingCard(c, { u: 1.6, noAnim: true, static: true })}</div>`) };
         render(); SFX.plant(); await sleep(1300);
         KF.botDo(m); rvLine("plant", t("rival.linePlant", { card: esc(cardName(c)) }));
       }
