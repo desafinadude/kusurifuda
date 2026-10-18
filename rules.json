@@ -16,12 +16,12 @@
     "radius": 3
   },
   "deck": {
-    "_about": "Each element walks mostly in its own direction; opposite elements walk opposite ways (water and fire, earth and air). Patterns are steps from the walker's view: ahead, left, right. Each pattern makes one card per element.",
+    "_about": "Each element walks mostly in its own direction; opposite elements walk opposite ways (air up and earth down, water left and fire right). Patterns are steps from the walker's view: ahead, left, right. Each pattern makes one card per element.",
     "elements": {
-      "W": "up",
-      "E": "right",
-      "F": "down",
-      "A": "left"
+      "A": "up",
+      "F": "right",
+      "E": "down",
+      "W": "left"
     },
     "patterns": [
       [
