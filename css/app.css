@@ -635,3 +635,19 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .stamp.por .ppor{width:64px;height:64px;border-radius:12px;border-width:2px}
 .stamp.por .cst{position:absolute;right:-8px;bottom:-8px;width:28px;height:28px;border-radius:6px;background:var(--shu);color:var(--parch-hi);border:2px solid var(--parch);font-size:16px;display:flex;align-items:center;justify-content:center;transform:rotate(-8deg)}
 .gainrow svg.mon.em{width:44px;height:44px;border:0;border-radius:0}
+.port .bhead .t{gap:2px}
+.port .bhead .t b{font-size:17px}
+.port .bhead .sub{display:flex;align-items:center;gap:6px;min-width:0}
+.port .bhead .sub small{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.port .bhead .sub .chip{padding:2px 6px 2px 3px}
+.port .bhead .sub .chip.rvc{padding:2px 8px;font-size:11px}
+.port .bhead .sakic .ai{width:20px;height:20px}
+.elic{display:flex;flex-shrink:0}
+.elic .pel.big{height:20px;font-size:12px}
+.elic.need .pel{box-shadow:0 0 0 1.5px var(--parch),0 0 0 3px color-mix(in srgb,var(--ink) 55%,transparent)}
+.port .hb{width:9px;height:9px;box-shadow:0 0 0 1.5px var(--parch)}
+.port .hb svg{display:none}
+.port .hints{right:6px;bottom:6px}
+.port .hints.inhead{margin-left:0}
+.pc.vc .ail{font-size:12px}
+.pc.vc:has(.hints) .ail{padding-right:14px}
