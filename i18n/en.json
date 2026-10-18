@@ -587,7 +587,8 @@
     "over": "Game over",
     "install": "Install",
     "themes": "Choose a theme",
-    "setup": "Choose your character"
+    "setup": "Choose your character",
+    "quest": "Journey to Edo"
   },
   "themeNames": {
     "_about": "Optional: names for the themes in config.json. A theme without one shows the name in its theme.json.",
@@ -881,5 +882,124 @@
   "guildAbility": {
     "name": "Guild craft",
     "text": "Once per brew, play one {el} garden card twice."
+  },
+  "quest": {
+    "_about": "Quest mode: the journey from Aomori to Edo. One name and line per stop in quest.json, in the same order.",
+    "title": "Journey to Edo",
+    "menu": "Journey to Edo",
+    "menuNew": "Twenty stops from Aomori",
+    "menuAt": "{n} of {total} stops behind you",
+    "stop": "Stop {n} of {total}",
+    "cleared": "Cleared",
+    "setOut": "Set out",
+    "playAgain": "Play this stop again",
+    "abandon": "This ends the game you are playing.",
+    "done": "You reached Edo!",
+    "doneSub": "Every stop on the road is behind you. Play any stop again, or start the journey over.",
+    "restart": "Start the journey again",
+    "prev": "Previous stop",
+    "next": "Next stop",
+    "won": "{place} is behind you",
+    "lost": "Stay in {place} and try again",
+    "onTo": "On to {place}",
+    "retry": "Try again",
+    "map": "Journey map",
+    "toast": "Stop {n} · {place}",
+    "tags": {
+      "goal": "First to {n} {{mon}}",
+      "depth2": "Your rival only sees short cures",
+      "depth3": "Your rival plans a little ahead",
+      "depth4": "Your rival plans further ahead",
+      "depth5": "Your rival plays at full strength",
+      "noTools": "Your rival buys no tools",
+      "noCurse": "Your rival never curses",
+      "headStart": "Your rival starts with {n} {{mon}}",
+      "fewOni": "Few oni on the maps",
+      "manyOni": "Oni everywhere",
+      "near": "Cures lie close to the centre",
+      "hidden": "Hands are hidden"
+    },
+    "stops": [
+      {
+        "name": "Aomori",
+        "line": "The ferry from Ezo lands you among the herring sheds."
+      },
+      {
+        "name": "Noheji",
+        "line": "A post town on the bay, where the road turns south."
+      },
+      {
+        "name": "Gonohe",
+        "line": "Horse country. The stable hands all have colds."
+      },
+      {
+        "name": "Sannohe",
+        "line": "The old castle town of the Nanbu lords."
+      },
+      {
+        "name": "Ichinohe",
+        "line": "The last of the northern horse towns."
+      },
+      {
+        "name": "Numakunai",
+        "line": "A quiet stop before the long walk to Morioka."
+      },
+      {
+        "name": "Morioka",
+        "line": "Ironworks and three rivers."
+      },
+      {
+        "name": "Hanamaki",
+        "line": "Hot springs, and a queue of aching backs."
+      },
+      {
+        "name": "Mizusawa",
+        "line": "A samurai town of tidy gardens."
+      },
+      {
+        "name": "Ichinoseki",
+        "line": "The gate to the south of Michinoku."
+      },
+      {
+        "name": "Sendai",
+        "line": "The great castle town of the Date. Halfway."
+      },
+      {
+        "name": "Shiroishi",
+        "line": "Snow on the passes and paper mills in the valley."
+      },
+      {
+        "name": "Fukushima",
+        "line": "Silk merchants and their nervous customers."
+      },
+      {
+        "name": "Nihonmatsu",
+        "line": "Chrysanthemums, pines and a crowded village."
+      },
+      {
+        "name": "Sukagawa",
+        "line": "Ponds of koi and a very old peony garden."
+      },
+      {
+        "name": "Shirakawa",
+        "line": "The Shirakawa barrier, the old edge of the north."
+      },
+      {
+        "name": "Ōtawara",
+        "line": "Past the barrier, people keep their cards close."
+      },
+      {
+        "name": "Utsunomiya",
+        "line": "Where the Nikkō road joins. Pilgrims everywhere."
+      },
+      {
+        "name": "Koga",
+        "line": "One river crossing from the capital."
+      },
+      {
+        "name": "Edo",
+        "line": "Nihonbashi, where every road begins. Cure the capital."
+      }
+    ]
   }
 }
