@@ -482,12 +482,14 @@
     const ab = (a, icon, label, o = {}) => `<button class="ab${o.cls ? " " + o.cls : ""}" data-a="${a}" ${o.dis ? "disabled" : ""}>${icon}${label}</button>`;
     const plantDis = !mine || g.turn.planted || !me().hand.length;
     const k = (g2) => (gl(g2) || ASSET["icon." + g2] ? `<span class="k">${ic(g2)}</span>` : "");
+    // on the phone the market tab can swap its cards for the tools
+    const tl = U.layout === "port" && U.tab === "market" ? ab("mtools", U.mview === "tools" ? ICON.back() : ICON.tools(), U.mview === "tools" ? t("act.back") : t("act.tools")) : "";
     if (mine && !g.turn.acted && U.tab === "market") {
       const n = nTake();
-      return `<div class="acts" style="grid-template-columns:1fr 1.2fr">${ab("blind", ICON.blind(), t("act.drawBlind", { n }), { cls: "row" })}${ab("take", "", `${k("market")}${t("act.takeN", { n, have: U.mkt.length })}`, { cls: "primary", dis: U.mkt.length !== n })}</div>`;
+      return `<div class="acts" style="grid-template-columns:${tl ? "0.8fr " : ""}1fr 1.2fr">${tl}${ab("blind", ICON.blind(), t("act.drawBlind", { n }), { cls: "row" })}${ab("take", "", `${k("market")}${t("act.takeN", { n, have: U.mkt.length })}`, { cls: "primary", dis: U.mkt.length !== n })}</div>`;
     }
     if (U.layout === "port") {
-      if (mine && g.turn.acted) return `<div class="acts one">${ab("end", "", `${k("endTurn")}${t("act.endTurn")}`, { cls: "primary glow" })}</div>`;
+      if (mine && g.turn.acted) return `<div class="acts${tl ? "" : " one"}"${tl ? ' style="grid-template-columns:0.8fr 2.2fr"' : ""}>${tl}${ab("end", "", `${k("endTurn")}${t("act.endTurn")}`, { cls: "primary glow" + (tl ? " row" : "") })}</div>`;
       const go = rs && rs.ready && mine;
       return `<div class="acts one">${ab("brew", "", `${k("cure")}${t("act.brew")}`, { cls: "primary" + (go ? " glow" : ""), dis: !go })}</div>`;
     }
@@ -498,12 +500,12 @@
     return `<div class="acts">${ab("gather", ICON.gather(), t("act.gather"), { dis: !mine })}${ab("plant", ICON.plant(), t("act.plant"), { dis: plantDis })}${ab("tools", ICON.tools(), t("act.tools"), { dis: g.cur !== 0 || U.busy })}${ab("brew", "", `${k("cure")}${t("act.brew")}`, { cls: "primary" + (ready ? " glow" : ""), dis: !ready })}</div>`;
   }
 
-  function toolChips() {
+  function toolCards() {
     const g = G(), b = bot();
     return RU().toolIds.map((id) => {
       const mine = me().tools[id], riv = b.tools[id], can = myTurn() && !g.turn.bought && KF.canBuy(0, id);
       const st = mine ? t("tools.yours") : riv ? t("tools.rivalOwns") : can ? t("tools.tapToBuy") : g.turn.bought ? t("tools.onePerTurn") : t("tools.need", { n: KF.cost(id) });
-      return `<button class="tchip ${mine ? "mine" : riv ? "rival" : "buy"}" data-a="buy" data-i="${id}" ${can ? "" : "disabled"} aria-label="${attr(`${toolName(id)}: ${toolText(id, true)}. ${st}`)}">${art(toolArt(id))}<span class="tn">${esc(toolName(id))}</span>${mine ? `<span class="ok">${ICON.check(12)}</span>` : monVal(KF.cost(id))}</button>`;
+      return `<button class="tbig ${mine ? "mine" : riv ? "rival" : "buy"}" data-a="buy" data-i="${id}" ${can ? "" : "disabled"} aria-label="${attr(`${toolName(id)}: ${toolText(id, true)}. ${st}`)}"><span class="ti">${art(toolArt(id))}</span><span class="tb"><span class="th"><b>${esc(toolName(id))}</b>${mine ? "" : monVal(KF.cost(id))}</span><small>${toolText(id, true)}</small><span class="st">${mine ? ICON.check(11) + " " : ""}${st}</span></span></button>`;
     }).join("");
   }
 
@@ -515,7 +517,8 @@
     if (tb === "hand") tray = `<div class="crow${me().hand.length >= 5 ? " spread" : ""}">${handCards(rowU(me().hand.length, avail, 1, 1), "h")}</div>`;
     else if (tb === "ward") tray = `<div class="crow${me().ward.length >= 5 ? " spread" : ""}">${wardCards(rowU(Math.max(1, me().ward.length), avail, 1, 1), "w")}</div>`;
     else if (tb === "garden") tray = `<div class="crow">${gardenCards(1, "g", () => `<button class="ic plotc" style="--u:1" data-a="plant" ${!myTurn() || g.turn.planted ? "disabled" : ""} aria-label="${attr(t("garden.plantAria"))}">${ICON.plant(22)}${t("garden.plant")}</button>`)}</div>`;
-    else tray = `<div class="crow spread">${marketCards(rowU(g.market.length, avail, 1, 1), "m")}</div><div class="tlrow">${toolChips()}</div>`;
+    else if (U.mview === "tools") tray = `<div class="tgrid2">${toolCards()}</div>`;
+    else tray = `<div class="crow spread">${marketCards(rowU(g.market.length, avail, 1, 1), "m")}</div>`;
     return `<div class="scr port lacquer">
       <header class="top">${menuBtn()}${fameBars()}${goal()}</header>
       <section class="vill" aria-label="${attr(t("label.village"))}">
@@ -1134,7 +1137,8 @@
       case "install": if (deferredInstall) { const ev = deferredInstall; deferredInstall = null; ev.prompt(); (ev.userChoice || Promise.resolve({})).then((c) => { if (c.outcome === "accepted") installed = true; if (U.sheet && U.sheet.type === "install") renderSheet(); }); } return;
       case "fast": return;
       case "sel": { const k = +i; if (k !== U.sel) { U.sel = k; resetRoute(); SFX.select(); } render(); return; }
-      case "tab": U.tab = i; if (i !== "market") U.mkt = []; U.msg = null; SFX.open(); render(); return;
+      case "mtools": U.mview = U.mview === "tools" ? null : "tools"; SFX.open(); render(); return;
+      case "tab": U.tab = i; U.mview = null; if (i !== "market") U.mkt = []; U.msg = null; SFX.open(); render(); return;
       case "hand": tapIngredient(false, +i); return;
       case "garden": tapIngredient(true, +i); return;
       case "ward": tapIngredient("w", +i); return;
