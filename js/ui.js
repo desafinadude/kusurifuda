@@ -77,7 +77,7 @@
   const charName = (c) => (c && c.id && lookup("content.characters." + c.id + ".name")) || (c ? abilityName(c.ability) : "");
   const charTitle = (c) => (c && c.id && lookup("content.characters." + c.id + ".title")) || "";
   const abilityName = (a) => lookup("abilities." + a + ".name") || a;
-  const abilityText = (a) => lookup("abilities." + a + ".text") || "";
+  const abilityText = (a) => (lookup("abilities." + a + ".text") ? t("abilities." + a + ".text") : "");
   function guildOf(pi) { const p = G() && G().P[pi], gs = GUILDS(); if (!p || p.guild == null || !gs.length) return null; return gs[p.guild % gs.length]; }
   const guildName = (g) => (g && lookup("content.guilds." + g.id + ".name")) || "";
   const crest = (pi, cls = "crest") => { const g = guildOf(pi); return g && g.art ? art(g.art, cls) : ""; };
