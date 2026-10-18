@@ -213,10 +213,10 @@
   function wardEntry(pt) { const u = RU().ward.uses; return { id: pt.id, who: pt.who, ail: pt.ail, el: pt.el, mv: pt.mv, val: pt.val, uses: u == null ? -1 : u }; }
 
   // ---------- game ----------
-  // who: { ability, guild, color } chosen at the start (all optional)
+  // who: { ability, guild, color, style } chosen at the start (all optional); style = how a bot plays the seat: { depth, tools, curse }
   function mkP(who) {
     const w = who || {}, ab = (w.ability && RU().abilities && RU().abilities[w.ability]) || null;
-    return { hand: [], garden: [], ward: [], fame: limit(0, "startFame", ab), oni: limit(0, "oniPerPlayer", ab), tools: {}, cures: 0, ability: ab ? w.ability : null, guild: w.guild != null ? w.guild : null, gel: w.gel || null, color: w.color || null };
+    return { hand: [], garden: [], ward: [], fame: limit(0, "startFame", ab), oni: limit(0, "oniPerPlayer", ab), tools: {}, cures: 0, ability: ab ? w.ability : null, guild: w.guild != null ? w.guild : null, gel: w.gel || null, color: w.color || null, style: w.style || null };
   }
   function draw() { if (!G.deck.length) { G.deck = shuffle(G.discard); G.discard = []; } return G.deck.pop() || null; }
   const snap = (c) => ({ el: c.el, n: c.n, steps: c.steps });
@@ -229,11 +229,13 @@
     log("buy", pi, { tool: t, cost: c }); return true;
   }
 
+  // nested settings change only the keys they name (a quest stop can set patients.oniMax alone)
+  function deepAssign(a, b) { Object.keys(b).forEach((k) => { const v = b[k]; if (v && typeof v === "object" && !Array.isArray(v) && a[k] && typeof a[k] === "object" && !Array.isArray(a[k])) deepAssign(a[k], v); else a[k] = v; }); return a; }
   // settings: { openHands } overrides from the player's house rules; players: [you, rival] as { ability, guild, color }
   function newGame(settings, players) {
     if (!BASE) throw new Error("KF.configure(rules) first");
     G = { v: 2, uid: 1, rules: JSON.parse(JSON.stringify(BASE)) };
-    Object.assign(G.rules, settings || {});
+    deepAssign(G.rules, settings || {});
     players = players || [];
     const names = shuffle(Array.from({ length: COUNTS.names }, (_, i) => i));
     const ak = G.rules.patients.ailmentKinds; G.ails = shuffle(Array.from({ length: COUNTS.ailments }, (_, i) => i)).slice(0, ak ? Math.min(ak, COUNTS.ailments) : COUNTS.ailments);
@@ -368,7 +370,7 @@
         case "act": {
           let best = null;
           const score = (s) => s.fame - 0.3 * s.handUsed - (r.ward.uses > 0 ? 0.6 * (s.ward || 0) : 0);
-          G.village.forEach((pt, k) => { const s = solveFor(1, pt, 5).best; if (s && (!best || score(s) > best.v)) best = { k, s, v: score(s) }; });
+          G.village.forEach((pt, k) => { const s = solveFor(1, pt, st.depth || 5).best; if (s && (!best || score(s) > best.v)) best = { k, s, v: score(s) }; });
           G.village.forEach((pt, k) => { if (knownFor(1, k) < 0) return; const v = knownPay(pt) - 0.4; if (!best || v > best.v) best = { k, known: true, v }; });
           if (best && best.known) return { type: "known", k: best.k };
           if (best) return { type: "cure", k: best.k, seq: best.s.seq };

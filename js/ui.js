@@ -775,9 +775,9 @@
       const sel = (a, cur, opts) => `<div class="seg wrap" role="group">${opts.map(([v, l]) => `<button data-a="${a}" data-i="${attr(v)}" aria-pressed="${v === cur}">${esc(l)}</button>`).join("")}</div>`;
       const openNow = !!G().rules.openHands, openNext = PREFS.openHands != null ? !!PREFS.openHands : BASE_OPEN;
       const endNow = G().rules.endFame, endNext = PREFS.endFame || BASE_END;
-      return `<div class="sh"><div><h2>${gl("brand") || ASSET["icon.brand"] ? ic("brand") + " " : ""}${t("app.name")}</h2><div class="sub">${t("app.edition")} · ${turnLabel()}</div></div></div>
+      return `<div class="sh"><div><h2>${gl("brand") || ASSET["icon.brand"] ? ic("brand") + " " : ""}${t("app.name")}</h2><div class="sub">${G().quest && QUEST ? `${t("quest.toast", { n: G().quest.n + 1, place: esc(stopName(G().quest.n)) })} · ` : `${t("app.edition")} · `}${turnLabel()}</div></div></div>
         ${charOf(0) ? personRow(0) : ""}
-        <div class="menu"><button class="btn" data-a="rules">${t("menu.howToPlay")}<small>${ic("rules")}</small></button><button class="btn" data-a="log">${t("menu.log")}</button><button class="btn" data-a="rival">${t("menu.rivalTable")}</button><button class="btn" data-a="newq">${t("menu.newGame")}</button>${themes.length > 1 ? `<button class="btn" data-a="themes">${t("menu.theme")}<small>${esc(themeName(CUR_THEME))}</small></button>` : ""}${inst}</div>
+        <div class="menu"><button class="btn" data-a="rules">${t("menu.howToPlay")}<small>${ic("rules")}</small></button><button class="btn" data-a="log">${t("menu.log")}</button><button class="btn" data-a="rival">${t("menu.rivalTable")}</button><button class="btn" data-a="newq">${t("menu.newGame")}</button>${QUEST ? `<button class="btn" data-a="quest">${t("quest.menu")}<small>${questDone() ? t("quest.menuAt", { n: questDone(), total: QUEST.stops.length }) : t("quest.menuNew")}</small></button>` : ""}${themes.length > 1 ? `<button class="btn" data-a="themes">${t("menu.theme")}<small>${esc(themeName(CUR_THEME))}</small></button>` : ""}${inst}</div>
         <div class="sect"><div class="hd"><b>${t("settings.title")}</b></div>
           ${toggleRow("sound", "", SFX.isOn(), t("settings.sound"), t("settings.soundSub"))}
           ${toggleRow("hints", "", PREFS.hints, t("settings.hints"), openHands() ? t("settings.hintsSubOpen") : t("settings.hintsSub"))}
@@ -844,14 +844,32 @@
         <span class="cap">${t("rival.oni")}</span><div class="purse">${Array.from({ length: KF.limit(1, "oniPerPlayer") }, (_, i) => `<span class="oc${i >= b.oni ? " gone" : ""}">${art("oni")}</span>`).join("")}</div>
         <div class="btns"><button class="btn" data-a="close">${t("common.close")}</button></div>`;
     },
+    quest(s) {
+      const stops = QUEST.stops, done = questDone(), i = s.sel, st = stops[i], all = done >= stops.length;
+      const g = G(), mid = g && !g.over && (g.round > 1 || g.quest == null);
+      return `<div class="sh"><div><h2>${t("quest.title")}</h2><div class="sub">${all ? t("quest.done") : t("quest.menuAt", { n: done, total: stops.length })}</div></div></div>
+        ${all ? `<p class="muted">${t("quest.doneSub")}</p>` : ""}
+        <div class="qwrap">${questMap(i)}
+          <div class="qinfo"><span class="cap">${t("quest.stop", { n: i + 1, total: stops.length })}${i < done ? ` · ${ICON.check(11)} ${t("quest.cleared")}` : ""}</span>
+            <h3>${esc(stopName(i))}</h3><p class="muted">${esc(stopText(i).line || "")}</p>
+            <ul class="qtags">${questTags(st).map((x) => `<li>${x}</li>`).join("")}</ul>
+            <div class="qnav"><button class="btn" data-a="qstep" data-i="-1" aria-label="${attr(t("quest.prev"))}" ${i > 0 ? "" : "disabled"}>‹</button><button class="btn" data-a="qstep" data-i="1" aria-label="${attr(t("quest.next"))}" ${i < Math.min(done, stops.length - 1) ? "" : "disabled"}>›</button></div>
+          </div></div>
+        ${mid ? `<p class="muted">${t("quest.abandon")}</p>` : ""}
+        <div class="btns">${all ? `<button class="btn" data-a="qrestart">${t("quest.restart")}</button>` : `<button class="btn" data-a="qclose">${t("common.close")}</button>`}<button class="btn primary" data-a="qgo" data-i="${i}">${i < done ? t("quest.playAgain") : t("quest.setOut")}</button></div>`;
+    },
     over() {
       const g = G(), [a, b] = g.P, w = g.winner;
+      const q = g.quest && QUEST ? g.quest.n : null, nxt = q != null && q + 1 < QUEST.stops.length ? q + 1 : null;
+      const qbtns = q == null ? "" : w === "you"
+        ? `<div class="btns"><button class="btn" data-a="questmap" data-i="${nxt != null ? nxt : q}">${t("quest.map")}</button>${nxt != null ? `<button class="btn primary" data-a="qgo" data-i="${nxt}">${t("quest.onTo", { place: esc(stopName(nxt)) })}</button>` : ""}</div>`
+        : `<div class="btns"><button class="btn" data-a="questmap" data-i="${q}">${t("quest.map")}</button><button class="btn primary" data-a="qgo" data-i="${q}">${t("quest.retry")}</button></div>`;
       const names = (p) => RU().toolIds.filter((id) => p.tools[id]).map(toolName).join(", ") || t("rival.none");
       return `<div class="sh end" style="flex-direction:column"><div class="big">${ic(w === "tie" ? "tie" : w === "you" ? "win" : "lose")}</div><h2>${t("over." + w)}</h2></div>
         <div class="end sc"><div><b>${a.fame}</b>${t("over.cures", { who: t("who.you"), n: a.cures })}</div><div><b>${b.fame}</b>${t("over.cures", { who: t("who.rival"), n: b.cures })}</div></div>
         <p class="muted" style="text-align:center">${t("over.tools", { you: esc(names(a)), rival: esc(names(b)) })}</p>
         ${isStandalone() ? "" : `<button class="btn" data-a="installq" style="flex:none;min-height:44px">${t("install.offer")}</button>`}
-        <div class="btns"><button class="btn" data-a="log">${t("act.log")}</button><button class="btn primary" data-a="newgame">${t("over.again")}</button></div>`;
+        ${q != null ? `<p class="qres">${t(w === "you" ? "quest.won" : "quest.lost", { place: esc(stopName(q)) })}</p>${qbtns}` : `<div class="btns"><button class="btn" data-a="log">${t("act.log")}</button><button class="btn primary" data-a="newgame">${t("over.again")}</button></div>`}`;
     },
     install() {
       const pl = platform();
@@ -988,6 +1006,7 @@
   function showOver() {
     U.busy = false; U.rv = null; U.bo = null; render();
     const w = G().winner; if (w === "you") SFX.win(); else if (w === "rival") SFX.lose(); else SFX.cure();
+    const q = G().quest; if (q && w === "you" && !q.won) { q.won = true; PREFS.questDone = Math.max(PREFS.questDone || 0, q.n + 1); savePrefs(); KF.save(); }
     openSheet({ type: "over", modal: true, quiet: true });
   }
   function endMyTurn() {
@@ -1097,6 +1116,13 @@
       case "pickk": U.sheet.who.color = i; SFX.tap("W"); renderSheet(); return;
       case "setupgo": PREFS.who = Object.assign({}, U.sheet.who); savePrefs(); closeSheet(); startNew(); return;
       case "newgame": closeSheet(); startNew(); return;
+      case "quest": openSheet({ type: "quest", sel: Math.min(questDone(), QUEST.stops.length - 1) }); return;
+      case "questmap": openSheet({ type: "quest", sel: +i }); return;
+      case "qsel": s.sel = +i; SFX.tap("E"); renderSheet(); return;
+      case "qstep": s.sel = Math.max(0, Math.min(Math.min(questDone(), QUEST.stops.length - 1), s.sel + +i)); SFX.tap("E"); renderSheet(); return;
+      case "qgo": startQuest(+i); return;
+      case "qclose": if (g.over) openSheet({ type: "over", modal: true, quiet: true }); else closeSheet(); return;
+      case "qrestart": PREFS.questDone = 0; savePrefs(); s.sel = 0; SFX.toggle(); renderSheet(); return;
       case "target": PREFS.endFame = +i; savePrefs(); SFX.toggle(); renderSheet(); return;
       case "open": PREFS.openHands = !(PREFS.openHands != null ? PREFS.openHands : BASE_OPEN); savePrefs(); SFX.toggle(); renderSheet(); return;
       case "hints": PREFS.hints = !PREFS.hints; savePrefs(); SFX.toggle(); render(); renderSheet(); return;
@@ -1274,7 +1300,7 @@
     STR = over ? merge(LANG_STR, over) : LANG_STR;
     document.title = stripTags(t("app.title"));
   }
-  let BASE_OPEN = true, BASE_END = 25;
+  let BASE_OPEN = true, BASE_END = 25, BASE_RULES = null, QUEST = null;
   async function loadAll() {
     CFG = await getJSON("config.json");
     const langs = Object.keys(CFG.languages || {});
@@ -1290,7 +1316,8 @@
     pf.textContent = Object.values(THEMES).map(fontFaces).join("\n");
     const counts = { names: list("content.patients").length || 1, ailments: list("content.ailments").length || 1, ingredientNames: Math.max(1, ...Object.keys(rules.deck.elements).map((el) => list("content.ingredients." + el).length)) };
     KF.configure(rules, counts);
-    BASE_OPEN = !!rules.openHands; BASE_END = rules.endFame;
+    BASE_OPEN = !!rules.openHands; BASE_END = rules.endFame; BASE_RULES = rules;
+    QUEST = null; if (CFG.quest) try { QUEST = await getJSON(CFG.quest); } catch (e) { console.warn(e); }
   }
 
   // ---------- boot ----------
@@ -1315,12 +1342,51 @@
     openSheet({ type: "setup", who: w, canCancel, modal: !canCancel });
   }
   // quiet: set the table up behind the first-run setup sheet, without the "you go first" toast or the rival moving
-  function startNew(quiet) {
+  // q: a quest stop to play ({ settings, players, quest }) instead of a free game with the house rules
+  function startNew(quiet, q) {
     const settings = {}; if (PREFS.openHands != null) settings.openHands = !!PREFS.openHands; if (PREFS.endFame) settings.endFame = PREFS.endFame;
-    KF.newGame(settings, pickPlayers()); applyPlayerColor(); HC.clear(); U.seen.clear(); U.lastFame = [0, 0]; U.sel = 0; U.tab = "hand"; U.mkt = []; resetRoute(); U.busy = false; U.anim = false; U.bo = null; U.rv = null;
+    KF.newGame(q ? q.settings : settings, q ? q.players : pickPlayers()); if (q) { G().quest = q.quest; G().P[1].fame += q.headStart || 0; } applyPlayerColor(); HC.clear(); U.seen.clear(); U.lastFame = [0, 0]; U.sel = 0; U.tab = "hand"; U.mkt = []; resetRoute(); U.busy = false; U.anim = false; U.bo = null; U.rv = null;
     render(); if (quiet) return; SFX.newGame();
     const first = G().first === 0;
-    announce(`<div class="who${first ? " y" : ""}">${t("toast.newGame")}</div><h3>${t(first ? "toast.youFirst" : "toast.rivalFirst")}</h3><div class="res">${t("toast.goal", { n: RU().endFame })}</div>`, 1800, () => { if (!first) runBot(); });
+    const qn = G().quest ? G().quest.n : null;
+    announce(`<div class="who${first ? " y" : ""}">${qn != null ? t("quest.toast", { n: qn + 1, place: esc(stopName(qn)) }) : t("toast.newGame")}</div><h3>${t(first ? "toast.youFirst" : "toast.rivalFirst")}</h3><div class="res">${t("toast.goal", { n: RU().endFame })}</div>`, 1800, () => { if (!first) runBot(); });
+  }
+  // ---------- quest: the journey to Edo ----------
+  const questDone = () => Math.min(PREFS.questDone || 0, QUEST ? QUEST.stops.length : 0);
+  const stopText = (i) => (list("quest.stops")[i] || {});
+  const stopName = (i) => stopText(i).name || (QUEST && QUEST.stops[i] ? QUEST.stops[i].id : "");
+  function startQuest(i) {
+    const st = QUEST && QUEST.stops[i]; if (!st) return;
+    const players = pickPlayers(); players[1].style = Object.assign({}, st.rival || {});
+    closeSheet(); startNew(false, { settings: JSON.parse(JSON.stringify(st.rules || {})), players, quest: { n: i }, headStart: (st.rival && st.rival.headStart) || 0 });
+  }
+  // what is different at a stop, in words, from its rules and how the rival plays
+  function questTags(st) {
+    const r = merge(BASE_RULES, st.rules || {}), rv = st.rival || {}, p = r.patients || {};
+    const out = [t("quest.tags.goal", { n: r.endFame }), t("quest.tags.depth" + Math.max(2, Math.min(5, rv.depth || 5)))];
+    if (rv.tools === false) out.push(t("quest.tags.noTools"));
+    if (rv.curse === false) out.push(t("quest.tags.noCurse"));
+    if (rv.headStart) out.push(t("quest.tags.headStart", { n: rv.headStart }));
+    if (p.oniMax <= 2) out.push(t("quest.tags.fewOni")); else if (p.oniMin >= 2) out.push(t("quest.tags.manyOni"));
+    if (p.maxDistance <= 4) out.push(t("quest.tags.near"));
+    if (!r.openHands) out.push(t("quest.tags.hidden"));
+    return out;
+  }
+  // the road on a rough map: travelled stops filled, the next one ringed, the chosen one marked
+  function questMap(sel) {
+    const m = QUEST.map, [w, so, e, n] = m.bounds, X = (lon) => (lon - w) * 100, Y = (lat) => (n - lat) * 127;
+    const pt = (a) => `${X(a[0]).toFixed(1)},${Y(a[1]).toFixed(1)}`, stops = QUEST.stops, done = questDone();
+    const road = stops.map((st) => pt(st.at)).join(" "), walked = stops.slice(0, Math.min(done + 1, stops.length)).map((st) => pt(st.at)).join(" ");
+    const dots = stops.map((st, i) => {
+      const [x, y] = [X(st.at[0]), Y(st.at[1])], open = i <= done, cls = i < done ? "done" : i === done ? "next" : "ahead";
+      const dot = `<circle class="qd ${cls}${i === sel ? " sel" : ""}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i === stops.length - 1 ? 15 : 11}"/>`;
+      return open ? `<g data-a="qsel" data-i="${i}"><title>${esc(stopName(i))}</title><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="26" fill="transparent"/>${dot}</g>` : dot;
+    }).join("");
+    const label = (i, dx, anchor) => { const st = stops[i]; return `<text class="ql" x="${(X(st.at[0]) + dx).toFixed(1)}" y="${(Y(st.at[1]) + 9).toFixed(1)}" text-anchor="${anchor}">${esc(stopName(i))}</text>`; };
+    return `<svg class="qmap" viewBox="0 0 ${X(e).toFixed(0)} ${Y(so).toFixed(0)}" role="img" aria-label="${attr(t("quest.map"))}">
+      <polygon class="land" points="${m.coast.map(pt).join(" ")}"/>
+      <polyline class="road" points="${road}"/>${done ? `<polyline class="walked" points="${walked}"/>` : ""}
+      ${dots}${label(0, -22, "end")}${label(stops.length - 1, 24, "start")}</svg>`;
   }
   async function boot() {
     $("#stage").innerHTML = '<div id="scr"></div><div id="shl"></div><div id="tsl"></div>';

@@ -13,5 +13,6 @@
       "file": "i18n/en.json"
     }
   },
-  "rules": "rules.json"
+  "rules": "rules.json",
+  "quest": "quest.json"
 }

@@ -82,6 +82,22 @@ New game opens a setup sheet: pick a character, a guild (house in Moonwort) and 
 - `node build/abilities.js 200` plays each ability against none. Current: every ability wins
   66–74% against a plain bot, so they are roughly even with each other.
 
+### Quest: the journey to Edo
+Menu › Journey to Edo plays twenty games in a row, one per post town on the Ōshū Kaidō from Aomori to
+Edo. Win a stop to travel on; the map between games shows how far you have come. Everything lives in
+`quest.json`, one entry per stop:
+- `rules`: changes to `rules.json` for that game only. Nested keys change just what they name
+  (`"patients": {"oniMax": 2}` leaves the other patient settings alone).
+- `rival`: how the bot plays. `depth` is the longest cure it looks for (5 = full strength), `tools` and
+  `curse` set to `false` stop it buying tools or cursing, `headStart` is mon it starts with.
+- `at`: [longitude, latitude] on the map; `map.coast` is the rough coastline.
+
+Early stops are short games against a rival that only sees short cures, buys no tools and never curses,
+on maps with few oni. Later stops have longer targets, more oni and far-off cures, a full-strength
+rival, hidden hands and finally a head start for the rival. Place names and their lines are under
+`quest.stops` in the language file. Progress is kept on the device (cleared stops can be replayed).
+`node build/quest.js 60` plays a full-strength bot against each stop's rival and prints its win rate.
+
 ### Patient portraits and the mon coin
 The phone layout shows each patient's portrait and a mon coin next to every value. Give a theme an
 asset named `patient.<n>` (n = the patient's place in `content.patients`) to draw a portrait;
