@@ -524,11 +524,6 @@
     "sub": "Hand limit {max} · discard {n}",
     "do": "Discard {n} and end turn"
   },
-  "newq": {
-    "title": "Start a new game?",
-    "sub": "This game will be lost.",
-    "keep": "Keep playing"
-  },
   "setup": {
     "title": "New game",
     "sub": "Choose who you play as. Your rival picks someone else.",
@@ -537,7 +532,6 @@
     "guildSub": "Your guild crest and colour",
     "colour": "Colour",
     "colourN": "Colour {n}",
-    "start": "Start the game",
     "rival": "Your rival is {name}",
     "you": "You play {name}",
     "asTitle": "{name}, {title}",
@@ -548,11 +542,12 @@
     "howToPlay": "How to play",
     "log": "Game log",
     "rivalTable": "Rival's table",
-    "newGame": "New game",
     "install": "Install the app",
     "installSub": "Plays offline",
     "theme": "Theme",
-    "you": "You play {name}"
+    "you": "You play {name}",
+    "main": "Main menu",
+    "mainSub": "Your game is saved"
   },
   "settings": {
     "title": "Settings",
@@ -565,12 +560,8 @@
     "hintsSubOpen": "A green tick on every patient you can cure now, and a purple one where your rival can.",
     "theme": "Theme",
     "language": "Language",
-    "house": "House rules",
-    "houseSub": "for your next new game",
     "open": "Open hands",
     "openSub": "Both hands are face up, so curses aren't blind guesses.",
-    "startWith": "Start a new game with these rules",
-    "thisGame": "This game uses these rules.",
     "target": "{{Mon}} to win",
     "targetSub": "First to this many wins"
   },
@@ -580,7 +571,6 @@
     "tools": "Tools",
     "discard": "Discard",
     "menu": "Menu",
-    "newq": "New game",
     "rules": "How to play",
     "log": "Game log",
     "rival": "Rival's table",
@@ -588,7 +578,8 @@
     "install": "Install",
     "themes": "Choose a theme",
     "setup": "Choose your character",
-    "quest": "Journey to Edo"
+    "quest": "Journey to Edo",
+    "quick": "Quick game"
   },
   "themeNames": {
     "_about": "Optional: names for the themes in config.json. A theme without one shows the name in its theme.json.",
@@ -1001,5 +992,38 @@
         "line": "Nihonbashi, where every road begins. Cure the capital."
       }
     ]
+  },
+  "title": {
+    "tagline": "A game of cures and curses",
+    "tap": "Tap to begin",
+    "continue": "Continue",
+    "quickGame": "Quick game",
+    "score": "{you} – {rival} of {n} {{mon}}",
+    "quick": "Quick game",
+    "quickSub": "One game, your rules",
+    "youPlay": "You play",
+    "chooseChar": "Choose your character",
+    "change": "Change"
+  },
+  "opts": {
+    "sub": "Set the game up how you like. Your choices are remembered.",
+    "skill": "Rival",
+    "skillSub": "How far ahead it looks for a cure",
+    "skill2": "Gentle",
+    "skill3": "Steady",
+    "skill4": "Sharp",
+    "skill5": "Master",
+    "tools": "Rival buys tools",
+    "toolsSub": "It can spend {{mon}} on tools, as you can.",
+    "curse": "Rival curses",
+    "curseSub": "It turns your patients’ maps when it cures.",
+    "head": "Rival head start",
+    "headSub": "{{Mon}} it starts with",
+    "oni": "Oni on the maps",
+    "oniSub": "How many block each patient",
+    "oniFew": "Few",
+    "oniSome": "Some",
+    "oniMany": "Many",
+    "start": "Start the game"
   }
 }

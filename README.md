@@ -62,13 +62,20 @@ All in `rules.json`, each with an `_about`:
   that ward patient.
 - `guilds.echo`: once per brew, one garden card of your guild's element plays twice. Each guild's
   element is `element` in the theme's `guilds`.
-- `endFame` is the mon target (the player can pick 15/25/35 in Settings for new games). The word
+- `endFame` is the mon target (the player picks 10/15/25/35 in the quick-game options). The word
   "mon" is `terms.mon` in the language file, so a theme can rename the currency (Moonwort: gold).
 - `node build/playtest.js 80` plays rules variants bot against bot and reports game length,
   cures, known cures, ward use, time spent gathering and comebacks.
 
 ### Characters, guilds and colours
-New game opens a setup sheet: pick a character, a guild (house in Moonwort) and a colour.
+The game opens on a splash screen, then the title menu: **Continue** (a saved game), **Quick game**
+and **Journey to Edo**. Quick game opens its options: the mon target, the rival's skill (how far
+ahead it looks: Gentle 2, Steady 3, Sharp 4, Master 5), whether it buys tools and curses, its
+head start, how many oni block each patient (few 0-2, some = rules.json, many 2-5) and open
+hands. They are remembered and are the same knobs the quest turns stop by stop; a quest stop
+starts with its own settings. "You play" on the title menu opens the setup sheet: pick a
+character, a guild (house in Moonwort) and a colour. In a game, Menu > Main menu goes back to
+the title menu; the game stays saved behind Continue.
 - **Abilities** are mechanics and live in `rules.json` under `abilities`, as additions to the
   normal rules for that player only (`gardenMax`, `handLimit`, `startHand`, `startGarden`,
   `oniPerPlayer`, `gather`, `sakuraBonus`, `toolCost`, `startFame`). Their words are in the

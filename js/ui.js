@@ -87,7 +87,7 @@
   const mix = (a, b, t) => { const A = hx(a), B = hx(b); if (!A || !B) return a; return "#" + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, "0")).join(""); };
   function applyPlayerColor() {
     Object.keys(PCOL).forEach((k) => delete PCOL[k]);
-    const c = G() && G().P[0].color, st = document.getElementById("player-style") || Object.assign(document.head.appendChild(document.createElement("style")), { id: "player-style" });
+    const c = U.screen ? (PREFS.who || {}).color : G() && G().P[0].color, st = document.getElementById("player-style") || Object.assign(document.head.appendChild(document.createElement("style")), { id: "player-style" });
     if (!c || !hx(c)) { st.textContent = ""; HC.clear(); return; }
     const C = T.colors || {}, white = "#FFFFFF", black = "#000000";
     const v = { shu: c, "shu-hi": mix(c, white, 0.12), "shu-line": mix(c, white, 0.4), you: mix(c, white, 0.45), "shu-deep": mix(c, black, 0.25), "shu-dim": mix(c, C.lacquer || black, 0.5), "shu-shadow": mix(c, black, 0.55) };
@@ -602,8 +602,59 @@
       </div></div>`;
   }
 
+  // ---------- splash and title menu ----------
+  const brandMark = () => (gl("brand") || ASSET["icon.brand"] ? `<span class="tbrand">${ic("brand")}</span>` : "");
+  function splashScreen() {
+    return `<div class="scr splash lacquer" data-a="splash" role="button" aria-label="${attr(t("title.tap"))}"><div class="spl">
+      <div class="emb">${art("emblem")}</div>${brandMark()}<h1>${t("app.name")}</h1><p>${t("title.tagline")}</p><span class="tap">${t("title.tap")}</span></div></div>`;
+  }
+  // a game you can go back to: saved, not over, not the empty table set up behind the menu
+  const canContinue = () => { const g = G(); return !!(g && !g.over && !g.unplayed); };
+  function titleScreen() {
+    const g = G(), cont = canContinue();
+    const where = cont ? (g.quest && QUEST ? t("quest.toast", { n: g.quest.n + 1, place: esc(stopName(g.quest.n)) }) : t("title.quickGame")) + " · " + t("title.score", { you: g.P[0].fame, rival: g.P[1].fame, n: g.rules.endFame }) : "";
+    const c = CHARS().find((x) => x.id === (PREFS.who || {}).char);
+    const inst = isStandalone() ? "" : `<button class="tlink" data-a="installq">${t("menu.install")}</button>`;
+    return `<div class="scr title ${U.layout} lacquer"><div class="tcol">
+      <div class="thead"><div class="emb">${art("emblem")}</div><div>${brandMark()}<h1>${t("app.name")}</h1><small>${t("app.edition")}</small></div></div>
+      <div class="tbtns">
+        ${cont ? `<button class="tb primary" data-a="continue"><b>${t("title.continue")}</b><small>${where}</small></button>` : ""}
+        <button class="tb${cont ? "" : " primary"}" data-a="quick"><b>${t("title.quick")}</b><small>${t("title.quickSub")}</small></button>
+        ${QUEST ? `<button class="tb" data-a="quest"><b>${t("quest.menu")}</b><small>${questDone() ? t("quest.menuAt", { n: questDone(), total: QUEST.stops.length }) : t("quest.menuNew")}</small></button>` : ""}
+      </div>
+      <button class="tme" data-a="who">${c ? art(c.art, "por") : ""}<span><small>${t("title.youPlay")}</small><b>${c ? esc(charName(c)) : t("title.chooseChar")}</b></span><i>${t("title.change")}</i></button>
+      <div class="tlinks"><button class="tlink" data-a="rules">${t("menu.howToPlay")}</button>${Object.keys(CFG.themes || {}).length > 1 ? `<button class="tlink" data-a="themes">${t("menu.theme")}</button>` : ""}<button class="tlink" data-a="sound">${SFX.isOn() ? t("settings.soundOn") : t("settings.soundOff")}</button>${inst}</div>
+    </div></div>`;
+  }
+  function toTitle() { U.screen = "title"; closeSheet(); applyPlayerColor(); render(); }
+  // back to the table: the sheet or the rival's move the saved game was waiting on
+  function resume() {
+    const g = G(); U.screen = null; closeSheet();
+    applyPlayerColor();
+    U.lastFame = g.P.map((p) => p.fame);
+    g.market.concat(g.P[0].hand, g.P[0].garden).forEach((c) => ["h", "g", "m"].forEach((z) => U.seen.add("c" + c.id + z)));
+    g.village.forEach((p) => U.seen.add("p" + p.id));
+    render();
+    if (g.over) openSheet({ type: "over", modal: true, quiet: true });
+    else if (g.phase === "reward" && g.pending) openSheet({ type: "reward", modal: true, k: null, rot: RU().curse.turns[0], quiet: true });
+    else if (g.cur === 1 && !U.busy) runBot();
+  }
+  // quick-game options: the knobs the quest turns stop by stop
+  const ONI = { few: [0, 2], some: null, many: [2, 5] };
+  function quickOpts() {
+    const o = Object.assign({ endFame: PREFS.endFame || BASE_END, depth: 5, tools: true, curse: true, oni: "some", open: PREFS.openHands != null ? !!PREFS.openHands : BASE_OPEN, head: 0 }, PREFS.opts || {});
+    return o;
+  }
+  function startQuick() {
+    const o = quickOpts(), settings = { endFame: o.endFame, openHands: !!o.open };
+    if (ONI[o.oni]) settings.patients = { oniMin: ONI[o.oni][0], oniMax: ONI[o.oni][1] };
+    const players = pickPlayers(); players[1].style = { depth: o.depth, tools: o.tools, curse: o.curse };
+    U.screen = null; closeSheet(); startNew(false, { settings, players, headStart: o.head });
+  }
+
   // ---------- render ----------
   function render() {
+    if (U.screen) { $("#scr").innerHTML = U.screen === "splash" ? splashScreen() : titleScreen(); return; }
     const g = G(); if (!g) return;
     curPt();
     const html = U.layout === "port" ? portScreen() : U.layout === "land" ? landScreen() : tablScreen();
@@ -666,7 +717,7 @@
 
   // ---------- swiping between patients ----------
   let SW = null;
-  const canSwipe = () => G() && G().village.length > 1 && !U.anim && !U.busy && !U.bo && G().cur === 0 && !U.sheet;
+  const canSwipe = () => !U.screen && G() && G().village.length > 1 && !U.anim && !U.busy && !U.bo && G().cur === 0 && !U.sheet;
   function goPatient(dir) {
     const n = G().village.length; if (n < 2) return;
     const b = $(".board");
@@ -772,20 +823,14 @@
       const inst = isStandalone() ? "" : `<button class="btn" data-a="installq">${t("menu.install")}<small>${t("menu.installSub")}</small></button>`;
       const themes = Object.keys(CFG.themes || {}), langs = Object.keys(CFG.languages || {});
       const sel = (a, cur, opts) => `<div class="seg wrap" role="group">${opts.map(([v, l]) => `<button data-a="${a}" data-i="${attr(v)}" aria-pressed="${v === cur}">${esc(l)}</button>`).join("")}</div>`;
-      const openNow = !!G().rules.openHands, openNext = PREFS.openHands != null ? !!PREFS.openHands : BASE_OPEN;
-      const endNow = G().rules.endFame, endNext = PREFS.endFame || BASE_END;
       return `<div class="sh"><div><h2>${gl("brand") || ASSET["icon.brand"] ? ic("brand") + " " : ""}${t("app.name")}</h2><div class="sub">${G().quest && QUEST ? `${t("quest.toast", { n: G().quest.n + 1, place: esc(stopName(G().quest.n)) })} · ` : `${t("app.edition")} · `}${turnLabel()}</div></div></div>
         ${charOf(0) ? personRow(0) : ""}
-        <div class="menu"><button class="btn" data-a="rules">${t("menu.howToPlay")}<small>${ic("rules")}</small></button><button class="btn" data-a="log">${t("menu.log")}</button><button class="btn" data-a="rival">${t("menu.rivalTable")}</button><button class="btn" data-a="newq">${t("menu.newGame")}</button>${QUEST ? `<button class="btn" data-a="quest">${t("quest.menu")}<small>${questDone() ? t("quest.menuAt", { n: questDone(), total: QUEST.stops.length }) : t("quest.menuNew")}</small></button>` : ""}${themes.length > 1 ? `<button class="btn" data-a="themes">${t("menu.theme")}<small>${esc(themeName(CUR_THEME))}</small></button>` : ""}${inst}</div>
+        <div class="menu"><button class="btn" data-a="rules">${t("menu.howToPlay")}<small>${ic("rules")}</small></button><button class="btn" data-a="log">${t("menu.log")}</button><button class="btn" data-a="rival">${t("menu.rivalTable")}</button><button class="btn" data-a="title" ${U.busy ? "disabled" : ""}>${t("menu.main")}<small>${t("menu.mainSub")}</small></button>${themes.length > 1 ? `<button class="btn" data-a="themes">${t("menu.theme")}<small>${esc(themeName(CUR_THEME))}</small></button>` : ""}${inst}</div>
         <div class="sect"><div class="hd"><b>${t("settings.title")}</b></div>
           ${toggleRow("sound", "", SFX.isOn(), t("settings.sound"), t("settings.soundSub"))}
           ${toggleRow("hints", "", PREFS.hints, t("settings.hints"), openHands() ? t("settings.hintsSubOpen") : t("settings.hintsSub"))}
           ${langs.length > 1 ? `<span class="cap">${t("settings.language")}</span>${sel("lang", LANG, langs.map((k) => [k, CFG.languages[k].name || k]))}` : ""}
         </div>
-        <div class="sect"><div class="hd"><b>${t("settings.house")}</b><span>${t("settings.houseSub")}</span></div>
-          ${toggleRow("open", "", openNext, t("settings.open"), t("settings.openSub"))}
-          <span class="cap">${t("settings.target")} <small>${t("settings.targetSub")}</small></span>${sel("target", String(endNext), ["15", "25", "35"].map((v) => [v, v]))}
-          ${openNext !== openNow || endNext !== endNow ? `<button class="btn primary" data-a="newgame">${t("settings.startWith")}</button>` : `<p class="muted">${t("settings.thisGame")}</p>`}</div>
         <div class="btns"><button class="btn" data-a="close">${t("common.close")}</button></div>`;
     },
     themes() {
@@ -815,9 +860,23 @@
         ${chars.length ? `<span class="cap">${t("setup.character")}</span><div class="chrs">${ch}</div>` : ""}
         ${guilds.length ? `<span class="cap">${t("setup.guild")} <small>${t("setup.guildSub")}</small></span><div class="glds">${gs}</div>${craft}` : ""}
         ${cols.length ? `<span class="cap">${t("setup.colour")}</span><div class="sws">${cs}</div>` : ""}
-        <div class="btns">${s.canCancel ? `<button class="btn" data-a="close">${t("common.cancel")}</button>` : ""}<button class="btn primary" data-a="setupgo">${t("setup.start")}</button></div>`;
+        <div class="btns"><button class="btn" data-a="close">${t("common.cancel")}</button><button class="btn primary" data-a="setupgo">${t("common.done")}</button></div>`;
     },
-    newq() { return `<div class="sh"><div><h2>${t("newq.title")}</h2><div class="sub">${t("newq.sub")}</div></div></div><div class="btns"><button class="btn" data-a="close">${t("newq.keep")}</button><button class="btn primary" data-a="newgame">${t("menu.newGame")}</button></div>`; },
+    quick() {
+      const o = quickOpts();
+      const seg = (k, opts) => `<div class="seg wrap" role="group">${opts.map(([v, l]) => `<button data-a="opt" data-k="${k}" data-i="${attr(String(v))}" aria-pressed="${String(o[k]) === String(v)}">${esc(String(l))}</button>`).join("")}</div>`;
+      const tg = (k, title, sub) => `<button class="tg" data-a="optt" data-k="${k}" aria-pressed="${!!o[k]}"><span class="sw"></span><span><b>${title}</b><small>${sub}</small></span></button>`;
+      return `<div class="sh"><div><h2>${t("title.quick")}</h2><div class="sub">${t("opts.sub")}</div></div></div>
+        <span class="cap">${t("settings.target")} <small>${t("settings.targetSub")}</small></span>${seg("endFame", [10, 15, 25, 35].map((v) => [v, v]))}
+        <span class="cap">${t("opts.skill")} <small>${t("opts.skillSub")}</small></span>${seg("depth", [2, 3, 4, 5].map((v) => [v, t("opts.skill" + v)]))}
+        ${tg("tools", t("opts.tools"), t("opts.toolsSub"))}
+        ${tg("curse", t("opts.curse"), t("opts.curseSub"))}
+        <span class="cap">${t("opts.head")} <small>${t("opts.headSub")}</small></span>${seg("head", [0, 1, 2, 3].map((v) => [v, v]))}
+        <span class="cap">${t("opts.oni")} <small>${t("opts.oniSub")}</small></span>${seg("oni", ["few", "some", "many"].map((v) => [v, t("opts.oni" + v[0].toUpperCase() + v.slice(1))]))}
+        ${tg("open", t("settings.open"), t("settings.openSub"))}
+        ${canContinue() ? `<p class="muted">${t("quest.abandon")}</p>` : ""}
+        <div class="btns"><button class="btn" data-a="close">${t("common.back")}</button><button class="btn primary" data-a="quickgo">${t("opts.start")}</button></div>`;
+    },
     rules() {
       const r = RU(), v = { end: r.endFame, gather: r.gather, garden: r.gardenMax, hand: r.handLimit, oni: r.oniPerPlayer, sak: r.sakuraBonus, min: r.minHandCards, cure: ic("cure"), oniG: ic("oni"), sakura: ic("sakura") };
       const dirs = Object.keys(r.deck.elements).map((el) => t("rules.dirOne", { el: elName(el), glyph: elIc(el), dir: t("dir." + r.deck.elements[el]) })).join(", ");
@@ -868,7 +927,7 @@
         <div class="end sc"><div><b>${a.fame}</b>${t("over.cures", { who: t("who.you"), n: a.cures })}</div><div><b>${b.fame}</b>${t("over.cures", { who: t("who.rival"), n: b.cures })}</div></div>
         <p class="muted" style="text-align:center">${t("over.tools", { you: esc(names(a)), rival: esc(names(b)) })}</p>
         ${isStandalone() ? "" : `<button class="btn" data-a="installq" style="flex:none;min-height:44px">${t("install.offer")}</button>`}
-        ${q != null ? `<p class="qres">${t(w === "you" ? "quest.won" : "quest.lost", { place: esc(stopName(q)) })}</p>${qbtns}` : `<div class="btns"><button class="btn" data-a="log">${t("act.log")}</button><button class="btn primary" data-a="newgame">${t("over.again")}</button></div>`}`;
+        ${q != null ? `<p class="qres">${t(w === "you" ? "quest.won" : "quest.lost", { place: esc(stopName(q)) })}</p>${qbtns}` : `<div class="btns"><button class="btn" data-a="title">${t("menu.main")}</button><button class="btn" data-a="log">${t("act.log")}</button><button class="btn primary" data-a="quickgo">${t("over.again")}</button></div>`}`;
     },
     install() {
       const pl = platform();
@@ -1109,21 +1168,25 @@
       case "rules": openSheet({ type: "rules" }); return;
       case "log": openSheet({ type: "log" }); return;
       case "rival": openSheet({ type: "rival" }); return;
-      case "newq": openSetup(true); return;
+      case "splash": U.screen = "title"; SFX.open(); render(); return;
+      case "title": toTitle(); return;
+      case "continue": resume(); return;
+      case "quick": openSheet({ type: "quick" }); return;
+      case "quickgo": startQuick(); return;
+      case "opt": { const o = quickOpts(), k = tg.dataset.k; o[k] = k === "oni" ? i : +i; PREFS.opts = o; savePrefs(); SFX.toggle(); renderSheet(); return; }
+      case "optt": { const o = quickOpts(), k = tg.dataset.k; o[k] = !o[k]; PREFS.opts = o; savePrefs(); SFX.toggle(); renderSheet(); return; }
+      case "who": openSetup(true); return;
       case "pickc": U.sheet.who.char = i; SFX.tap("V"); renderSheet(); return;
       case "pickg": { const gi = +i, w = U.sheet.who; w.guild = gi; const g = GUILDS()[gi]; if (g && g.color) w.color = g.color; SFX.tap("E"); renderSheet(); return; }
       case "pickk": U.sheet.who.color = i; SFX.tap("W"); renderSheet(); return;
-      case "setupgo": PREFS.who = Object.assign({}, U.sheet.who); savePrefs(); closeSheet(); startNew(); return;
-      case "newgame": closeSheet(); startNew(); return;
+      case "setupgo": PREFS.who = Object.assign({}, U.sheet.who); savePrefs(); closeSheet(); applyPlayerColor(); render(); return;
       case "quest": openSheet({ type: "quest", sel: Math.min(questDone(), QUEST.stops.length - 1) }); return;
       case "questmap": openSheet({ type: "quest", sel: +i }); return;
       case "qsel": s.sel = +i; SFX.tap("E"); renderSheet(); return;
       case "qstep": s.sel = Math.max(0, Math.min(Math.min(questDone(), QUEST.stops.length - 1), s.sel + +i)); SFX.tap("E"); renderSheet(); return;
       case "qgo": startQuest(+i); return;
-      case "qclose": if (g.over) openSheet({ type: "over", modal: true, quiet: true }); else closeSheet(); return;
+      case "qclose": if (!U.screen && g.over) openSheet({ type: "over", modal: true, quiet: true }); else closeSheet(); return;
       case "qrestart": PREFS.questDone = 0; savePrefs(); s.sel = 0; SFX.toggle(); renderSheet(); return;
-      case "target": PREFS.endFame = +i; savePrefs(); SFX.toggle(); renderSheet(); return;
-      case "open": PREFS.openHands = !(PREFS.openHands != null ? PREFS.openHands : BASE_OPEN); savePrefs(); SFX.toggle(); renderSheet(); return;
       case "hints": PREFS.hints = !PREFS.hints; savePrefs(); SFX.toggle(); render(); renderSheet(); return;
       case "sound": SFX.set(!SFX.isOn()); if (U.sheet) renderSheet(); render(); return;
       case "theme": if (i === (CUR_THEME)) return; PREFS.theme = i; savePrefs(); loadTheme(i).then(() => { applyPlayerColor(); render(); renderSheet(); SFX.toggle(); }); return;
@@ -1347,6 +1410,7 @@
   function startNew(quiet, q) {
     const settings = {}; if (PREFS.openHands != null) settings.openHands = !!PREFS.openHands; if (PREFS.endFame) settings.endFame = PREFS.endFame;
     KF.newGame(q ? q.settings : settings, q ? q.players : pickPlayers()); if (q) { G().quest = q.quest; G().P[1].fame += q.headStart || 0; } applyPlayerColor(); HC.clear(); U.seen.clear(); U.lastFame = [0, 0]; U.sel = 0; U.tab = "hand"; U.mkt = []; resetRoute(); U.busy = false; U.anim = false; U.bo = null; U.rv = null;
+    if (quiet) G().unplayed = true;
     render(); if (quiet) return; SFX.newGame();
     const first = G().first === 0;
     const qn = G().quest ? G().quest.n : null;
@@ -1359,7 +1423,7 @@
   function startQuest(i) {
     const st = QUEST && QUEST.stops[i]; if (!st) return;
     const players = pickPlayers(); players[1].style = Object.assign({}, st.rival || {});
-    closeSheet(); startNew(false, { settings: JSON.parse(JSON.stringify(st.rules || {})), players, quest: { n: i }, headStart: (st.rival && st.rival.headStart) || 0 });
+    U.screen = null; closeSheet(); startNew(false, { settings: JSON.parse(JSON.stringify(st.rules || {})), players, quest: { n: i }, headStart: (st.rival && st.rival.headStart) || 0 });
   }
   // what is different at a stop, in words, from its rules and how the rival plays
   function questTags(st) {
@@ -1418,19 +1482,13 @@
     const go = new URLSearchParams(location.search).get("go");
     if (go) try { history.replaceState(null, "", location.pathname); } catch (e) {}
     const g = KF.load();
-    fit();
-    if (go === "new" && g && !g.over) { applyPlayerColor(); render(); openSetup(true); return; }
-    if (!g || go === "new") { if (go === "rules") { startNew(); openSheet({ type: "rules" }); } else { startNew(true); openSetup(false); } return; }
-    if (go === "rules") { render(); openSheet({ type: "rules" }); return; }
-    applyPlayerColor();
-    U.lastFame = g.P.map((p) => p.fame);
-    g.market.concat(g.P[0].hand, g.P[0].garden).forEach((c) => ["h", "g", "m"].forEach((z) => U.seen.add("c" + c.id + z)));
-    g.village.forEach((p) => U.seen.add("p" + p.id));
-    render();
-    if (g.over) openSheet({ type: "over", modal: true, quiet: true });
-    else if (g.phase === "reward" && g.pending) openSheet({ type: "reward", modal: true, k: null, rot: RU().curse.turns[0], quiet: true });
-    else if (g.cur === 1) runBot();
+    U.screen = go ? "title" : "splash";
+    if (!g) startNew(true);
+    applyPlayerColor(); fit(); render();
+    if (go === "new") openSheet({ type: "quick" });
+    else if (go === "rules") openSheet({ type: "rules" });
+    else setTimeout(() => { if (U.screen === "splash") { U.screen = "title"; render(); } }, 2600);
   }
-  window.KFUI = { U, render, boot, fit, t, get T() { return T; }, get PREFS() { return PREFS; } };
+  window.KFUI = { U, render, boot, fit, t, resume, get T() { return T; }, get PREFS() { return PREFS; } };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })();
