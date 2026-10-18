@@ -484,7 +484,7 @@
     const k = (g2) => (gl(g2) || ASSET["icon." + g2] ? `<span class="k">${ic(g2)}</span>` : "");
     if (mine && !g.turn.acted && U.tab === "market") {
       const n = nTake();
-      return `<div class="acts" style="grid-template-columns:1fr 1.2fr 1.4fr">${ab("back", ICON.back(), t("act.back"))}${ab("blind", ICON.blind(), t("act.drawBlind", { n }), { cls: "row" })}${ab("take", "", `${k("market")}${t("act.takeN", { n, have: U.mkt.length })}`, { cls: "primary", dis: U.mkt.length !== n })}</div>`;
+      return `<div class="acts" style="grid-template-columns:1fr 1.2fr">${ab("blind", ICON.blind(), t("act.drawBlind", { n }), { cls: "row" })}${ab("take", "", `${k("market")}${t("act.takeN", { n, have: U.mkt.length })}`, { cls: "primary", dis: U.mkt.length !== n })}</div>`;
     }
     if (U.layout === "port") {
       if (mine && g.turn.acted) return `<div class="acts one">${ab("end", "", `${k("endTurn")}${t("act.endTurn")}`, { cls: "primary glow" })}</div>`;
