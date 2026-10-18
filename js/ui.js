@@ -269,7 +269,7 @@
     const show = o.preview || pt;
     const aria = attr(t("patient.label", { name: whoOf(pt), ailment: ailOf(pt), value: pt.val }) + (pt.cursed != null ? ", " + t("patient.cursed") : ""));
     if (o.chip) return `<button class="pc vc paper${o.cls ? " " + o.cls : ""}${fresh("p" + pt.id + (o.zone || ""))}" data-a="sel" data-i="${k}" aria-label="${aria}">
-      <div class="ph">${ptPortrait(pt)}${monVal(pt.val)}</div><span class="ail">${esc(ailOf(pt))}</span>${tuck}${hintBadges(pt)}</button>`;
+      <div class="ph">${ptAvatar(pt)}${monVal(pt.val)}</div><span class="ail">${esc(ailOf(pt))}</span>${tuck}${hintBadges(pt)}</button>`;
     return `<button class="pc paper${o.cls ? " " + o.cls : ""}${fresh("p" + pt.id + (o.zone || ""))}" data-a="${o.act || "sel"}" data-i="${k}" aria-label="${attr(t("patient.label", { name: whoOf(pt), ailment: ailOf(pt), value: pt.val }) + (pt.cursed != null ? ", " + t("patient.cursed") : ""))}" ${o.pressed != null ? `aria-pressed="${o.pressed}"` : ""}>
       <div class="ph">${monVal(pt.val)}<span class="nm">${esc(whoOf(pt, !o.full))}</span>${o.full ? ptChip(pt) : ptChip(pt, false, true)}</div>
       ${mapSVG(show, { px: o.px || 63, icons: !!o.icons })}
@@ -286,6 +286,12 @@
   function ptPortrait(pt, cls = "") {
     const a = "patient." + pt.who, bg = pt.el ? EL(pt.el).color : "var(--brown)";
     return `<span class="ppor${cls ? " " + cls : ""}" style="background:${bg}" aria-hidden="true">${ASSET[a] || SPR[a] ? art(a, "", { slice: true }) : '<svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4.2"/><path d="M4 23c0-5 3.6-8.2 8-8.2s8 3.2 8 8.2z"/></svg>'}</span>`;
+  }
+  // the portrait with the patient's element as a badge on its corner, like an oni tucked on a card
+  function ptAvatar(pt, cls = "") {
+    if (!pt.el) return ptPortrait(pt, cls);
+    const need = KF.needEl(pt), tip = attr(need ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }));
+    return `<span class="pav${cls ? " " + cls : ""}">${ptPortrait(pt, cls)}<span class="pelc${need ? " need" : ""}" role="img" style="background:${EL(pt.el).color}" aria-label="${tip}" title="${tip}">${elIc(pt.el)}</span></span>`;
   }
   // a numbered chip for a played card; its colour is split between the elements its path used
   function chipFor(c, steps, n, o = {}) {
@@ -353,10 +359,8 @@
   }
   // the phone's board head: name and ailment on the left; the element, sakura and curable marks as small icons by the mon
   function phoneHead(pt, rivalTurn, rvChip, chips) {
-    const need = KF.needEl(pt);
-    const el = pt.el ? `<span class="elic${need ? " need" : ""}" role="img" style="background:${EL(pt.el).color}" aria-label="${attr(need ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }))}" title="${attr(need ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }))}">${elIc(pt.el)}</span>` : "";
-    const icons = rivalTurn ? rvChip : hintBadges(pt, "inhead") + el + chips;
-    return `<div class="bhead">${ptPortrait(pt, "big")}<div class="t"><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small></div><div class="bside">${icons ? `<div class="bic">${icons}</div>` : ""}${monVal(pt.val, "big")}</div></div>`;
+    const icons = rivalTurn ? rvChip : hintBadges(pt, "inhead") + chips;
+    return `<div class="bhead">${ptAvatar(pt, "big")}<div class="t"><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small></div><div class="bside">${icons ? `<div class="bic">${icons}</div>` : ""}${monVal(pt.val, "big")}</div></div>`;
   }
   function rivalStrip() {
     const r = U.rv || { say: t("rival.thinking"), sub: "" };
@@ -556,10 +560,9 @@
   // the hand always showing above the phone's tabs (garden, ward, market with its tools) and action bar
   function patRow(pt, k) {
     const tuck = pt.cursed != null ? `<span class="tuck${pt.cursed === 0 ? " mine" : ""}" aria-hidden="true">${art("oni")}</span>` : "";
-    const px = Math.max(56, Math.min(96, Math.floor((U.sh - 330) / 4) - 22));
+    const px = Math.max(56, Math.min(74, Math.floor((U.sh - 330) / 4) - 26));
     return `<button class="pc vr paper${k === U.sel ? " sel" : ""}${fresh("p" + pt.id)}" data-a="sel" data-i="${k}" aria-label="${attr(t("patient.label", { name: whoOf(pt), ailment: ailOf(pt), value: pt.val }) + (pt.cursed != null ? ", " + t("patient.cursed") : ""))}">
-      <span class="vt"><span class="vh">${ptPortrait(pt, "big")}<span class="vn"><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small></span></span>
-      <span class="vf">${ptChip(pt, true)}${hintBadges(pt, "inhead")}${monVal(pt.val)}</span></span>${mapSVG(pt, { px, icons: true })}${tuck}</button>`;
+      <span class="vt"><span class="vh">${ptAvatar(pt, "big")}${hintBadges(pt, "inhead")}${monVal(pt.val)}</span><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small></span>${mapSVG(pt, { px, icons: true })}${tuck}</button>`;
   }
   function tablScreen() {
     const g = G(), b = bot(), mine = myTurn(), rs = routeState(), n = nTake(), mu = (300 - 2 * 8) / (3 * 66);

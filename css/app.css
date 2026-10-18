@@ -622,14 +622,12 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .tabl .vcol{width:250px;flex-shrink:0;display:flex;flex-direction:column;gap:6px}
 .tabl .vlist{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(4,minmax(0,1fr));gap:10px}
 .pc.vr{flex-direction:row;align-items:stretch;gap:10px;padding:8px;border-radius:9px;min-height:0;min-width:0}
-.pc.vr .vt{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between;gap:6px}
-.pc.vr .vh{display:flex;align-items:flex-start;gap:8px;min-width:0}
-.pc.vr .ppor.big{width:38px;height:38px;border-radius:8px}
-.pc.vr .vn{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.pc.vr b{font-family:var(--serif);font-weight:800;font-size:14px;line-height:1.15;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.pc.vr .vt{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:3px}
+.pc.vr .vh{display:flex;align-items:center;gap:8px;min-width:0;margin-bottom:3px}
+.pc.vr .vh .monv{margin-left:auto;font-size:17px}.pc.vr .vh .monv .mon{width:19px;height:19px}
+.pc.vr .ppor.big{width:36px;height:36px;border-radius:8px}
+.pc.vr b{font-family:var(--serif);font-weight:800;font-size:13.5px;line-height:1.15;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .pc.vr small{font-size:11.5px;line-height:1.2;color:var(--brown);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pc.vr .vf{display:flex;align-items:center;gap:6px;padding-top:6px;border-top:1px solid color-mix(in srgb,var(--frame) 45%,transparent)}
-.pc.vr .vf .monv{margin-left:auto;font-size:17px}.pc.vr .vf .monv .mon{width:19px;height:19px}
 .pc.vr .map{flex-shrink:0;align-self:center}
 .pc.vr .tuck{top:-8px;right:-6px;width:26px;height:34px}
 .tabl .boardp{flex:1;min-width:0;padding:10px 12px;border-radius:14px}
@@ -704,3 +702,9 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .tabl .tacts .brew{flex:1;height:auto;flex-direction:column;gap:4px}
 .tabl .tacts .brew .bt{align-items:center;text-align:center}
 .tabl .tacts .brew .bt b{font-size:18px}
+/* the patient's element sits on the portrait's corner */
+.pav{position:relative;display:inline-flex;flex-shrink:0}
+.pelc{position:absolute;top:-5px;right:-6px;width:16px;height:16px;border-radius:50%;border:1.5px solid var(--parch);box-shadow:0 1px 2px rgba(0,0,0,.35);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:800;font-size:9px;line-height:1;z-index:1}
+.pav.big .pelc{width:21px;height:21px;font-size:11.5px;top:-6px;right:-7px}
+.tabl .bhead .pav.big .pelc{width:24px;height:24px;font-size:13px}
+.pelc.need{box-shadow:0 0 0 1.5px var(--parch),0 0 0 3px color-mix(in srgb,var(--ink) 60%,transparent)}
