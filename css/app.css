@@ -642,18 +642,62 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .tabl .board .cmp.e{right:-13px;top:calc(50% - 13px)}.tabl .board .cmp.w{left:-13px;top:calc(50% - 13px)}
 .tabl .strip{min-height:64px}
 .tabl .stxt{font-size:13px}.tabl .stxt small{font-size:11.5px}
-.tabl .side{width:320px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;min-height:0}
+.tabl .side{width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;min-height:0}
 .tabl .hgrid{width:100%;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;padding-top:8px}
-.tabl .hgrid.hand{min-height:calc(2 * 100px * 1.12 + 16px)}
-.tabl .tabs{height:44px}.tabl .tabs button{font-size:13px}
 .tabl .tray{flex:1;min-height:0;display:flex;align-items:flex-start;padding-top:8px}
-.tabl .tray .tgrid2{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.tabl .tray .tbig{height:auto;min-height:96px;align-items:flex-start;gap:10px;padding:10px}
+.tabl .tray .tgrid2{width:100%;display:grid;grid-template-columns:1fr;gap:6px}
+.tabl .tray .tbig{height:auto;min-height:72px;align-items:center;gap:10px;padding:8px 10px}
 .tabl .tray .tbig .ti{width:52px;height:52px}.tabl .tray .tbig .ti .ai{width:42px;height:42px}
-.tabl .tray .tbig .th{flex-direction:column;align-items:flex-start;gap:2px}
 .tabl .tray .tbig b{font-size:15px;white-space:normal;overflow:visible}.tabl .tray .tbig .monv{font-size:14px}.tabl .tray .tbig .monv .mon{width:15px;height:15px}
 .tabl .tray .tbig small{font-size:12px;line-height:1.25;white-space:normal;color:var(--soft)}
 .tabl .tray .tbig .st{font-size:11px;margin-top:2px}
 .tabl .tray .plotc{border:1.5px dashed var(--plot-line);background:color-mix(in srgb,var(--parch) 4%,transparent);color:var(--muted);box-shadow:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;gap:6px}
 .tabl .acts{height:58px}
-.tabl .acts.one .ab{font-size:17px}
+.rivstrip{display:flex;align-items:center;gap:18px;height:40px;flex-shrink:0;padding:0 14px;border-radius:10px;background:color-mix(in srgb,var(--rival) 12%,transparent);border:1px solid var(--rival-line);font-size:12px;color:var(--rival-soft);overflow:hidden}
+.rivstrip b{font-family:var(--serif);font-weight:800;font-size:14px;color:var(--rival-pale)}
+.rivstrip .g{display:flex;align-items:center;gap:4px}
+.rivstrip .g .ai{width:20px;height:20px}
+.rivstrip .ga{width:30px;height:20px;border-radius:3px;border:1px solid var(--deep);object-fit:cover}
+.rivstrip .last{margin-left:auto;font-size:11px;color:var(--rival-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.traybar{height:226px;flex-shrink:0;border-radius:16px;border:1px solid var(--line);background:color-mix(in srgb,var(--ink) 92%,transparent);box-shadow:inset 0 0 0 4px color-mix(in srgb,var(--lacquer) 90%,transparent),inset 0 0 0 5px color-mix(in srgb,var(--gold) 35%,transparent);padding:14px 16px;display:flex;gap:13px}
+.traybar .lbl{font-size:10.5px;line-height:16px}
+.traybar .hand{flex:1 1 476px;min-width:0;display:flex;flex-direction:column;gap:6px}
+.traybar .hand .crow{flex:1;align-items:flex-end;padding-top:12px}
+.traybar .gard{width:296px;flex-shrink:0;padding-left:13px;border-left:1px solid var(--line-2);display:flex;flex-direction:column;gap:6px}
+.traybar .gard .crow{flex:1;gap:12px;justify-content:flex-start;align-items:flex-end}
+.tplot{width:86px;height:130px;flex-shrink:0;border-radius:7px;border:1.5px dashed var(--plot-line);background:color-mix(in srgb,var(--parch) 4%,transparent);color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:700;padding:0}
+.tplot:disabled{opacity:.45}
+.stash{width:128px;flex-shrink:0;display:flex;flex-direction:column;gap:12px}
+.stash .s{display:flex;flex-direction:column;gap:4px}
+.stash .s>span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.coins{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.coin{width:28px;height:36px;border-radius:4px;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center}
+.coin i{width:18px;height:18px;border-radius:50%;background:var(--shu);color:var(--parch-hi);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:800;font-size:11px;font-style:normal}
+.onis{display:flex;gap:6px}
+.oc{width:30px;height:40px;border-radius:4px;background:var(--oni-card);border:2px solid var(--shu);display:flex;align-items:center;justify-content:center}
+.oc .ai{width:24px;height:24px}
+.oc.gone{background:none;border:1.5px dashed var(--line)}
+.oc.gone .ai{display:none}
+.tpill{align-self:flex-start;display:flex;align-items:center;gap:4px;padding:2px 9px 2px 3px;border-radius:999px;border:1px solid var(--shu-dim);background:color-mix(in srgb,var(--shu-hi) 14%,transparent);font-size:11px;color:var(--you)}
+.tpill .ai{width:22px;height:22px}
+.tacts{flex:1;min-width:150px;display:flex;flex-direction:column;gap:8px}
+.tacts .brew{height:64px;border-radius:12px;border:1px solid var(--shu-line);background:var(--shu);color:var(--parch-hi);box-shadow:inset 0 0 0 2px var(--shu),inset 0 0 0 3px color-mix(in srgb,var(--parch-hi) 45%,transparent),0 4px 0 var(--shu-shadow);display:flex;align-items:center;justify-content:center;gap:10px;padding:0 8px}
+.tacts .brew .k{font-family:var(--serif);font-weight:800;font-size:26px;line-height:1}
+.tacts .brew .bt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;min-width:0}
+.tacts .brew .bt b{font-size:15px}.tacts .brew .bt small{font-size:10px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.tacts .brew:disabled{opacity:.45}
+.tacts .brew.glow{animation:glow 1.4s ease-in-out infinite}
+/* tablet: the rival strip opens the rival's table; the tray holds hand, garden or ward, the oni stash and Brew */
+.tabl .rivstrip{width:100%;text-align:left;cursor:pointer}
+.tabl .side .acts{height:58px;grid-template-columns:0.8fr 1fr 1.2fr}
+.tabl .side .acts .ab.primary .k{font-size:16px}
+.tabl .traybar{height:166px;padding:10px 14px;gap:13px}
+.tabl .traybar .hand .crow{padding-top:8px}
+.tabl .traybar .gard{width:auto;flex-shrink:0}
+.tabl .traybar .gard .crow{gap:8px}
+.tabl .tplot{width:66px;height:100px;font-size:10px;text-align:center}
+.tabl .stash{width:112px}
+.tabl .tacts{flex:0 0 170px}
+.tabl .tacts .brew{flex:1;height:auto;flex-direction:column;gap:4px}
+.tabl .tacts .brew .bt{align-items:center;text-align:center}
+.tabl .tacts .brew .bt b{font-size:18px}

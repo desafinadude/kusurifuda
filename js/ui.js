@@ -556,32 +556,45 @@
   // the hand always showing above the phone's tabs (garden, ward, market with its tools) and action bar
   function patRow(pt, k) {
     const tuck = pt.cursed != null ? `<span class="tuck${pt.cursed === 0 ? " mine" : ""}" aria-hidden="true">${art("oni")}</span>` : "";
-    const px = Math.max(64, Math.min(100, Math.floor((U.sh - 150) / 4) - 30));
+    const px = Math.max(56, Math.min(100, Math.floor((U.sh - 330) / 4) - 24));
     return `<button class="pc vr paper${k === U.sel ? " sel" : ""}${fresh("p" + pt.id)}" data-a="sel" data-i="${k}" aria-label="${attr(t("patient.label", { name: whoOf(pt), ailment: ailOf(pt), value: pt.val }) + (pt.cursed != null ? ", " + t("patient.cursed") : ""))}">
       ${mapSVG(pt, { px, icons: true })}<span class="vt"><span class="vh">${ptPortrait(pt)}${ptChip(pt, false, true)}${monVal(pt.val)}</span><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small></span>${tuck}${hintBadges(pt)}</button>`;
   }
   function tablScreen() {
-    // every card row in the side column wraps four to a row at one size
-    const g = G(), tb = U.tab === "hand" ? "garden" : U.tab, hu = (320 - 3 * 8) / (4 * 66);
-    let tray;
-    if (tb === "ward") tray = `<div class="hgrid">${wardCards(hu, "w")}</div>`;
-    else if (tb === "garden") tray = `<div class="hgrid">${gardenCards(hu, "g", () => `<button class="ic plotc" style="--u:${hu}" data-a="plant" ${!myTurn() || g.turn.planted ? "disabled" : ""} aria-label="${attr(t("garden.plantAria"))}">${ICON.plant(22)}${t("garden.plant")}</button>`)}</div>`;
-    else if (U.mview === "tools") tray = `<div class="tgrid2">${toolCards()}</div>`;
-    else tray = `<div class="hgrid">${marketCards(hu, "m")}</div>`;
-    const tabB = (k, label) => `<button data-a="tab" data-i="${k}" aria-pressed="${tb === k}">${label}</button>`;
+    const g = G(), b = bot(), mine = myTurn(), rs = routeState(), n = nTake(), mu = (300 - 2 * 8) / (3 * 66);
+    const handW = U.sw - 36 - 32 - 4 * 13 - 300 - 112 - 170;
+    const k = (g2) => (gl(g2) || ASSET["icon." + g2] ? `<span class="k">${ic(g2)}</span>` : "");
+    // the market and the tools share the right column: Tools swaps the market cards for the tools, and reads Back there
+    const tools = U.mview === "tools";
+    const ab = (a, icon, label, o = {}) => `<button class="ab${o.cls ? " " + o.cls : ""}" data-a="${a}" ${o.dis ? "disabled" : ""}>${icon}${label}</button>`;
+    const macts = `<div class="acts">${ab("mtools", tools ? ICON.back() : ICON.tools(), tools ? t("act.back") : t("act.tools"))}${ab("blind", ICON.blind(), t("act.drawBlind", { n }), { dis: !canAct() })}${ab("take", "", `${k("market")}${t("act.takeN", { n, have: U.mkt.length })}`, { cls: "primary", dis: !canAct() || U.mkt.length !== n })}</div>`;
+    const plot = () => `<button class="tplot" data-a="plant" ${!mine || g.turn.planted || !me().hand.length ? "disabled" : ""} aria-label="${attr(t("garden.plantAria"))}">${ICON.plant(22)}${t("garden.plantHere")}</button>`;
+    let brew;
+    if (mine && g.turn.acted) brew = `<button class="brew glow" data-a="end">${k("endTurn")}<span class="bt"><b>${t("act.endTurn")}</b><small>${t("act.endTurnSub")}</small></span></button>`;
+    else brew = `<button class="brew${rs && rs.ready && mine ? " glow" : ""}" data-a="brew" ${rs && rs.ready && mine ? "" : "disabled"}>${k("cure")}<span class="bt"><b>${t("act.brew")}</b><small>${rs ? t("act.brewSub", { name: esc(whoOf(rs.pt)) }) : t("board.nobody")}</small></span></button>`;
+    const rivHand = openHands() ? `<span class="g">${t("rival.hand")} ${b.hand.map((c) => `<span class="mc" style="background:${EL(c.el).color}" title="${attr(cardName(c))}">${pathSVG(c, c.steps, 18)}</span>`).join("")}</span>` : `<span>${t("rival.handN", { n: b.hand.length })}</span>`;
     return `<div class="scr tabl lacquer">
       <header class="top">${menuBtn()}<div class="brand"><div class="b1">${gl("brand") || ASSET["icon.brand"] ? `<span>${ic("brand")}</span>` : ""}<span>${t("app.name")}</span></div><small>${turnLabel()}</small></div>${fameBars()}${goal()}</header>
+      <button class="rivstrip${g.cur === 1 ? " live" : ""}" data-a="rival" aria-label="${attr(t("rival.showTable"))}">${portrait(1)}<b>${t("who.rival")}</b>${charOf(1) ? `<span class="rch">${esc(charName(charOf(1)))} · ${esc(abilityName(charOf(1).ability))}</span>` : ""}${rivHand}<span class="g">${t("rival.garden")} ${b.garden.map((c) => `<span class="ga" style="background:${EL(c.el).color}">${art(EL(c.el).art, "", { slice: true })}</span>`).join("") || "—"}</span>
+        ${RU().toolIds.filter((id) => b.tools[id]).map((id) => `<span class="g">${art(toolArt(id))}${esc(toolName(id))}</span>`).join("")}
+        <span class="g">${Array.from({ length: b.oni }, () => art("oni")).join("") || t("rival.noOni")}</span>
+        <span class="last">${g.cur === 1 && U.rv ? esc(stripTags(U.rv.say)) : esc(g.lastBot || "")}</span></button>
       <div class="mid">
         <section class="vcol" aria-label="${attr(t("label.village"))}"><div class="lbl"><span>${withGl(t("label.village"), "village")}</span><span>${t("label.patientDeck", { n: g.pats.length })}</span></div>
-          <div class="vlist">${g.village.map((pt, k) => patRow(pt, k)).join("") || `<span class="empty">${t("label.villageEmpty")}</span>`}</div></section>
+          <div class="vlist">${g.village.map((pt, k2) => patRow(pt, k2)).join("") || `<span class="empty">${t("label.villageEmpty")}</span>`}</div></section>
         ${boardPanel()}
-        <section class="side">
-          <div class="lbl"><span>${withGl(t("label.yourHand"), "hand")} ${me().hand.length}/${KF.limit(0, "handLimit")}</span></div>
-          <div class="hgrid hand">${handCards(hu, "h")}</div>
-          <nav class="tabs" aria-label="${attr(t("label.yourCards"))}">${tabB("garden", t("tabs.garden", { n: me().garden.length, max: KF.limit(0, "gardenMax") }))}${RU().ward.enabled ? tabB("ward", t("tabs.ward", { n: wardReady() })) : ""}${tabB("market", t("tabs.market", { n: g.market.length }))}</nav>
-          <div class="tray${tb === "market" ? " mk" : ""}">${tray}</div>
-          ${phoneActs()}
-        </section>
+        <section class="side"><div class="lbl"><span>${tools ? withGl(t("label.tools"), "tools") : withGl(t("label.market"), "market")}</span><span>${tools ? t("tools.paidWithFame") : t("label.deckDiscard", { n: g.deck.length, d: g.discard.length })}</span></div>
+          <div class="tray">${tools ? `<div class="tgrid2">${toolCards()}</div>` : `<div class="hgrid">${marketCards(mu, "m")}</div>`}</div>
+          ${macts}</section>
+      </div>
+      <div class="traybar">
+        <div class="hand"><div class="lbl"><span>${withGl(t("label.yourHand"), "hand")} ${me().hand.length}/${KF.limit(0, "handLimit")}</span><span class="n">${t("hand.tapToPreview")}</span></div><div class="crow${me().hand.length >= 6 ? " spread" : ""}">${handCards(rowU(me().hand.length, handW, 1, 1), "h")}</div></div>
+        <div class="gard"><div class="lbl"><span>${U.gview === "ward" ? `${t("label.ward")} · ${wardReady()}` : `${withGl(t("label.garden"), "garden")} ${me().garden.length}/${KF.limit(0, "gardenMax")}`}</span>${RU().ward.enabled ? `<button class="linkbtn" data-a="gview">${U.gview === "ward" ? t("label.toGarden") : t("label.toWard")}</button>` : `<span class="n">${t("garden.neverUsedUp")}</span>`}</div><div class="crow${U.gview === "ward" ? " wardrow" : ""}">${U.gview === "ward" ? wardCards(Math.min(1, rowU(Math.max(4, me().ward.length), 300, 1, 1)), "w") : gardenCards(1, "g", plot)}</div></div>
+        <div class="stash">
+          <div class="s"><span>${t("stash.oniLeft", { n: me().oni })}</span><div class="onis">${Array.from({ length: KF.limit(0, "oniPerPlayer") }, (_, i) => `<span class="oc${i >= me().oni ? " gone" : ""}">${art("oni")}</span>`).join("")}</div></div>
+          <div class="s"><span>${t("label.tools")}</span>${RU().toolIds.filter((id) => me().tools[id]).map((id) => `<span class="tpill">${art(toolArt(id))}${esc(toolName(id))}</span>`).join("") || `<span class="empty" style="font-size:11px">${t("stash.noneYet")}</span>`}</div>
+        </div>
+        <div class="tacts">${brew}</div>
       </div></div>`;
   }
 

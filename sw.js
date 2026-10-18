@@ -1,6 +1,6 @@
 /* Kusurifuda service worker — precaches the whole game so it plays offline.
    Version is a hash of the app files, so any change ships a fresh cache. */
-const VERSION = "da28ddf885";
+const VERSION = "a28afe76af";
 const CACHE = "kusurifuda-" + VERSION;
 const PRECACHE = [
  "./",
