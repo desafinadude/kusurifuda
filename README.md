@@ -110,6 +110,13 @@ your own drawing and add its key to `skip` so the build leaves it alone.
 - `node build/balance.js 200` plays bot-vs-bot games against `rules.json` and reports whether tools
   and curses pay off.
 
+## GitHub Pages
+`.github/workflows/pages.yml` publishes the game on every push to `master`. Turn it on once in the
+repository's Settings › Pages › Build and deployment › Source: **GitHub Actions**. The game then lives at
+`https://<owner>.github.io/<repo>/`; every path in it is relative, so the subfolder needs no changes.
+GitHub Pages can't set headers, so `sw.js` gets its default caching; browsers still check it for updates
+at least once a day, and the new version takes over on the next load after that.
+
 ## Installing (PWA)
 Icons for every platform (any/maskable/monochrome, favicons, Safari pinned tab, Windows tile), 42 iOS
 launch screens, store screenshots and two shortcuts. Menu › Install the app gives one-tap install
