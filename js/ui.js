@@ -556,9 +556,10 @@
   // the hand always showing above the phone's tabs (garden, ward, market with its tools) and action bar
   function patRow(pt, k) {
     const tuck = pt.cursed != null ? `<span class="tuck${pt.cursed === 0 ? " mine" : ""}" aria-hidden="true">${art("oni")}</span>` : "";
-    const px = Math.max(56, Math.min(100, Math.floor((U.sh - 330) / 4) - 24));
+    const px = Math.max(56, Math.min(96, Math.floor((U.sh - 330) / 4) - 22));
     return `<button class="pc vr paper${k === U.sel ? " sel" : ""}${fresh("p" + pt.id)}" data-a="sel" data-i="${k}" aria-label="${attr(t("patient.label", { name: whoOf(pt), ailment: ailOf(pt), value: pt.val }) + (pt.cursed != null ? ", " + t("patient.cursed") : ""))}">
-      ${mapSVG(pt, { px, icons: true })}<span class="vt"><span class="vh">${ptPortrait(pt)}${ptChip(pt, false, true)}${monVal(pt.val)}</span><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small></span>${tuck}${hintBadges(pt)}</button>`;
+      <span class="vt"><span class="vh">${ptPortrait(pt, "big")}<span class="vn"><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small></span></span>
+      <span class="vf">${ptChip(pt, true)}${hintBadges(pt, "inhead")}${monVal(pt.val)}</span></span>${mapSVG(pt, { px, icons: true })}${tuck}</button>`;
   }
   function tablScreen() {
     const g = G(), b = bot(), mine = myTurn(), rs = routeState(), n = nTake(), mu = (300 - 2 * 8) / (3 * 66);
