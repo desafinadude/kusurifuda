@@ -1397,7 +1397,7 @@
     const counts = { names: list("content.patients").length || 1, ailments: list("content.ailments").length || 1, ingredientNames: Math.max(1, ...Object.keys(rules.deck.elements).map((el) => list("content.ingredients." + el).length)) };
     KF.configure(rules, counts);
     BASE_OPEN = !!rules.openHands; BASE_END = rules.endFame; BASE_RULES = rules;
-    QUEST = null; if (CFG.quest) try { QUEST = await getJSON(CFG.quest); } catch (e) { console.warn(e); }
+    QUEST = null; if (CFG.quest && CFG.questOn !== false) try { QUEST = await getJSON(CFG.quest); } catch (e) { console.warn(e); }
     QMAP = null; if (QUEST && QUEST.map && QUEST.map.svg) try { QMAP = await readQuestMap(new URL(QUEST.map.svg, new URL(CFG.quest, location.href)).href); } catch (e) { console.warn(e); }
   }
 

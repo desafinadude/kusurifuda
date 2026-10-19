@@ -85,7 +85,7 @@ All in `rules.json`, each with an `_about`:
 
 ### Characters, guilds and colours
 The game opens on a splash screen, then the title menu: **Continue** (a saved game), **Quick game**
-and **Journey to Edo**. Quick game opens its options: the mon target, the rival's skill (how far
+and **Journey to Edo** (when the quest is on). Quick game opens its options: the mon target, the rival's skill (how far
 ahead it looks: Gentle 2, Steady 3, Sharp 4, Master 5), whether it buys tools and curses, its
 head start, how many oni block each patient (few 0-2, some = rules.json, many 2-5) and open
 hands. They are remembered and are the same knobs the quest turns stop by stop; a quest stop
@@ -106,6 +106,8 @@ the title menu; the game stays saved behind Continue.
   66–74% against a plain bot, so they are roughly even with each other.
 
 ### Quest: the journey to Edo
+Hidden for now: `"questOn": false` in `config.json` takes it off the title menu (set it to true to bring it
+back). It still needs retuning for straight moves.
 Menu › Journey to Edo plays twenty games in a row, one per post town on the Ōshū Kaidō from Aomori to
 Edo. Win a stop to travel on; the map between games shows how far you have come. Everything lives in
 `quest.json`, one entry per stop:
