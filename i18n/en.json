@@ -29,15 +29,16 @@
       "V": "Kitsune"
     },
     "ingredients": {
+      "_about": "One list per element, in order of how far the ingredient moves in a straight game (1, 2, 3 squares). The pairs (AF air and fire, AW, FE, EW) move diagonally, 1 then 2 squares. In a classic game each element's names are shared out over its paths.",
       "W": [
+        "Koi Scale",
         "Lotus Root",
-        "Nameko",
-        "Koi Scale"
+        "Nameko"
       ],
       "F": [
         "Tōgarashi",
-        "Reishi",
-        "Hotaru"
+        "Hotaru",
+        "Reishi"
       ],
       "E": [
         "Ninjin",
@@ -45,9 +46,25 @@
         "Tanuki Fur"
       ],
       "A": [
-        "Sakura Petal",
+        "Crane Feather",
         "Kikurage",
-        "Crane Feather"
+        "Sakura Petal"
+      ],
+      "AF": [
+        "Hinoki Smoke",
+        "Hō-ō Feather"
+      ],
+      "AW": [
+        "Morning Mist",
+        "Rain Cloud"
+      ],
+      "FE": [
+        "Sumi Charcoal",
+        "Lava Stone"
+      ],
+      "EW": [
+        "River Clay",
+        "Paddy Mud"
       ],
       "V": "Kitsune Tail"
     },
@@ -202,17 +219,17 @@
     "tools": {
       "ladle": {
         "name": "Ladle",
-        "text": "Once per brew, play one card turned a quarter turn.",
-        "short": "Play one card a quarter turn"
+        "text": "Once per brew, play one card as a neighbouring element: a quarter turn either way.",
+        "short": "One card as a neighbouring element"
       },
       "mortar": {
         "name": "Mortar",
-        "text": "Once per brew, play one card backwards (a half turn).",
-        "short": "Play one card backwards"
+        "text": "Once per brew, play one card as its opposite element: a half turn.",
+        "short": "One card as its opposite"
       },
       "charm": {
         "name": "Kitsune Charm",
-        "text": "Once per brew, take one extra step in any direction.",
+        "text": "Once per brew, take one extra step to any square next to you.",
         "short": "One free step, any way"
       },
       "basket": {
@@ -441,7 +458,7 @@
     "clearAria": "Clear the whole route",
     "undo": "Undo",
     "direction": "Direction",
-    "turnAny": "Turn the kitsune a quarter turn",
+    "turnAny": "Try the next way",
     "usedThisBrew": "(used this brew)"
   },
   "hand": {
@@ -606,7 +623,7 @@
     "dirOne": "{el} {glyph} mostly {dir}",
     "goal": {
       "h": "Goal",
-      "p": "Rival apothecaries race to {end} {{mon}}. Every patient is a small map: cure them by playing ingredient cards whose paths walk your marker from the centre ◯ to the cure {cure}."
+      "p": "Rival apothecaries race to {end} {{mon}}. Every patient is a small map: cure them by playing ingredient cards that move your marker from the start ◯ to the cure {cure}."
     },
     "turn": {
       "h": "Your turn",
@@ -614,7 +631,7 @@
     },
     "brew": {
       "h": "Brewing",
-      "p": "Pick a patient (tap it, or swipe the map), then tap a card to preview its path. Play it, or cancel and try another. Tap a numbered chip to go back to that card. Paths go: {dirs}; a Kitsune Tail {kitsune} is one step any way. The glyphs in a card's corner show every direction its path takes. Order matters. Paths can't enter an oni {oniG} square or leave the map. Finish <b>exactly</b> on {cure}, using at least {min} hand card. Hand cards are spent; garden cards stay."
+      "p": "Pick a patient (tap it, or swipe the map), then tap a card to preview its move. Play it, or cancel and try another. Tap a numbered chip to go back to that card. Each element moves in a straight line its own way: {dirs}, exactly as many squares as its card shows. A card with two elements moves diagonally between their ways. A Kitsune Tail {kitsune} moves one square any way, diagonals too. Straight moves can't pass through an oni {oniG}; diagonals slip past. Nothing may land on an oni or leave the map. Finish <b>exactly</b> on {cure}, using at least {min} hand card. Hand cards are spent; garden cards stay."
     },
     "fame": {
       "h": "{{Mon}}",
@@ -626,7 +643,7 @@
     },
     "curse": {
       "h": "Curses",
-      "p": "After a cure you may spend one of your {oni} oni cards to turn a village patient's map. The cure and the oni move; ingredient directions don't. A cursed patient can't be cursed again."
+      "p": "After a cure you may spend one of your {oni} oni cards to turn a village patient's map. The cure, the oni and the start move; ingredient directions and the patient's element don't, so the cure may now lie against the element it needs. A cursed patient can't be cursed again."
     },
     "curseOpen": "Hands are open, so look for the patient your rival can cure next turn.",
     "curseHidden": "Hands are hidden, so it's a guess.",
@@ -637,9 +654,9 @@
     "gotIt": "Got it",
     "patients": {
       "h": "Patients",
-      "p": "Every patient has an element (its sign on the card) and a move. Once cured they join your <b>ward</b>, and each ward patient helps you <b>once</b>: play its move in any brew, like a garden card, or use it as a known cure. Moves: <b>Step</b> 1 square, <b>Stride</b> 2, <b>Leap</b> 2 squares over whatever is between, <b>Any way</b> 1 square any direction, <b>Lucky step</b> 1 square and +1 {{mon}}."
+      "p": "Every patient has an element (the badge on their portrait). Once cured they join your <b>ward</b>, and each ward patient helps you <b>once</b>: in any brew it can <b>leap</b> 2 squares one way and 1 to the side, over anything between, or be used as a known cure."
     },
-    "needEl": "A cure needs at least one ingredient of the patient's element (the big sign in a card's corner). The Kitsune Tail {kitsune} counts as any element.",
+    "needEl": "A cure needs at least one ingredient of the patient's element (the big sign in a card's corner). The Kitsune Tail {kitsune} counts as any element. A two-element card counts as either.",
     "known": {
       "h": "Known cures",
       "p": "If an unused ward patient had the same ailment, you can cure the new patient without ingredients for half its value (at least 1). That uses up the ward patient."
@@ -647,6 +664,15 @@
     "guild": {
       "h": "Guilds",
       "p": "Your guild has an element. Once per brew you may play one garden card of that element twice, so plant those."
+    },
+    "brewClassic": {
+      "h": "Brewing",
+      "p": "Pick a patient (tap it, or swipe the map), then tap a card to preview its path. Play it, or cancel and try another. Tap a numbered chip to go back to that card. Paths go: {dirs}; a Kitsune Tail {kitsune} is one step any way. The glyphs in a card's corner show every direction its path takes. Order matters. Paths can't enter an oni {oniG} square or leave the map. Finish <b>exactly</b> on {cure}, using at least {min} hand card. Hand cards are spent; garden cards stay."
+    },
+    "dirOneStraight": "{el} {glyph} {dir}",
+    "patientsClassic": {
+      "h": "Patients",
+      "p": "Every patient has an element (its sign on the card) and a move. Once cured they join your <b>ward</b>, and each ward patient helps you <b>once</b>: play its move in any brew, like a garden card, or use it as a known cure. Moves: <b>Step</b> 1 square, <b>Stride</b> 2, <b>Leap</b> 2 squares over whatever is between, <b>Any way</b> 1 square any direction, <b>Lucky step</b> 1 square and +1 {{mon}}."
     }
   },
   "log": {
@@ -868,6 +894,10 @@
     "lucky": {
       "name": "Lucky step",
       "text": "1 square {dir}, +1 {{mon}} if that brew cures"
+    },
+    "knight": {
+      "name": "Leap",
+      "text": "2 squares one way and 1 to the side, over anything between"
     }
   },
   "guildAbility": {
@@ -1024,6 +1054,10 @@
     "oniFew": "Few",
     "oniSome": "Some",
     "oniMany": "Many",
-    "start": "Start the game"
+    "start": "Start the game",
+    "moves": "Moves",
+    "movesSub": "Classic: the original bent paths",
+    "movesStraight": "Straight",
+    "movesClassic": "Classic"
   }
 }

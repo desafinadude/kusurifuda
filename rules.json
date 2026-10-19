@@ -12,16 +12,27 @@
   "sakuraBonus": 1,
   "openHands": true,
   "board": {
-    "_about": "Patients are maps of (2 x radius + 1) squares a side, start in the centre.",
+    "_about": "An even size: square boards that many squares a side, each patient starting on one of the four middle squares (curses turn the board about its middle, so the start moves too). size 0 or no size: (2 x radius + 1) squares a side, starting in the centre.",
+    "size": 8,
     "radius": 3
   },
   "deck": {
-    "_about": "Each element walks mostly in its own direction; opposite elements walk opposite ways (air up and earth down, water left and fire right). Patterns are steps from the walker's view: ahead, left, right. Each pattern makes one card per element.",
+    "_about": "mode \"straight\": each element moves in a straight line its own way (elements: air up, earth down, water left, fire right), exactly as many squares as the card says. straight = copies per element of each length; diagonal = copies of each length for each pair of neighbouring elements, which move diagonally between their two ways, slip past oni on the way and count as either element. mode \"classic\": bent paths, one card per element for each of patterns (steps from the walker's view: ahead, left, right). The kitsune moves one square any way (diagonals too in straight mode).",
+    "mode": "straight",
     "elements": {
       "A": "up",
       "F": "right",
       "E": "down",
       "W": "left"
+    },
+    "straight": {
+      "1": 3,
+      "2": 2,
+      "3": 1
+    },
+    "diagonal": {
+      "1": 1,
+      "2": 1
     },
     "patterns": [
       [
@@ -68,7 +79,7 @@
   "patients": {
     "count": 30,
     "minDistance": 3,
-    "maxDistance": 6,
+    "maxDistance": 7,
     "oniMin": 1,
     "oniMax": 4,
     "sakuraChance": 0.65,
@@ -97,9 +108,10 @@
     ]
   },
   "ward": {
-    "_about": "Cured patients join your ward and can be played as moves. uses: times each can be played (null = once every brew, like a garden card).",
+    "_about": "Cured patients join your ward and can be played as moves. uses: times each can be played (null = once every brew, like a garden card). move \"knight\": every ward patient leaps like a knight (two squares one way, one to the side, over anything between); otherwise each has its own move from patients.moves.",
     "enabled": true,
-    "uses": 1
+    "uses": 1,
+    "move": "knight"
   },
   "knownCure": {
     "_about": "Cure a patient whose ailment you have cured before, without ingredients, for payout x its value (rounded down, at least 1). Spends that ward patient's move.",

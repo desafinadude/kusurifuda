@@ -12,7 +12,7 @@ const ABIL = Object.keys(BASE.abilities).filter((k) => !k.startsWith("_")), ELS 
 function run(name, changes) {
   if (ONLY && !name.includes(ONLY)) return;
   const R = JSON.parse(JSON.stringify(BASE)); Object.entries(changes).forEach(([k, v]) => set(R, k, v)); KF.configure(R);
-  const st = { turns: 0, cures: 0, known: 0, wardMoves: 0, stuck: 0, acts: 0, villageOut: 0, firstWins: 0, behindWins: 0, behindGames: 0, margin: 0, fameSpread: 0, uncured: 0 };
+  const st = { cards: 0, opts: 0, optTurns: 0, turns: 0, cures: 0, known: 0, wardMoves: 0, stuck: 0, acts: 0, villageOut: 0, firstWins: 0, behindWins: 0, behindGames: 0, margin: 0, fameSpread: 0, uncured: 0 };
   for (let g = 0; g < N; g++) {
     const a = ABIL.slice().sort(() => Math.random() - 0.5);
     const G = KF.newGame({}, [{ ability: a[0], gel: ELS[Math.floor(Math.random() * 4)] }, { ability: a[1], gel: ELS[Math.floor(Math.random() * 4)] }]);
@@ -20,9 +20,11 @@ function run(name, changes) {
     while (!G.over && t < 300) {
       const seat = G.cur; if (seat === 0) swap(G);
       G.botStage = "buy"; G.botCured = false;
+      // how many village patients this seat could cure at the start of its turn
+      st.opts += G.village.filter((pt) => KF.solveFor(1, pt, 5).best).length; st.optTurns++;
       for (let i = 0; i < 30; i++) {
         const m = KF.botNext(); if (m.type === "end") break;
-        if (m.type === "cure") { st.cures++; st.wardMoves += m.seq.filter((q) => q.g === "w").length; st.acts++; }
+        if (m.type === "cure") { st.cards += m.seq.length; st.cures++; st.wardMoves += m.seq.filter((q) => q.g === "w").length; st.acts++; }
         if (m.type === "known") { st.known++; st.acts++; }
         if (m.type === "gather" || m.type === "blind") { st.stuck++; st.acts++; }
         KF.botDo(m);
@@ -39,7 +41,7 @@ function run(name, changes) {
     st.margin += Math.abs(G.P[0].fame - G.P[1].fame);
   }
   const f = (x, d = 1) => (x / N).toFixed(d);
-  console.log(`${name.padEnd(34)} turns ${f(st.turns)}  cures/g ${f(st.cures + st.known)} (known ${f(st.known)})  wardMoves/cure ${(st.wardMoves / Math.max(1, st.cures)).toFixed(2)}  gather% ${(100 * st.stuck / st.acts).toFixed(0)}  1st-wins ${(100 * st.firstWins / N).toFixed(0)}%  comeback ${(100 * st.behindWins / Math.max(1, st.behindGames)).toFixed(0)}%  margin ${f(st.margin)}  village-out ${(100 * st.villageOut / N).toFixed(0)}%`);
+  console.log(`${name.padEnd(34)} curable/turn ${(st.opts / st.optTurns).toFixed(2)}  cards/cure ${(st.cards / Math.max(1, st.cures)).toFixed(1)}  turns ${f(st.turns)}  cures/g ${f(st.cures + st.known)} (known ${f(st.known)})  wardMoves/cure ${(st.wardMoves / Math.max(1, st.cures)).toFixed(2)}  gather% ${(100 * st.stuck / st.acts).toFixed(0)}  1st-wins ${(100 * st.firstWins / N).toFixed(0)}%  comeback ${(100 * st.behindWins / Math.max(1, st.behindGames)).toFixed(0)}%  margin ${f(st.margin)}  village-out ${(100 * st.villageOut / N).toFixed(0)}%`);
 }
 const OFF = { "ward.enabled": false, "knownCure.enabled": false, "guilds.echo": false, "patients.requireElement": false, "patients.ailmentKinds": null };
 run("A  old rules", OFF);
@@ -52,3 +54,13 @@ run("G  F + element required", { "ward.enabled": true, "ward.uses": 1, "knownCur
 run("H  G but ward twice", { "ward.enabled": true, "ward.uses": 2, "knownCure.enabled": true, "patients.ailmentKinds": 8, "guilds.echo": true, "patients.requireElement": true });
 run("I  G but known(6)", { "ward.enabled": true, "ward.uses": 1, "knownCure.enabled": true, "patients.ailmentKinds": 6, "guilds.echo": true, "patients.requireElement": true });
 run("NOW rules.json as shipped", {});
+run("CLASSIC bent paths, 7 x 7", { "board.size": 0, "deck.mode": "classic", "ward.move": null, "patients.maxDistance": 6 });
+
+// straight moves (now the default): elements go straight 1-3 squares, pairs go diagonally, the ward leaps like a knight, 8 x 8 boards
+const ST = { "board.size": 8, "deck.mode": "straight", "deck.straight": { 1: 3, 2: 2, 3: 1 }, "deck.diagonal": { 1: 1, 2: 1 }, "ward.move": "knight", "patients.maxDistance": 7, openHands: true };
+run("S0 straight 3/2/1 + diag 1/1", ST);
+run("S1 S0, more oni (2-5)", { ...ST, "patients.oniMin": 2, "patients.oniMax": 5 });
+run("S2 S0, more 1s (4/2/1)", { ...ST, "deck.straight": { 1: 4, 2: 2, 3: 1 } });
+run("S3 S0, diagonals 1 only (x2)", { ...ST, "deck.diagonal": { 1: 2 } });
+run("S4 S0, cures nearer (max 6)", { ...ST, "patients.maxDistance": 6 });
+run("S5 S0, no diagonals", { ...ST, "deck.diagonal": {} });

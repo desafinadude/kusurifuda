@@ -23,6 +23,8 @@
     out.gatherTools = ids.filter((id) => tools[id].effect === "gather");
     out.copies = (r.tools && r.tools.copies != null) ? r.tools.copies : 1; // players - 1 with 2 players
     out.R = (r.board && r.board.radius) || 3;
+    // board.size (even): the start is one of the four middle squares, fixed per patient
+    out.S = r.board && r.board.size ? r.board.size : 0;
     fillDefaults(out);
     out.players = 2;
     return out;
@@ -51,14 +53,30 @@
   const rotK = (v, k) => { let w = v; for (let i = 0; i < ((k % 4) + 4) % 4; i++) w = rotR(w); return w; };
   const md = (a, b) => Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
   const inB = (x, y) => Math.abs(x) <= RU().R && Math.abs(y) <= RU().R;
+  // a patient's own board: pt.b = [xmin, xmax, ymin, ymax] around its start, when the board has an even size
+  const inP = (pt, x, y) => (pt && pt.b ? x >= pt.b[0] && x <= pt.b[1] && y >= pt.b[2] && y <= pt.b[3] : inB(x, y));
+  const straight = () => RU().deck.mode === "straight";
+  // how far a card reaches, for the bot's choices
+  const reach = (c) => (c.steps ? c.steps.reduce((a, v) => a + Math.max(Math.abs(v[0]), Math.abs(v[1])), 0) : c.el === "V" ? 1.5 : 1);
   // which board directions a path uses, in the order it first uses them
-  function dirsOf(steps) { const out = []; (steps || []).forEach(([x, y]) => { const d = x > 0 ? "right" : x < 0 ? "left" : y < 0 ? "up" : "down"; if (!out.includes(d)) out.push(d); }); return out; }
+  function dirsOf(steps) { const out = [], add = (d) => { if (!out.includes(d)) out.push(d); }; (steps || []).forEach(([x, y]) => { if (x) add(x > 0 ? "right" : "left"); if (y) add(y < 0 ? "up" : "down"); }); return out; }
   // element whose main direction is d
   const elOfDir = (d) => { const e = RU().deck.elements; return Object.keys(e).find((k) => e[k] === d) || null; };
 
   // ---------- cards & patients ----------
   function makeDeck() {
     const r = RU(), d = [];
+    if (r.deck.mode === "straight") {
+      // straight: each element goes its own way, exactly 1, 2 or 3 squares; a pair of neighbouring elements goes diagonally
+      const els = Object.keys(r.deck.elements), lens = (o) => Object.entries(o || {}).filter(([k]) => !k.startsWith("_"));
+      els.forEach((el) => { const D = DIRV[r.deck.elements[el]]; lens(r.deck.straight).forEach(([n, copies]) => { for (let i = 0; i < copies; i++) d.push({ id: G.uid++, el, steps: Array.from({ length: +n }, () => D), n: +n - 1 }); }); });
+      els.forEach((a, ai) => els.slice(ai + 1).forEach((b) => {
+        const A = DIRV[r.deck.elements[a]], B = DIRV[r.deck.elements[b]], V = [A[0] + B[0], A[1] + B[1]]; if (!V[0] && !V[1]) return;
+        lens(r.deck.diagonal).forEach(([n, copies]) => { for (let i = 0; i < copies; i++) d.push({ id: G.uid++, el: a, el2: b, diag: true, steps: [[V[0] * n, V[1] * n]], n: +n - 1 }); });
+      }));
+      for (let i = 0; i < r.deck.kitsune; i++) d.push({ id: G.uid++, el: "V", steps: null, n: 0 });
+      return shuffle(d);
+    }
     Object.keys(r.deck.elements).forEach((el) => {
       const D = DIRV[r.deck.elements[el]], m = { ahead: D, left: rotL(D), right: rotR(D) };
       r.deck.patterns.forEach((pat, pi) => d.push({ id: G.uid++, el, steps: pat.map((s) => m[s]), n: pi % COUNTS.ingredientNames }));
@@ -68,6 +86,14 @@
   }
   const isHaz = (pt, x, y) => pt.haz.some((h) => h[0] === x && h[1] === y);
   function bfsOK(pt) {
+    if (pt.b) {
+      const q = [[0, 0]], seen = new Set(["0,0"]);
+      while (q.length) {
+        const [x, y] = q.shift(); if (x === pt.t[0] && y === pt.t[1]) return true;
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = x + dx, ny = y + dy, k = nx + "," + ny; if (!inP(pt, nx, ny) || seen.has(k) || isHaz(pt, nx, ny)) continue; seen.add(k); q.push([nx, ny]); }
+      }
+      return false;
+    }
     const q = [[0, 0]], seen = new Set(["0,0"]);
     while (q.length) {
       const [x, y] = q.shift(); if (x === pt.t[0] && y === pt.t[1]) return true;
@@ -79,19 +105,24 @@
     return false;
   }
   function makePatient(names) {
-    const P = RU().patients, R = RU().R, span = 2 * R + 1, cell = () => Math.floor(rnd() * span) - R;
+    const P = RU().patients, R = RU().R, S = RU().S;
     for (;;) {
-      let t; do { t = [cell(), cell()]; } while (md(t, [0, 0]) < P.minDistance || md(t, [0, 0]) > P.maxDistance);
+      // the start square: the centre, or one of the four middle squares of an even board (coordinates are kept relative to it)
+      const st = S ? [Math.floor(rnd() * 2), Math.floor(rnd() * 2)] : null, lo = S ? -(S / 2 - 1) : -R, hi = S ? S / 2 : R;
+      const b = st ? [lo - st[0], hi - st[0], lo - st[1], hi - st[1]] : [-R, R, -R, R];
+      const cellX = () => b[0] + Math.floor(rnd() * (b[1] - b[0] + 1)), cellY = () => b[2] + Math.floor(rnd() * (b[3] - b[2] + 1)), cell = cellX;
+      let t; do { t = [cellX(), cellY()]; } while (md(t, [0, 0]) < P.minDistance || md(t, [0, 0]) > P.maxDistance);
       const h = P.oniMin + Math.floor(rnd() * (P.oniMax - P.oniMin + 0.6)), pt = { t, haz: [], bonus: null };
+      if (st) { pt.b = b; pt.s = st; }
       const free = (x, y) => !(x === 0 && y === 0) && !(x === t[0] && y === t[1]) && !isHaz(pt, x, y) && !(pt.bonus && pt.bonus[0] === x && pt.bonus[1] === y);
       const x0 = Math.min(0, t[0]), x1 = Math.max(0, t[0]), y0 = Math.min(0, t[1]), y1 = Math.max(0, t[1]);
       let tries = 0;
       while (pt.haz.length < h && tries++ < 300) {
         let x, y;
-        if (rnd() < 0.75) { x = x0 + Math.floor(rnd() * (x1 - x0 + 1)); y = y0 + Math.floor(rnd() * (y1 - y0 + 1)); } else { x = cell(); y = cell(); }
+        if (rnd() < 0.75) { x = x0 + Math.floor(rnd() * (x1 - x0 + 1)); y = y0 + Math.floor(rnd() * (y1 - y0 + 1)); } else { x = cellX(); y = cellY(); }
         if (free(x, y)) pt.haz.push([x, y]);
       }
-      if (rnd() < P.sakuraChance) { let k = 0; while (!pt.bonus && k++ < 200) { const x = x0 - 1 + Math.floor(rnd() * (x1 - x0 + 3)), y = y0 - 1 + Math.floor(rnd() * (y1 - y0 + 3)); if (inB(x, y) && free(x, y)) pt.bonus = [x, y]; } }
+      if (rnd() < P.sakuraChance) { let k = 0; while (!pt.bonus && k++ < 200) { const x = x0 - 1 + Math.floor(rnd() * (x1 - x0 + 3)), y = y0 - 1 + Math.floor(rnd() * (y1 - y0 + 3)); if (inP(pt, x, y) && free(x, y)) pt.bonus = [x, y]; } }
       if (!bfsOK(pt)) continue;
       pt.val = md(t, [0, 0]) - 1 + (pt.haz.length >= P.bonusAtOni ? P.bonusValue : 0);
       pt.who = names.length ? names.pop() : Math.floor(rnd() * COUNTS.names);
@@ -108,7 +139,14 @@
       return pt;
     }
   }
-  function rotatePatient(pt, k) { const f = (v) => rotK(v, k); pt.t = f(pt.t); pt.haz = pt.haz.map(f); if (pt.bonus) pt.bonus = f(pt.bonus); pt.rot = ((pt.rot || 0) + k) % 4; }
+  function rotatePatient(pt, k) {
+    const f = (v) => rotK(v, k); pt.t = f(pt.t); pt.haz = pt.haz.map(f); if (pt.bonus) pt.bonus = f(pt.bonus); pt.rot = ((pt.rot || 0) + k) % 4;
+    if (pt.b) {
+      const cs = [[pt.b[0], pt.b[2]], [pt.b[1], pt.b[3]]].map(f);
+      pt.b = [Math.min(cs[0][0], cs[1][0]), Math.max(cs[0][0], cs[1][0]), Math.min(cs[0][1], cs[1][1]), Math.max(cs[0][1], cs[1][1])];
+      const c = rotK([2 * pt.s[0] - 1, 2 * pt.s[1] - 1], k); pt.s = [(c[0] + 1) / 2, (c[1] + 1) / 2];
+    }
+  }
   function rotatedCopy(pt, k) { const c = JSON.parse(JSON.stringify(pt)); rotatePatient(c, k); return c; }
 
   // ---------- the ward: cured patients played as moves ----------
@@ -116,6 +154,8 @@
   function wardCard(w) {
     const D = DIRV[RU().deck.elements[w.el]] || [0, -1];
     const c = { id: "w" + w.id, el: w.el, ward: true, mv: w.mv, who: w.who, steps: [D] };
+    // knight: an L-shaped leap any way, landing only
+    if (RU().ward.move === "knight") { c.mv = "knight"; c.steps = null; c.knight = true; return c; }
     if (w.mv === "stride") c.steps = [D, D];
     else if (w.mv === "jump") { c.steps = [[2 * D[0], 2 * D[1]]]; c.jump = true; }
     else if (w.mv === "any") { c.steps = null; c.any = true; }
@@ -126,6 +166,8 @@
   const EL4 = ["W", "F", "E", "A"], WILD = 16;
   const elBit = (el) => (el === "V" ? WILD : 1 << Math.max(0, EL4.indexOf(el)));
   const isAny = (c) => !!c && (c.el === "V" || !!c.any);
+  const cardBits = (c) => elBit(c.el) | (c.el2 ? elBit(c.el2) : 0);
+  const hasEl = (c, el) => c.el === el || c.el2 === el;
   // does this brew need an ingredient of the patient's element, and is it met?
   const needEl = (pt) => (RU().patients.requireElement && pt.el ? pt.el : null);
   const elMet = (pt, em) => { const n = needEl(pt); return !n || !!(em & (elBit(n) | WILD)); };
@@ -145,21 +187,25 @@
     let [x, y] = pos; const trail = []; let bonus = false;
     for (const [dx, dy] of steps) {
       x += dx; y += dy; trail.push([x, y]);
-      if (!inB(x, y)) return { fail: "off", trail, pos: [x, y] };
+      if (!inP(pt, x, y)) return { fail: "off", trail, pos: [x, y] };
       if (isHaz(pt, x, y)) return { fail: "oni", trail, pos: [x, y] };
       if (pt.bonus && x === pt.bonus[0] && y === pt.bonus[1]) bonus = true;
     }
     return { pos: [x, y], trail, bonus };
   }
   const ANY = [[[0, -1]], [[1, 0]], [[0, 1]], [[-1, 0]]];
+  // straight decks: the kitsune steps one square any way, diagonals too
+  const KING = [...ANY, [[1, -1]], [[1, 1]], [[-1, 1]], [[-1, -1]]];
+  const KNIGHT = [[1, -2], [2, -1], [2, 1], [1, 2], [-1, 2], [-2, 1], [-2, -1], [-1, -2]].map((v) => [v]);
   // every way a card can be played; avail = turn tools still unused this brew. f = bits of the tools used
   function variants(c, avail) {
-    if (isAny(c)) return ANY.map((s) => ({ steps: s, f: 0 }));
+    if (c.knight) return KNIGHT.map((s) => ({ steps: s, f: 0 }));
+    if (isAny(c)) return (straight() ? KING : ANY).map((s) => ({ steps: s, f: 0 }));
     const out = [{ steps: c.steps, f: 0 }];
     (avail || []).forEach((t) => RU().toolDefs[t].turns.forEach((k) => out.push({ steps: c.steps.map((v) => rotK(v, k)), f: bit(t) })));
     return out;
   }
-  const ckey = (c) => (c.ward ? "w" + c.el + c.mv : c.el === "V" ? "V" : c.el + c.steps.map((s) => s.join(",")).join(";"));
+  const ckey = (c) => (c.ward ? "w" + c.el + c.mv : c.el === "V" ? "V" : c.el + (c.el2 || "") + c.steps.map((s) => s.join(",")).join(";"));
   function replay(pt, route) {
     let pos = [0, 0]; const trail = [[0, 0]]; let bonus = false;
     for (const r of route) { const s = stepCells(pt, pos, r.opt); trail.push(...s.trail); pos = s.pos; bonus = bonus || s.bonus; }
@@ -174,7 +220,7 @@
       const seenW = new Set();
       x.ward.forEach((w, i) => { if (!wardLeft(w)) return; const c = wardCard(w), k = "w" + ckey(c); if (seenW.has(k) || seenW.size >= 10) return; seenW.add(k); pool.push({ c, g: "w", i, k }); });
     }
-    if (x.echo) garden.forEach((c, i) => { if (c.el === x.echo) pool.push({ c, g: true, i, k: "e" + ckey(c), echo: true }); });
+    if (x.echo) garden.forEach((c, i) => { if (hasEl(c, x.echo)) pool.push({ c, g: true, i, k: "e" + ckey(c), echo: true }); });
     pool.sort((a, b) => (a.k < b.k ? -1 : a.k > b.k ? 1 : 0));
     const owned = r.turnTools.filter((t) => tools[t]);
     let best = null, minD = md([0, 0], pt.t); const seen = new Set(), seq = [];
@@ -191,7 +237,7 @@
         for (const v of variants(pool[j].c, avail)) {
           const s = stepCells(pt, pos, v.steps); if (s.fail) continue;
           const q = { g: pool[j].g, i: pool[j].i, opt: v.steps, f: v.f }; if (pool[j].echo) q.echo = true;
-          seq.push(q); dfs(s.pos, mask | (1 << j), bonus || s.bonus, hu + (pool[j].g ? 0 : 1), ab | v.f | (pool[j].echo ? ECHO : 0), em | elBit(pool[j].c.el), luck + (pool[j].c.lucky ? 1 : 0)); seq.pop();
+          seq.push(q); dfs(s.pos, mask | (1 << j), bonus || s.bonus, hu + (pool[j].g ? 0 : 1), ab | v.f | (pool[j].echo ? ECHO : 0), em | cardBits(pool[j].c), luck + (pool[j].c.lucky ? 1 : 0)); seq.pop();
         }
       }
     })([0, 0], 0, false, 0, 0, 0, 0);
@@ -219,7 +265,7 @@
     return { hand: [], garden: [], ward: [], fame: limit(0, "startFame", ab), oni: limit(0, "oniPerPlayer", ab), tools: {}, cures: 0, ability: ab ? w.ability : null, guild: w.guild != null ? w.guild : null, gel: w.gel || null, color: w.color || null, style: w.style || null };
   }
   function draw() { if (!G.deck.length) { G.deck = shuffle(G.discard); G.discard = []; } return G.deck.pop() || null; }
-  const snap = (c) => ({ el: c.el, n: c.n, steps: c.steps });
+  const snap = (c) => ({ el: c.el, el2: c.el2, n: c.n, steps: c.steps });
   function log(k, p, a) { G.log.unshift({ k, p, a: a || {}, r: G.round }); if (G.log.length > 200) G.log.length = 200; }
 
   function canBuy(pi, t) { const p = G.P[pi]; return !!RU().toolDefs[t] && !p.tools[t] && toolsLeft(t) > 0 && p.fame >= cost(t, pi); }
@@ -236,6 +282,7 @@
     if (!BASE) throw new Error("KF.configure(rules) first");
     G = { v: 2, uid: 1, rules: JSON.parse(JSON.stringify(BASE)) };
     deepAssign(G.rules, settings || {});
+    G.rules.S = G.rules.board && G.rules.board.size ? G.rules.board.size : 0;
     players = players || [];
     const names = shuffle(Array.from({ length: COUNTS.names }, (_, i) => i));
     const ak = G.rules.patients.ailmentKinds; G.ails = shuffle(Array.from({ length: COUNTS.ailments }, (_, i) => i)).slice(0, ak ? Math.min(ak, COUNTS.ailments) : COUNTS.ailments);
@@ -276,10 +323,10 @@
       else if (s.i < 0) { const t = r.stepTools[-1 - s.i]; if (!t || !p.tools[t] || seenG.has(s.i)) return "toolMisuse"; seenG.add(s.i); }
       else if (s.g) {
         const c = p.garden[s.i]; if (!c) return "cardMisuse";
-        if (seenG.has(s.i)) { if (echoed || !echoEl(p) || c.el !== echoEl(p)) return "cardMisuse"; echoed = true; }
-        seenG.add(s.i); em |= elBit(c.el);
+        if (seenG.has(s.i)) { if (echoed || !echoEl(p) || !hasEl(c, echoEl(p))) return "cardMisuse"; echoed = true; }
+        seenG.add(s.i); em |= cardBits(c);
       }
-      else { if (!p.hand[s.i] || seenH.has(s.i)) return "cardMisuse"; seenH.add(s.i); hu++; em |= elBit(p.hand[s.i].el); }
+      else { if (!p.hand[s.i] || seenH.has(s.i)) return "cardMisuse"; seenH.add(s.i); hu++; em |= cardBits(p.hand[s.i]); }
       if ((s.f || 0) & flags) return "toolTwice"; flags |= s.f || 0;
       if (toolsOfBits(s.f || 0).some((t) => !p.tools[t])) return "toolMisuse";
       const c = stepCells(pt, pos, s.opt); if (c.fail) return "blocked"; pos = c.pos;
@@ -405,13 +452,13 @@
         }
         case "plant": {
           if (p.hand.length >= 3 && p.garden.length < limit(1, "gardenMax")) {
-            let bi = 0, bs = -1; p.hand.forEach((c, i) => { const s = (c.el === "V" ? 1.5 : 1) + (c.steps ? c.steps.length * 0.3 : 0) + rnd() * 0.5; if (s > bs) { bs = s; bi = i; } });
+            let bi = 0, bs = -1; p.hand.forEach((c, i) => { const s = (c.el === "V" ? 1.5 : 1) + reach(c) * 0.3 + rnd() * 0.5; if (s > bs) { bs = s; bi = i; } });
             return { type: "plant", hi: bi };
           }
           G.botStage = "discard"; continue;
         }
         case "discard": {
-          while (p.hand.length > limit(1, "handLimit")) { let w = 0; p.hand.forEach((c, i) => { if ((c.steps ? c.steps.length : 9) < (p.hand[w].steps ? p.hand[w].steps.length : 9)) w = i; }); G.discard.push(p.hand.splice(w, 1)[0]); }
+          while (p.hand.length > limit(1, "handLimit")) { let w = 0; p.hand.forEach((c, i) => { if ((c.steps ? reach(c) : 9) < (p.hand[w].steps ? reach(p.hand[w]) : 9)) w = i; }); G.discard.push(p.hand.splice(w, 1)[0]); }
           G.botStage = "end"; continue;
         }
         default: return { type: "end" };
@@ -447,7 +494,7 @@
     configure, get G() { return G; }, get rules() { return RU(); },
     DIRV, rotK, md, dirsOf, elOfDir, isHaz, stepCells, variants, replay, solve, rotatedCopy,
     bit, toolsOfBits, stepCard, toolsLeft, gatherCount, cost, canBuy, buyTool, limit, abilityOf, MODS,
-    wardCard, wardLeft, isAny, needEl, elBit, solveFor, knownFor, knownPay, doKnownCure, echoEl,
+    wardCard, wardLeft, isAny, needEl, elBit, cardBits, hasEl, inP, reach, solveFor, knownFor, knownPay, doKnownCure, echoEl,
     newGame, gather, drawBlind, checkRoute, doCure, plantCard, curse, curseTargets, discardFromHand, endTurn,
     botStep, botNext, botDo, save, load, clearSave,
   };
