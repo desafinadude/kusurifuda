@@ -745,3 +745,10 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .title.land .tcol{max-width:720px;display:grid;grid-template-columns:1fr 1.1fr;grid-template-areas:"head btns" "me btns" "links btns";gap:12px 28px;align-items:center}
 .title.land .thead{grid-area:head}.title.land .tbtns{grid-area:btns}.title.land .tme{grid-area:me}.title.land .tlinks{grid-area:links}
 .title.land .tb{padding:10px 16px}.title.land .tb b{font-size:18px}
+
+/* straight moves: an ingredient shows how far and which way, no path drawing */
+.ic .mv{display:flex;align-items:center;justify-content:center;gap:calc(4px*var(--u))}
+.ic .mv b{font-family:var(--serif);font-weight:800;font-size:calc(32px*var(--u));line-height:1;color:var(--ink)}
+.ic .mv i{font-style:normal;font-family:var(--serif);font-weight:800;font-size:calc(19px*var(--u));line-height:1;display:flex}
+.ic .mv i .gi,.ic .mv i svg{height:1em}
+.ic .mv.two{gap:calc(2px*var(--u))}.ic .mv.two b{font-size:calc(26px*var(--u))}.ic .mv.two i{font-size:calc(14px*var(--u))}

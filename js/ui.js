@@ -269,12 +269,14 @@
     const stepTxt = KF.isAny(c) ? t("card.anyStep") : c.ward ? moveName(c.mv) : t("card.steps", { n: Math.round(KF.reach({ steps })) });
     const els = dirEls(c, steps);
     const elsTxt = els.map(elName).join(" + ");
+    // a straight game's ingredient is just its element(s) and how far: "2 towards fire"
+    const plain = KF.rules.deck.mode === "straight" && c.el !== "V" && !c.ward && !!steps;
     const tag = o.tag ? `<span class="tag">${esc(o.tag)}</span>` : "";
     const tagName = o.static ? "div" : "button";
     const lay = T.cards && T.cards.ingredient && T.cards.ingredient.layout === "full" ? " full" : "";
     return `<${tagName} class="ic paper el-${c.el}${c.ward ? " wd" : ""}${lay}${o.cls ? " " + o.cls : ""}${o.noAnim ? "" : fresh("c" + c.id + (o.zone || ""))}" style="--u:${u.toFixed(3)}" ${o.act ? `data-a="${o.act}"` : ""} ${o.i != null ? `data-i="${o.i}"` : ""} aria-label="${attr(`${elsTxt}: ${cardName(c)}, ${stepTxt}${o.tag ? ", " + o.tag : ""}`)}" ${o.disabled ? "disabled" : ""} ${o.pressed != null ? `aria-pressed="${o.pressed}"` : ""}>
       <div class="art" style="background:${c.el2 ? `linear-gradient(135deg,${EL(c.el).color} 50%,${EL(c.el2).color} 50%)` : EL(c.el).color}">${art(EL(c.el).art, "", { slice: true })}<span class="kj${els.length > 1 ? " multi" : ""}">${els.map((e) => `<b style="color:${EL(e).ink}">${elIc(e)}</b>`).join("")}</span></div>
-      <div class="path">${pathSVG(c, steps, Math.round(42 * u))}</div>
+      <div class="path">${plain ? `<span class="mv${els.length > 1 ? " two" : ""}"><b>${Math.round(KF.reach({ steps }))}</b>${els.map((e) => `<i style="color:${EL(e).ink}">${elIc(e)}</i>`).join("")}</span>` : pathSVG(c, steps, Math.round(42 * u))}</div>
       <span class="nm">${esc(cardName(c))}</span>${tag}</${tagName}>`;
   }
   function patCard(pt, k, o = {}) {
