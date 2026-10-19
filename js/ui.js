@@ -214,24 +214,20 @@
       const ks = [[1, -2], [2, -1], [2, 1], [1, 2], [-1, 2], [-2, 1], [-2, -1], [-1, -2]];
       return `<svg width="${px}" height="${px}" viewBox="-2.6 -2.6 5.2 5.2" aria-hidden="true">${ks.map(([x, y]) => `<circle cx="${x}" cy="${y}" r=".26" fill="${s}"/>`).join("")}<circle cx="0" cy="0" r=".3" fill="${ring}" stroke="${ink}" stroke-width=".12"/></svg>`;
     }
-    if ((c.el === "V" || !steps) && KF.rules.deck.mode === "straight") {
+    if (c.el === "V" || !steps) {
       const ks = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
       return `<svg width="${px}" height="${px}" viewBox="-2 -2 4 4" aria-hidden="true">${ks.map(([x, y]) => `<line x1="0" y1="0" x2="${x * 0.8}" y2="${y * 0.8}" stroke="${s}" stroke-width=".16" stroke-linecap="round"/><circle cx="${x}" cy="${y}" r=".17" fill="${s}"/>`).join("")}<circle cx="0" cy="0" r=".22" fill="${ring}" stroke="${ink}" stroke-width=".1"/></svg>`;
-    }
-    if (c.el === "V" || !steps) {
-      return `<svg width="${px}" height="${px}" viewBox="-2 -2 4 4" aria-hidden="true"><polyline points="0,-1 0,0 1,0 0,0 0,1 0,0 -1,0" fill="none" stroke="${s}" stroke-width=".22" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="0" r=".22" fill="${ring}" stroke="${ink}" stroke-width=".1"/>${[[0, -1], [1, 0], [0, 1], [-1, 0]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r=".17" fill="${s}"/>`).join("")}</svg>`;
     }
     let x = 0, y = 0; const pts = [[0, 0]];
     steps.forEach(([dx, dy]) => { x += dx; y += dy; pts.push([x, y]); });
     const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
     const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
-    const line = c.jump || c.knight ? `<path d="M0 0Q${x / 2 + (y ? 0.9 : 0)} ${y / 2 + (x ? -0.9 : 0)} ${x} ${y}" fill="none" stroke="${s}" stroke-width=".2" stroke-dasharray=".28 .18" stroke-linecap="round"/>` : `<polyline points="${pts.map((p) => p.join(",")).join(" ")}" fill="none" stroke="${s}" stroke-width=".22" stroke-linecap="round" stroke-linejoin="round"/>`;
-    const luck = c.lucky ? `<path d="M${cx + 1.25} ${cy - 1.75}l.16 .38.38 .16-.38 .16-.16 .38-.16-.38-.38-.16.38-.16Z" fill="${s}"/>` : "";
-    return `<svg width="${px}" height="${px}" viewBox="${cx - 2} ${cy - 2} 4 4" aria-hidden="true">${line}${luck}<circle cx="0" cy="0" r=".22" fill="${ring}" stroke="${ink}" stroke-width=".1"/><path d="M${x - 0.24} ${y - 0.24}L${x + 0.24} ${y + 0.24}M${x + 0.24} ${y - 0.24}L${x - 0.24} ${y + 0.24}" stroke="${s}" stroke-width=".2" stroke-linecap="round"/></svg>`;
+    const line = c.knight ? `<path d="M0 0Q${x / 2 + (y ? 0.9 : 0)} ${y / 2 + (x ? -0.9 : 0)} ${x} ${y}" fill="none" stroke="${s}" stroke-width=".2" stroke-dasharray=".28 .18" stroke-linecap="round"/>` : `<polyline points="${pts.map((p) => p.join(",")).join(" ")}" fill="none" stroke="${s}" stroke-width=".22" stroke-linecap="round" stroke-linejoin="round"/>`;
+    return `<svg width="${px}" height="${px}" viewBox="${cx - 2} ${cy - 2} 4 4" aria-hidden="true">${line}<circle cx="0" cy="0" r=".22" fill="${ring}" stroke="${ink}" stroke-width=".1"/><path d="M${x - 0.24} ${y - 0.24}L${x + 0.24} ${y + 0.24}M${x + 0.24} ${y - 0.24}L${x - 0.24} ${y + 0.24}" stroke="${s}" stroke-width=".2" stroke-linecap="round"/></svg>`;
   }
   // a patient map. o: {px, icons, trail, pos, prev:{trail, fail}, label, rival}
   function mapSVG(pt, o = {}) {
-    const R = RU().R, B = pt.b || [-R, R, -R, R], N = B[1] - B[0] + 1, CX = 0.5 - B[0], CY = 0.5 - B[2], C = CX;
+    const B = pt.b, N = B[1] - B[0] + 1, CX = 0.5 - B[0], CY = 0.5 - B[2];
     const ctr = (v) => `${(v[0] + CX).toFixed(3)},${(v[1] + CY).toFixed(3)}`;
     const onTrail = new Set((o.trail || []).slice(1).map((p) => p.join(",")));
     const routeCol = MC(o.rival ? "route-rival" : "route"), hiCol = MC(o.rival ? "trail-rival" : "trail"), ink = MC("ink");
@@ -269,8 +265,8 @@
     const stepTxt = KF.isAny(c) ? t("card.anyStep") : c.ward ? moveName(c.mv) : t("card.steps", { n: Math.round(KF.reach({ steps })) });
     const els = dirEls(c, steps);
     const elsTxt = els.map(elName).join(" + ");
-    // a straight game's ingredient is just its element(s) and how far: "2 towards fire"
-    const plain = KF.rules.deck.mode === "straight" && c.el !== "V" && !c.ward && !!steps;
+    // an ingredient is just its element(s) and how far: "2 towards fire"
+    const plain = c.el !== "V" && !c.ward && !!steps;
     const tag = o.tag ? `<span class="tag">${esc(o.tag)}</span>` : "";
     const tagName = o.static ? "div" : "button";
     const lay = T.cards && T.cards.ingredient && T.cards.ingredient.layout === "full" ? " full" : "";
@@ -394,7 +390,7 @@
     if (!canAct() || !rs) return "";
     const left = [], right = [];
     const pc = U.pend && cardAt(U.pend.g, U.pend.i);
-    if (pc && isPick(pc)) left.push(U.layout !== "land" || pickWays(pc).length !== 4 ? `<button class="sbtn turn" data-a="dturn" aria-label="${attr(t("brew.turnAny"))}">${ICON.turn()}</button>` : dirPicker());
+    if (pc && isPick(pc)) left.push(`<button class="sbtn turn" data-a="dturn" aria-label="${attr(t("brew.turnAny"))}">${ICON.turn()}</button>`);
     else left.push(toolToggles());
     if (U.pend) {
       const ok = rs.prev && !rs.prev.fail;
@@ -406,11 +402,6 @@
     }
     if (!left.join("") && !right.length) return "";
     return `<div class="ctrls"><div class="cl">${left.join("")}</div><div class="cr">${right.join("")}</div></div>`;
-  }
-  function dirPicker() {
-    const d = U.pend.dir ? U.pend.dir.join(",") : "";
-    const b = (dir) => { const v = KF.DIRV[dir].join(","); return `<button data-a="dir" data-i="${v}" aria-label="${attr(t("dir." + dir))}" aria-pressed="${d === v}" class="${d === v ? "on" : ""}">${{ up: "↑", left: "←", down: "↓", right: "→" }[dir]}</button>`; };
-    return `<div class="dirs" role="group" aria-label="${attr(t("brew.direction"))}">${b("up")}${b("left")}${b("down")}${b("right")}</div>`;
   }
   function toolToggles() {
     const p = me(), uf = usedFlags(), on = canAct() && curPt(), r = RU(), out = [];
@@ -657,14 +648,12 @@
   // quick-game options: the knobs the quest turns stop by stop
   const ONI = { few: [0, 2], some: null, many: [2, 5] };
   function quickOpts() {
-    const o = Object.assign({ moves: "straight", endFame: PREFS.endFame || BASE_END, depth: 5, tools: true, curse: true, oni: "some", open: PREFS.openHands != null ? !!PREFS.openHands : BASE_OPEN, head: 0 }, PREFS.opts || {});
+    const o = Object.assign({ endFame: PREFS.endFame || BASE_END, depth: 5, tools: true, curse: true, oni: "some", open: PREFS.openHands != null ? !!PREFS.openHands : BASE_OPEN, head: 0 }, PREFS.opts || {});
     return o;
   }
   function startQuick() {
     const o = quickOpts(), settings = { endFame: o.endFame, openHands: !!o.open };
     if (ONI[o.oni]) settings.patients = { oniMin: ONI[o.oni][0], oniMax: ONI[o.oni][1] };
-    // classic: the bent paths on a 7 x 7 board, ward patients with their own moves
-    if (o.moves === "classic") Object.assign(settings, { board: { size: 0 }, deck: { mode: "classic" }, ward: { move: null }, patients: Object.assign(settings.patients || {}, { maxDistance: 6 }) });
     const players = pickPlayers(); players[1].style = { depth: o.depth, tools: o.tools, curse: o.curse };
     U.screen = null; closeSheet(); startNew(false, { settings, players, headStart: o.head });
   }
@@ -803,7 +792,7 @@
       const btns = canCurse
         ? `<div class="btns"><button class="btn" data-a="rdone">${t("reward.noCurse")}</button><button class="btn primary" data-a="rcurse" ${pk ? "" : "disabled"}>${pk ? t("reward.curseName", { name: esc(whoOf(pk, true)) }) : t("reward.pickToCurse")}</button></div>`
         : `<div class="btns"><button class="btn primary" data-a="rdone">${t("reward.continue")}</button></div>`;
-      const subs = [res.known ? t("reward.known", { name: esc(whoOf({ who: res.known }, true)) }) : "", sak ? `${art("sakura")}${t("reward.sakura", { n: sak })}` : "", res.luck ? t("reward.lucky", { n: res.luck }) : ""].filter(Boolean);
+      const subs = [res.known ? t("reward.known", { name: esc(whoOf({ who: res.known }, true)) }) : "", sak ? `${art("sakura")}${t("reward.sakura", { n: sak })}` : ""].filter(Boolean);
       const joins = RU().ward.enabled && pt.el ? `<div class="gainrow joins">${ptChip(pt, true)}<div><b>${t("reward.joins", { name: esc(whoOf(pt, true)) })}</b><small>${t("reward.joinsSub", { move: moveName(pt.mv), text: moveText(pt.mv, pt.el) })}</small></div></div>` : "";
       return `<div class="sh"><div class="stamp por">${ptPortrait(pt)}<span class="cst">${ic("cured")}</span></div><div><h2>${t("reward.title", { name: esc(whoOf(pt)) })}</h2><div class="sub">${subs.length ? subs.join(" · ") : esc(ailOf(pt))}</div></div></div>
         <div class="gainrow">${monIc("em")}<div><b>${t("reward.fame", { n: gain })}</b><small>${t("reward.track", { from: p.fame - gain, to: p.fame })}</small></div></div>${joins}
@@ -884,7 +873,6 @@
       const seg = (k, opts) => `<div class="seg wrap" role="group">${opts.map(([v, l]) => `<button data-a="opt" data-k="${k}" data-i="${attr(String(v))}" aria-pressed="${String(o[k]) === String(v)}">${esc(String(l))}</button>`).join("")}</div>`;
       const tg = (k, title, sub) => `<button class="tg" data-a="optt" data-k="${k}" aria-pressed="${!!o[k]}"><span class="sw"></span><span><b>${title}</b><small>${sub}</small></span></button>`;
       return `<div class="sh"><div><h2>${t("title.quick")}</h2><div class="sub">${t("opts.sub")}</div></div></div>
-        <span class="cap">${t("opts.moves")} <small>${t("opts.movesSub")}</small></span>${seg("moves", [["straight", t("opts.movesStraight")], ["classic", t("opts.movesClassic")]])}
         <span class="cap">${t("settings.target")} <small>${t("settings.targetSub")}</small></span>${seg("endFame", [10, 15, 25, 35].map((v) => [v, v]))}
         <span class="cap">${t("opts.skill")} <small>${t("opts.skillSub")}</small></span>${seg("depth", [2, 3, 4, 5].map((v) => [v, t("opts.skill" + v)]))}
         ${tg("tools", t("opts.tools"), t("opts.toolsSub"))}
@@ -897,12 +885,11 @@
     },
     rules() {
       const r = RU(), v = { end: r.endFame, gather: r.gather, garden: r.gardenMax, hand: r.handLimit, oni: r.oniPerPlayer, sak: r.sakuraBonus, min: r.minHandCards, cure: ic("cure"), oniG: ic("oni"), sakura: ic("sakura") };
-      const straight = r.deck.mode === "straight", sk = (k) => (!straight && (k === "brew" || k === "patients") ? k + "Classic" : k);
-      const dirs = Object.keys(r.deck.elements).map((el) => t(straight ? "rules.dirOneStraight" : "rules.dirOne", { el: elName(el), glyph: elIc(el), dir: t("dir." + r.deck.elements[el]).toLowerCase() })).join(", ");
+      const dirs = Object.keys(r.deck.elements).map((el) => t("rules.dirOne", { el: elName(el), glyph: elIc(el), dir: t("dir." + r.deck.elements[el]).toLowerCase() })).join(", ");
       const tools = r.toolIds.map((id) => `<li><b>${esc(toolName(id))}</b> ${toolIc(id)} (${t("tools.cost", { n: KF.cost(id) })}): ${toolText(id)}</li>`).join("");
       const secs = ["goal", "turn", "brew", "fame", ...(r.ward.enabled ? ["patients"] : []), ...(r.knownCure.enabled ? ["known"] : []), ...(r.guilds.echo ? ["guild"] : []), "tools", "curse", "end"];
       return `<div class="sh"><div><h2>${withGl(t("rules.title"), "rules")}</h2><div class="sub">${t("rules.sub", { n: r.endFame })}${openHands() ? " · " + t("rules.openHands") : ""}</div></div></div><div class="rules">
-        ${secs.map((k) => `<h3>${t("rules." + sk(k) + ".h")}</h3><p>${t("rules." + sk(k) + ".p", Object.assign({ dirs, kitsune: elIc("V") }, v))}</p>${k === "tools" ? `<ul>${tools}</ul>` : ""}${k === "curse" ? `<p>${openHands() ? t("rules.curseOpen") : t("rules.curseHidden")}</p>` : ""}${k === "brew" && r.patients.requireElement ? `<p>${t("rules.needEl", { kitsune: elIc("V") })}</p>` : ""}`).join("")}
+        ${secs.map((k) => `<h3>${t("rules." + k + ".h")}</h3><p>${t("rules." + k + ".p", Object.assign({ dirs, kitsune: elIc("V") }, v))}</p>${k === "tools" ? `<ul>${tools}</ul>` : ""}${k === "curse" ? `<p>${openHands() ? t("rules.curseOpen") : t("rules.curseHidden")}</p>` : ""}${k === "brew" && r.patients.requireElement ? `<p>${t("rules.needEl", { kitsune: elIc("V") })}</p>` : ""}`).join("")}
       </div><div class="btns"><button class="btn primary" data-a="close">${t("rules.gotIt")}</button></div>`;
     },
     log() {
@@ -969,7 +956,7 @@
       case "new": return t(a.first ? "log.newRival" : "log.newYou");
       case "end": return t("over." + a.winner);
       case "buy": return t("log.buy." + who, { tool: esc(toolName(a.tool)), n: a.cost });
-      case "cure": return t("log.cure." + who, { name: esc(whoOf(pt)), ailment: esc(ailOf(pt).toLowerCase()), n: a.v }) + (a.sak ? " " + t("log.sakura", { n: a.sak }) : "") + (a.luck ? " " + t("log.lucky", { n: a.luck }) : "");
+      case "cure": return t("log.cure." + who, { name: esc(whoOf(pt)), ailment: esc(ailOf(pt).toLowerCase()), n: a.v }) + (a.sak ? " " + t("log.sakura", { n: a.sak }) : "");
       case "known": return t("log.known." + who, { name: esc(whoOf(pt)), ailment: esc(ailOf(pt).toLowerCase()), n: a.v });
       case "gather": return t("log.gather." + who, { cards: (a.cards || []).map((c) => esc(cardLabel(c))).join(", ") });
       case "blind": return t("log.blind." + who, { n: a.n });
@@ -1011,7 +998,6 @@
       } else if (m.type === "cure") {
         const pt = g.village[m.k]; U.sel = m.k;
         const cards = m.seq.map((r) => cardAt(r.g, r.i, b));
-        const luck = cards.filter((c) => c && c.lucky).length;
         U.rv = { say: t("rival.brewsFor", { name: esc(whoOf(pt)) }), sub: t("rival.worth", { ailment: esc(ailOf(pt)), n: pt.val }), chips: [] };
         U.bo = { pt, trail: [[0, 0]], pos: [0, 0], rival: true };
         render(); SFX.select(); await sleep(800);
@@ -1029,12 +1015,12 @@
         }
         const bonus = KF.replay(pt, m.seq).bonus ? KF.limit(1, "sakuraBonus") : 0;
         U.bo.trail = trail; U.bo.pos = pos;
-        U.rv.say = t("rival.cures", { name: esc(whoOf(pt)) }); U.rv.sub = t("rival.gains", { n: pt.val + luck }) + (bonus ? " · " + t("rival.sakura", { n: bonus }) : "");
+        U.rv.say = t("rival.cures", { name: esc(whoOf(pt)) }); U.rv.sub = t("rival.gains", { n: pt.val }) + (bonus ? " · " + t("rival.sakura", { n: bonus }) : "");
         render(); stampBoard("cured", true); SFX.cure();
         await sleep(1500);
         KF.botDo(m); U.bo = null;
-        rvLine("cure", t("rival.lineCure", { name: esc(whoOf(pt)), n: pt.val + bonus + luck }));
-        g.lastBot = stripTags(t("rival.lineCure", { name: whoOf(pt), n: pt.val + bonus + luck }));
+        rvLine("cure", t("rival.lineCure", { name: esc(whoOf(pt)), n: pt.val + bonus }));
+        g.lastBot = stripTags(t("rival.lineCure", { name: whoOf(pt), n: pt.val + bonus }));
         if (U.sel >= g.village.length) U.sel = 0;
       } else if (m.type === "known") {
         const pt = g.village[m.k], wi = KF.knownFor(1, m.k), via = b.ward[wi], pay = KF.knownPay(pt); U.sel = m.k;
@@ -1146,7 +1132,7 @@
     if (navigator.vibrate) try { navigator.vibrate([20, 40, 20]); } catch (e) {}
     await sleep(900);
     const res = KF.doCure(0, U.sel, route);
-    G().pending = { pt: res.pt, sak: res.sak, luck: res.luck || 0, gain: res.pt.val + res.sak + (res.luck || 0), arrived: res.arrived }; G().phase = "reward";
+    G().pending = { pt: res.pt, sak: res.sak, gain: res.pt.val + res.sak, arrived: res.arrived }; G().phase = "reward";
     resetRoute(); U.mkt = []; U.anim = false;
     render(); SFX.fame(); openSheet({ type: "reward", modal: true, k: null, rot: RU().curse.turns[0], quiet: true });
   }
@@ -1154,7 +1140,7 @@
     if (!canAct() || KF.knownFor(0, U.sel) < 0) return;
     U.anim = true; stampBoard("cured"); SFX.cure(); await sleep(800);
     const res = KF.doKnownCure(0, U.sel);
-    G().pending = { pt: res.pt, sak: 0, luck: 0, gain: res.pay, known: res.via.who, arrived: res.arrived }; G().phase = "reward";
+    G().pending = { pt: res.pt, sak: 0, gain: res.pay, known: res.via.who, arrived: res.arrived }; G().phase = "reward";
     resetRoute(); U.mkt = []; U.anim = false;
     render(); SFX.fame(); openSheet({ type: "reward", modal: true, k: null, rot: RU().curse.turns[0], quiet: true });
   }
@@ -1192,7 +1178,7 @@
       case "continue": resume(); return;
       case "quick": openSheet({ type: "quick" }); return;
       case "quickgo": startQuick(); return;
-      case "opt": { const o = quickOpts(), k = tg.dataset.k; o[k] = k === "oni" || k === "moves" ? i : +i; PREFS.opts = o; savePrefs(); SFX.toggle(); renderSheet(); return; }
+      case "opt": { const o = quickOpts(), k = tg.dataset.k; o[k] = k === "oni" ? i : +i; PREFS.opts = o; savePrefs(); SFX.toggle(); renderSheet(); return; }
       case "optt": { const o = quickOpts(), k = tg.dataset.k; o[k] = !o[k]; PREFS.opts = o; savePrefs(); SFX.toggle(); renderSheet(); return; }
       case "who": openSetup(true); return;
       case "pickc": U.sheet.who.char = i; SFX.tap("V"); renderSheet(); return;
@@ -1221,7 +1207,6 @@
       case "ward": tapIngredient("w", +i); return;
       case "known": doKnown(); return;
       case "gview": U.gview = U.gview === "ward" ? "garden" : "ward"; SFX.open(); render(); return;
-      case "dir": { if (!U.pend) return; U.pend.dir = i.split(",").map(Number); U.msg = null; SFX.tap("V"); render(); return; }
       case "dturn": turnAny(); return;
       case "pplay": if (U.pend) commitPend(); return;
       case "pcancel": U.pend = null; U.turnSel = {}; U.msg = null; SFX.cancel(); render(); return;

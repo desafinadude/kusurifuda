@@ -12,13 +12,11 @@
   "sakuraBonus": 1,
   "openHands": true,
   "board": {
-    "_about": "An even size: square boards that many squares a side, each patient starting on one of the four middle squares (curses turn the board about its middle, so the start moves too). size 0 or no size: (2 x radius + 1) squares a side, starting in the centre.",
-    "size": 8,
-    "radius": 3
+    "_about": "Patients are square maps this many squares a side (even), each starting on one of the four middle squares. Curses turn the map about its middle, so the start moves too.",
+    "size": 8
   },
   "deck": {
-    "_about": "mode \"straight\": each element moves in a straight line its own way (elements: air up, earth down, water left, fire right), exactly as many squares as the card says. straight = copies per element of each length; diagonal = copies of each length for each pair of neighbouring elements, which move diagonally between their two ways, slip past oni on the way and count as either element. mode \"classic\": bent paths, one card per element for each of patterns (steps from the walker's view: ahead, left, right). The kitsune moves one square any way (diagonals too in straight mode).",
-    "mode": "straight",
+    "_about": "Each element moves in a straight line its own way (elements: air up, earth down, water left, fire right), exactly as many squares as the card says. straight = copies per element of each length; diagonal = copies of each length for each pair of neighbouring elements, which move diagonally between their two ways, slip past oni on the way and count as either element. The kitsune moves one square any way, diagonals too.",
     "elements": {
       "A": "up",
       "F": "right",
@@ -34,46 +32,6 @@
       "1": 1,
       "2": 1
     },
-    "patterns": [
-      [
-        "ahead"
-      ],
-      [
-        "ahead",
-        "ahead"
-      ],
-      [
-        "ahead",
-        "left"
-      ],
-      [
-        "ahead",
-        "right"
-      ],
-      [
-        "left",
-        "ahead"
-      ],
-      [
-        "right",
-        "ahead"
-      ],
-      [
-        "ahead",
-        "ahead",
-        "left"
-      ],
-      [
-        "ahead",
-        "ahead",
-        "right"
-      ],
-      [
-        "ahead",
-        "ahead",
-        "ahead"
-      ]
-    ],
     "kitsune": 4
   },
   "patients": {
@@ -86,14 +44,6 @@
     "_value": "A patient is worth (steps from the centre - 1), plus bonusValue if it has bonusAtOni or more oni.",
     "bonusAtOni": 3,
     "bonusValue": 1,
-    "_moves": "How often each move type comes up on patients (weights). step: 1 square · stride: 2 · jump: 2 squares, leaping the square between · any: 1 square any way · lucky: 1 square, +1 mon if that brew cures.",
-    "moves": {
-      "step": 3,
-      "stride": 3,
-      "jump": 2,
-      "any": 1,
-      "lucky": 1
-    },
     "_ailmentKinds": "How many different ailments are in play each game (fewer = more repeats for known cures). null = all.",
     "ailmentKinds": 8,
     "_requireElement": "A cure needs at least one ingredient of the patient's element (Kitsune Tail counts as any).",
@@ -108,10 +58,9 @@
     ]
   },
   "ward": {
-    "_about": "Cured patients join your ward and can be played as moves. uses: times each can be played (null = once every brew, like a garden card). move \"knight\": every ward patient leaps like a knight (two squares one way, one to the side, over anything between); otherwise each has its own move from patients.moves.",
+    "_about": "Cured patients join your ward; each can leap like a knight (2 squares one way and 1 to the side, any way, over anything between). uses: times each can be played (null = once every brew, like a garden card).",
     "enabled": true,
-    "uses": 1,
-    "move": "knight"
+    "uses": 1
   },
   "knownCure": {
     "_about": "Cure a patient whose ailment you have cured before, without ingredients, for payout x its value (rounded down, at least 1). Spends that ward patient's move.",
