@@ -259,21 +259,32 @@
 
   // ---------- card builders ----------
   function fresh(key) { if (U.seen.has(key)) return ""; U.seen.add(key); return " enter"; }
+  // an ingredient's own artwork: ing.<element(s)>.<distance> (ing.F.2, ing.AF.1), ing.V for the kitsune
+  const ingKey = (c) => (c.el === "V" ? "ing.V" : "ing." + c.el + (c.el2 || "") + "." + (c.n + 1));
+  // a card is one picture with a label in its lower middle: the ingredient's name, and how far and which way
   function ingCard(c, o = {}) {
     const steps = o.steps || c.steps;
     const u = o.u || 1;
     const stepTxt = KF.isAny(c) ? t("card.anyStep") : c.ward ? moveName(c.mv) : t("card.steps", { n: Math.round(KF.reach({ steps })) });
     const els = dirEls(c, steps);
     const elsTxt = els.map(elName).join(" + ");
-    // an ingredient is just its element(s) and how far: "2 towards fire"
-    const plain = c.el !== "V" && !c.ward && !!steps;
     const tag = o.tag ? `<span class="tag">${esc(o.tag)}</span>` : "";
     const tagName = o.static ? "div" : "button";
-    const lay = T.cards && T.cards.ingredient && T.cards.ingredient.layout === "full" ? " full" : "";
-    return `<${tagName} class="ic paper el-${c.el}${c.ward ? " wd" : ""}${lay}${o.cls ? " " + o.cls : ""}${o.noAnim ? "" : fresh("c" + c.id + (o.zone || ""))}" style="--u:${u.toFixed(3)}" ${o.act ? `data-a="${o.act}"` : ""} ${o.i != null ? `data-i="${o.i}"` : ""} aria-label="${attr(`${elsTxt}: ${cardName(c)}, ${stepTxt}${o.tag ? ", " + o.tag : ""}`)}" ${o.disabled ? "disabled" : ""} ${o.pressed != null ? `aria-pressed="${o.pressed}"` : ""}>
-      <div class="art" style="background:${c.el2 ? `linear-gradient(135deg,${EL(c.el).color} 50%,${EL(c.el2).color} 50%)` : EL(c.el).color}">${art(EL(c.el).art, "", { slice: true })}<span class="kj${els.length > 1 ? " multi" : ""}">${els.map((e) => `<b style="color:${EL(e).ink}">${elIc(e)}</b>`).join("")}</span></div>
-      <div class="path">${plain ? `<span class="mv${els.length > 1 ? " two" : ""}"><b>${Math.round(KF.reach({ steps }))}</b>${els.map((e) => `<i style="color:${EL(e).ink}">${elIc(e)}</i>`).join("")}</span>` : pathSVG(c, steps, Math.round(42 * u))}</div>
-      <span class="nm">${esc(cardName(c))}</span>${tag}</${tagName}>`;
+    const themed = T.cards && T.cards.ingredient && (T.cards.ingredient.image || T.cards.ingredient[c.el]);
+    const bg = c.el2 ? `linear-gradient(135deg,${EL(c.el).color} 50%,${EL(c.el2).color} 50%)` : EL(c.el).color;
+    // the picture: the ingredient's own art; else the ward patient's portrait; else the theme's card face or the element's art
+    let pic;
+    if (c.ward) pic = ASSET["patient." + c.who] || SPR["patient." + c.who] ? art("patient." + c.who, "", { slice: true }) : `<span class="fig">${ptPortrait({ who: c.who, el: c.el })}</span>`;
+    else if (ASSET[ingKey(c)] || SPR[ingKey(c)]) pic = art(ingKey(c), "", { slice: true });
+    else pic = themed ? "" : `<span class="ela">${art(EL(c.el).art, "", { slice: true })}</span>`;
+    const own = !!(ASSET[ingKey(c)] || SPR[ingKey(c)]) && !c.ward;
+    // the label: "2 火" (two towards fire), "2 火土" for a diagonal; the kitsune and the leap show their ways
+    const way = !c.ward && c.el !== "V" && steps
+      ? `<span class="lv${els.length > 1 ? " two" : ""}"><b>${Math.round(KF.reach({ steps }))}</b>${els.map((e) => `<i style="color:${EL(e).ink}">${elIc(e)}</i>`).join("")}</span>`
+      : `<span class="lv pic">${pathSVG(c, steps, Math.round(13 * u))}</span>`;
+    return `<${tagName} class="ic paper el-${c.el}${c.ward ? " wd" : ""}${own ? " own" : ""}${o.cls ? " " + o.cls : ""}${o.noAnim ? "" : fresh("c" + c.id + (o.zone || ""))}" style="--u:${u.toFixed(3)}" ${o.act ? `data-a="${o.act}"` : ""} ${o.i != null ? `data-i="${o.i}"` : ""} aria-label="${attr(`${elsTxt}: ${cardName(c)}, ${stepTxt}${o.tag ? ", " + o.tag : ""}`)}" ${o.disabled ? "disabled" : ""} ${o.pressed != null ? `aria-pressed="${o.pressed}"` : ""}>
+      <div class="face"${own || (themed && !c.ward) ? "" : ` style="background:${bg}"`}>${pic}</div>
+      <div class="lab">${way}<span class="nm">${esc(cardName(c))}</span></div>${tag}</${tagName}>`;
   }
   function patCard(pt, k, o = {}) {
     const tuck = pt.cursed !== null && pt.cursed !== undefined ? `<span class="tuck${pt.cursed === 0 ? " mine" : ""}" aria-label="${attr(t(pt.cursed === 0 ? "patient.cursedByYou" : "patient.cursedByRival"))}">${art("oni")}</span>` : "";

@@ -48,9 +48,14 @@ A theme can also set:
   `panel` (dark trays and tabs), `sheet` (pop-up sheets). `{"image": "...", "size": "240px"}`
   tiles; leave `size` out to stretch.
 - `cards`: card faces drawn behind the content. `patient` and `board` sit under the maze,
-  `ingredient` under the path, `back` is the face-down card. Give an element its own face
-  (`"W": "cards/ingredient-W.svg"`); `"layout": "full"` makes the face the whole card instead of
-  keeping the element art as a header.
+  `ingredient` under an ingredient card's picture, `back` is the face-down card. Give an element
+  its own face (`"W": "cards/ingredient-W.svg"`).
+- Ingredient cards are one picture with a label in the lower middle (62%–88% down) showing the
+  name and how far and which way ("2 火"). Each ingredient's picture is the asset
+  `ing.<element(s)>.<distance>`, e.g. `ing.F.2` (Hotaru), `ing.AF.1` (Hinoki Smoke), and `ing.V`
+  for the kitsune: 990 x 1500, the card's shape, nothing important in the label band. Without
+  one, the card shows the element's art on its colour (or the theme's ingredient face). A ward
+  card shows the patient's portrait (`patient.<n>`).
 
 ### Moves and the board
 - Each element moves in a straight line its own way (air up, fire right, earth down, water left),
