@@ -639,9 +639,6 @@
         "guild": {
           "h": "Houses",
           "p": "Your house has an element. Once per brew you may play one greenhouse card of that element twice, so plant those."
-        },
-        "brewClassic": {
-          "p": "Pick a patient (tap it, or swipe the map), then tap a card to preview its path. Play it, or cancel and try another. Tap a numbered chip to go back to that card. Paths go: {dirs}; a Wishing Star {kitsune} is one step any way. The signs in a card's corner show every direction its path takes. Order matters. Paths can't enter a jinx {oniG} square or leave the map. Finish <b>exactly</b> on {cure}, using at least {min} hand card. Hand cards are spent; greenhouse cards stay."
         }
       },
       "abilities": {

@@ -53,27 +53,24 @@ A theme can also set:
   keeping the element art as a header.
 
 ### Moves and the board
-- `deck.mode` `"straight"` (the default): each element moves in a straight line its own way
-  (air up, fire right, earth down, water left), exactly 1, 2 or 3 squares; `deck.straight` is the
-  copies per element of each length. Pairs of neighbouring elements move diagonally (`deck.diagonal`,
-  1 or 2 squares), slip past oni on the way and count as either element. The kitsune moves one
-  square any way, diagonals too. Straight moves are blocked by oni; nothing may land on one.
+- Each element moves in a straight line its own way (air up, fire right, earth down, water left),
+  exactly 1, 2 or 3 squares; `deck.straight` is the copies per element of each length. Pairs of
+  neighbouring elements move diagonally (`deck.diagonal`, 1 or 2 squares), slip past oni on the
+  way and count as either element. The kitsune moves one square any way, diagonals too. Straight
+  moves are blocked by oni; nothing may land on one. A card shows just its number and element
+  sign(s): "2 火" is two towards fire.
 - Each ingredient is one kind of move, so it has its own name: `content.ingredients.<el>` lists
   the 1, 2 and 3-square names, `content.ingredients.AF` (and AW, FE, EW) the diagonal pairs.
 - `board.size` 8: 8 x 8 patient maps, each starting on one of the four middle squares. A curse
   turns the map about its middle, so the start moves too; the patient's element doesn't turn.
-- `ward.move` `"knight"`: every ward patient leaps two squares one way and one to the side, over
-  anything between. The player turns the kitsune and the leap through their ways with one button.
-- `deck.mode` `"classic"` keeps the bent paths (`deck.patterns`) on a 7 x 7 board (`board.radius`);
-  the quick-game options offer it as Moves: Classic.
+- Ward patients leap like a knight: two squares one way and one to the side, any way, over
+  anything between. The turn button cycles the kitsune and the leap through their ways.
 
 ### Patients, the ward, known cures, guild elements
 All in `rules.json`, each with an `_about`:
-- `patients.moves`: weights for the move each patient gives once cured (step, stride, jump/leap,
-  any, lucky). `patients.requireElement`: a cure needs an ingredient of the patient's element.
+- `patients.requireElement`: a cure needs an ingredient of the patient's element.
   `patients.ailmentKinds`: how many different ailments are in play (fewer = more known cures).
-- `ward`: cured patients join your ward; `uses` = how many times each can be played (1). Without
-  `ward.move`, each patient's move comes from `patients.moves` (classic games).
+- `ward`: cured patients join your ward; `uses` = how many times each can be played (1).
 - `knownCure`: cure a patient whose ailment you cured before, for `payout` x its value, using up
   that ward patient.
 - `guilds.echo`: once per brew, one garden card of your guild's element plays twice. Each guild's

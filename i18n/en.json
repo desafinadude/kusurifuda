@@ -29,7 +29,7 @@
       "V": "Kitsune"
     },
     "ingredients": {
-      "_about": "One list per element, in order of how far the ingredient moves in a straight game (1, 2, 3 squares). The pairs (AF air and fire, AW, FE, EW) move diagonally, 1 then 2 squares. In a classic game each element's names are shared out over its paths.",
+      "_about": "One list per element, in order of how far the ingredient moves (1, 2, 3 squares). The pairs (AF air and fire, AW, FE, EW) move diagonally, 1 then 2 squares.",
       "W": [
         "Koi Scale",
         "Lotus Root",
@@ -523,7 +523,6 @@
     "curseName": "Curse {name}",
     "pickToCurse": "Pick someone to curse",
     "continue": "Continue",
-    "lucky": "Lucky step · +{n} {{mon}}",
     "known": "A known cure, remembered from {name}",
     "joins": "{name} joins your ward",
     "joinsSub": "{move}: {text}"
@@ -620,7 +619,7 @@
     "title": "How to play",
     "sub": "2 players · first to {n} {{mon}}",
     "openHands": "open hands",
-    "dirOne": "{el} {glyph} mostly {dir}",
+    "dirOne": "{el} {glyph} {dir}",
     "goal": {
       "h": "Goal",
       "p": "Rival apothecaries race to {end} {{mon}}. Every patient is a small map: cure them by playing ingredient cards that move your marker from the start ◯ to the cure {cure}."
@@ -664,15 +663,6 @@
     "guild": {
       "h": "Guilds",
       "p": "Your guild has an element. Once per brew you may play one garden card of that element twice, so plant those."
-    },
-    "brewClassic": {
-      "h": "Brewing",
-      "p": "Pick a patient (tap it, or swipe the map), then tap a card to preview its path. Play it, or cancel and try another. Tap a numbered chip to go back to that card. Paths go: {dirs}; a Kitsune Tail {kitsune} is one step any way. The glyphs in a card's corner show every direction its path takes. Order matters. Paths can't enter an oni {oniG} square or leave the map. Finish <b>exactly</b> on {cure}, using at least {min} hand card. Hand cards are spent; garden cards stay."
-    },
-    "dirOneStraight": "{el} {glyph} {dir}",
-    "patientsClassic": {
-      "h": "Patients",
-      "p": "Every patient has an element (its sign on the card) and a move. Once cured they join your <b>ward</b>, and each ward patient helps you <b>once</b>: play its move in any brew, like a garden card, or use it as a known cure. Moves: <b>Step</b> 1 square, <b>Stride</b> 2, <b>Leap</b> 2 squares over whatever is between, <b>Any way</b> 1 square any direction, <b>Lucky step</b> 1 square and +1 {{mon}}."
     }
   },
   "log": {
@@ -707,8 +697,7 @@
     "known": {
       "you": "You cure {name} ({ailment}) with a known remedy: +{n} {{mon}}.",
       "rival": "Rival cures {name} ({ailment}) with a known remedy: +{n} {{mon}}."
-    },
-    "lucky": "+{n} lucky."
+    }
   },
   "rival": {
     "turn": "Rival's turn",
@@ -874,27 +863,7 @@
     "left": "{n} ready"
   },
   "moves": {
-    "_about": "The moves cured patients give. {el} is the element's name.",
-    "step": {
-      "name": "Step",
-      "text": "1 square {dir}"
-    },
-    "stride": {
-      "name": "Stride",
-      "text": "2 squares {dir}"
-    },
-    "jump": {
-      "name": "Leap",
-      "text": "Leap 2 squares {dir}, over whatever is between"
-    },
-    "any": {
-      "name": "Any way",
-      "text": "1 square in any direction"
-    },
-    "lucky": {
-      "name": "Lucky step",
-      "text": "1 square {dir}, +1 {{mon}} if that brew cures"
-    },
+    "_about": "The move cured patients give in the ward.",
     "knight": {
       "name": "Leap",
       "text": "2 squares one way and 1 to the side, over anything between"
@@ -1054,10 +1023,6 @@
     "oniFew": "Few",
     "oniSome": "Some",
     "oniMany": "Many",
-    "start": "Start the game",
-    "moves": "Moves",
-    "movesSub": "Classic: the original bent paths",
-    "movesStraight": "Straight",
-    "movesClassic": "Classic"
+    "start": "Start the game"
   }
 }
