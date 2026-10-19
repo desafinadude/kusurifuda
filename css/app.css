@@ -42,14 +42,7 @@ img,.ai{display:block}
 
 /* ingredient cards — all sizes from --u (1 = 66×100) */
 .ic{--u:1;position:relative;width:calc(66px*var(--u));height:calc(100px*var(--u));flex-shrink:0;padding:0;border-radius:calc(6px*var(--u));border:calc(2px*var(--u)) solid var(--ink);overflow:hidden;display:flex;flex-direction:column;color:var(--ink);box-shadow:0 calc(3px*var(--u)) 0 var(--deep);transition:transform .18s,opacity .2s,box-shadow .18s}
-.ic .art{position:relative;height:calc(44px*var(--u));flex-shrink:0;border-bottom:calc(2px*var(--u)) solid var(--ink)}
-.ic .art .ai{width:100%;height:100%;object-fit:cover}
-.ic .kj{position:absolute;top:0;left:0;min-width:calc(18px*var(--u));padding:0 calc(2px*var(--u));gap:calc(1px*var(--u));height:calc(20px*var(--u));background:var(--tab);border-right:calc(1.5px*var(--u)) solid var(--ink);border-bottom:calc(1.5px*var(--u)) solid var(--ink);border-bottom-right-radius:calc(4px*var(--u));display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:800;font-size:calc(12px*var(--u));line-height:1}
-.ic .path{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
-.ic .path svg{width:calc(42px*var(--u));height:calc(42px*var(--u))}
-.ic .nm{font-size:calc(8px*var(--u));font-weight:700;line-height:1;text-align:center;padding:0 calc(3px*var(--u)) calc(5px*var(--u));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ic .tag{position:absolute;top:calc(3px*var(--u));right:calc(3px*var(--u));font-size:calc(7px*var(--u));font-weight:700;padding:1px 3px;border-radius:3px;background:var(--ink);color:var(--parch-hi);line-height:1.2}
-.ic.tiny .nm{display:none}
 .ic.lift{transform:translateY(calc(-8px*var(--u)));border-color:var(--shu-hi);box-shadow:0 0 0 1px var(--shu-hi),0 calc(6px*var(--u)) 0 var(--deep)}
 .ic.pick{transform:translateY(calc(-8px*var(--u)));border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 calc(6px*var(--u)) 0 var(--deep)}
 .ic.used{opacity:.4}
@@ -359,8 +352,6 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .okmsg{padding:10px 12px;border-radius:10px;background:var(--ok-bg);color:var(--ok-ink);font-weight:700;font-size:13px}
 
 /* ---- themes, hints, direction glyphs, swiping ---- */
-.ic .kj b{font-weight:800}
-.ic .kj.multi{font-size:calc(11px*var(--u))}
 .sq.w2{width:auto;min-width:26px;padding:0 4px;font-size:12px;letter-spacing:-.04em}
 .hints{position:absolute;right:3px;bottom:3px;display:flex;gap:3px;z-index:2;pointer-events:none}
 .hints.inhead{position:static;margin-left:2px;pointer-events:auto}
@@ -414,8 +405,6 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .mi{display:inline-block;width:.95em;height:.95em;background:currentColor;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
 .stamp .gi,.bstamp .gi,.sh.end .big .gi{height:.9em;vertical-align:middle}
 /* ingredient cards whose theme face covers the whole card */
-.ic.full .art{background:transparent!important;border-bottom-color:transparent}
-.ic.full .art>.ai{display:none}
 /* people: portraits, crests, the new-game setup */
 .crest{width:1.15em;height:1.15em;vertical-align:-.25em;margin-right:4px;flex-shrink:0}
 .fame .who{display:inline-flex;align-items:center}
@@ -743,9 +732,20 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .title.land .thead{grid-area:head}.title.land .tbtns{grid-area:btns}.title.land .tme{grid-area:me}.title.land .tlinks{grid-area:links}
 .title.land .tb{padding:10px 16px}.title.land .tb b{font-size:18px}
 
-/* straight moves: an ingredient shows how far and which way, no path drawing */
-.ic .mv{display:flex;align-items:center;justify-content:center;gap:calc(4px*var(--u))}
-.ic .mv b{font-family:var(--serif);font-weight:800;font-size:calc(32px*var(--u));line-height:1;color:var(--ink)}
-.ic .mv i{font-style:normal;font-family:var(--serif);font-weight:800;font-size:calc(19px*var(--u));line-height:1;display:flex}
-.ic .mv i .gi,.ic .mv i svg{height:1em}
-.ic .mv.two{gap:calc(2px*var(--u))}.ic .mv.two b{font-size:calc(26px*var(--u))}.ic .mv.two i{font-size:calc(14px*var(--u))}
+/* ingredient cards: one picture, with a label in the lower middle (62%-88% down) */
+.ic .face{position:absolute;inset:0;overflow:hidden}
+.ic .face>.ai{width:100%;height:100%;object-fit:cover;display:block}
+.ic .face .ela{position:absolute;left:0;right:0;top:0;height:62%;display:block}
+.ic .face .ela .ai{width:100%;height:100%;object-fit:cover}
+.ic .face .fig{position:absolute;left:0;right:0;top:0;height:62%;display:flex;align-items:center;justify-content:center}
+.ic .face .fig .ppor{width:calc(48px*var(--u));height:calc(48px*var(--u));border-radius:calc(8px*var(--u))}
+.ic .lab{position:absolute;left:8%;right:8%;top:62%;height:26%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(1px*var(--u));border-radius:calc(5px*var(--u));background:color-mix(in srgb,var(--parch-hi) 92%,transparent);box-shadow:0 0 0 calc(1px*var(--u)) color-mix(in srgb,var(--ink) 35%,transparent),0 calc(1px*var(--u)) calc(3px*var(--u)) rgba(0,0,0,.25);padding:0 calc(3px*var(--u));color:var(--ink)}
+.ic .lv{display:flex;align-items:center;justify-content:center;gap:calc(2px*var(--u));line-height:1}
+.ic .lv b{font-family:var(--serif);font-weight:800;font-size:calc(15px*var(--u));line-height:1}
+.ic .lv i{font-style:normal;font-family:var(--serif);font-weight:800;font-size:calc(11px*var(--u));line-height:1;display:flex}
+.ic .lv i .gi,.ic .lv i svg{height:1em}
+.ic .lv.two b{font-size:calc(14px*var(--u))}.ic .lv.two i{font-size:calc(9.5px*var(--u))}
+.ic .lv.pic svg{display:block}
+.ic .lab .nm{max-width:100%;font-size:calc(7px*var(--u));font-weight:700;line-height:1.05;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ic.tiny .lab .nm{display:none}
+.ic .tag{z-index:2}
