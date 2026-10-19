@@ -327,7 +327,23 @@
             "Wolfsbane",
             "Bat Wing"
           ],
-          "V": "Wishing Star"
+          "V": "Wishing Star",
+          "AF": [
+            "Dragon Breath",
+            "Phoenix Feather"
+          ],
+          "AW": [
+            "Mist Lily",
+            "Storm Cloud"
+          ],
+          "FE": [
+            "Brimstone",
+            "Lava Pearl"
+          ],
+          "EW": [
+            "Bog Moss",
+            "Swamp Lotus"
+          ]
         },
         "ailments": [
           "Cauldron burns",
@@ -480,17 +496,17 @@
         "tools": {
           "ladle": {
             "name": "Stirring Rod",
-            "text": "Once per brew, play one card turned a quarter turn.",
-            "short": "Play one card a quarter turn"
+            "text": "Once per brew, play one card as a neighbouring element: a quarter turn either way.",
+            "short": "One card as a neighbouring element"
           },
           "mortar": {
             "name": "Pestle",
-            "text": "Once per brew, play one card backwards (a half turn).",
-            "short": "Play one card backwards"
+            "text": "Once per brew, play one card as its opposite element: a half turn.",
+            "short": "One card as its opposite"
           },
           "charm": {
             "name": "Wand",
-            "text": "Once per brew, take one extra step in any direction.",
+            "text": "Once per brew, take one extra step to any square next to you.",
             "short": "One free step, any way"
           },
           "basket": {
@@ -604,16 +620,16 @@
       },
       "rules": {
         "goal": {
-          "p": "Rival potion-makers race to {end} {{mon}}. Every patient is a small map: cure them by playing ingredient cards whose paths walk your marker from the centre ◯ to the cure {cure}."
+          "p": "Rival potion-makers race to {end} {{mon}}. Every patient is a small map: cure them by playing ingredient cards that move your marker from the start ◯ to the cure {cure}."
         },
         "brew": {
-          "p": "Pick a patient (tap it, or swipe the map), then tap a card to preview its path. Play it, or cancel and try another. Tap a numbered chip to go back to that card. Paths go: {dirs}; a Wishing Star {kitsune} is one step any way. The signs in a card's corner show every direction its path takes. Order matters. Paths can't enter a jinx {oniG} square or leave the map. Finish <b>exactly</b> on {cure}, using at least {min} hand card. Hand cards are spent; greenhouse cards stay."
+          "p": "Pick a patient (tap it, or swipe the map), then tap a card to preview its move. Play it, or cancel and try another. Tap a numbered chip to go back to that card. Each element moves in a straight line its own way: {dirs}, exactly as many squares as its card shows. A card with two elements moves diagonally between their ways. A Wishing Star {kitsune} moves one square any way, diagonals too. Straight moves can't pass through a jinx {oniG}; diagonals slip past. Nothing may land on a jinx or leave the map. Finish <b>exactly</b> on {cure}, using at least {min} hand card. Hand cards are spent; greenhouse cards stay."
         },
         "fame": {
           "p": "A cured patient is worth its number in {{mon}}. Passing a star {sakura} adds {sak}."
         },
         "curse": {
-          "p": "After a cure you may spend one of your {oni} jinx cards to hex an infirmary patient's map. The cure and the jinxes move; ingredient directions don't. A hexed patient can't be hexed again.",
+          "p": "After a cure you may spend one of your {oni} jinx cards to hex an infirmary patient's map. The cure, the jinxes and the start move; ingredient directions and the patient's element don't, so the cure may now lie against the element it needs. A hexed patient can't be hexed again.",
           "h": "Hexes"
         },
         "end": {
@@ -623,6 +639,9 @@
         "guild": {
           "h": "Houses",
           "p": "Your house has an element. Once per brew you may play one greenhouse card of that element twice, so plant those."
+        },
+        "brewClassic": {
+          "p": "Pick a patient (tap it, or swipe the map), then tap a card to preview its path. Play it, or cancel and try another. Tap a numbered chip to go back to that card. Paths go: {dirs}; a Wishing Star {kitsune} is one step any way. The signs in a card's corner show every direction its path takes. Order matters. Paths can't enter a jinx {oniG} square or leave the map. Finish <b>exactly</b> on {cure}, using at least {min} hand card. Hand cards are spent; greenhouse cards stay."
         }
       },
       "abilities": {

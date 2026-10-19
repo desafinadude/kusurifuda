@@ -54,8 +54,9 @@ run("G  F + element required", { "ward.enabled": true, "ward.uses": 1, "knownCur
 run("H  G but ward twice", { "ward.enabled": true, "ward.uses": 2, "knownCure.enabled": true, "patients.ailmentKinds": 8, "guilds.echo": true, "patients.requireElement": true });
 run("I  G but known(6)", { "ward.enabled": true, "ward.uses": 1, "knownCure.enabled": true, "patients.ailmentKinds": 6, "guilds.echo": true, "patients.requireElement": true });
 run("NOW rules.json as shipped", {});
+run("CLASSIC bent paths, 7 x 7", { "board.size": 0, "deck.mode": "classic", "ward.move": null, "patients.maxDistance": 6 });
 
-// straight moves: elements go straight 1-3 squares, pairs go diagonally, the ward leaps like a knight, 8 x 8 boards
+// straight moves (now the default): elements go straight 1-3 squares, pairs go diagonally, the ward leaps like a knight, 8 x 8 boards
 const ST = { "board.size": 8, "deck.mode": "straight", "deck.straight": { 1: 3, 2: 2, 3: 1 }, "deck.diagonal": { 1: 1, 2: 1 }, "ward.move": "knight", "patients.maxDistance": 7, openHands: true };
 run("S0 straight 3/2/1 + diag 1/1", ST);
 run("S1 S0, more oni (2-5)", { ...ST, "patients.oniMin": 2, "patients.oniMax": 5 });

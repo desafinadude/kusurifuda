@@ -59,7 +59,7 @@
   // how far a card reaches, for the bot's choices
   const reach = (c) => (c.steps ? c.steps.reduce((a, v) => a + Math.max(Math.abs(v[0]), Math.abs(v[1])), 0) : c.el === "V" ? 1.5 : 1);
   // which board directions a path uses, in the order it first uses them
-  function dirsOf(steps) { const out = []; (steps || []).forEach(([x, y]) => { const d = x > 0 ? "right" : x < 0 ? "left" : y < 0 ? "up" : "down"; if (!out.includes(d)) out.push(d); }); return out; }
+  function dirsOf(steps) { const out = [], add = (d) => { if (!out.includes(d)) out.push(d); }; (steps || []).forEach(([x, y]) => { if (x) add(x > 0 ? "right" : "left"); if (y) add(y < 0 ? "up" : "down"); }); return out; }
   // element whose main direction is d
   const elOfDir = (d) => { const e = RU().deck.elements; return Object.keys(e).find((k) => e[k] === d) || null; };
 
@@ -282,6 +282,7 @@
     if (!BASE) throw new Error("KF.configure(rules) first");
     G = { v: 2, uid: 1, rules: JSON.parse(JSON.stringify(BASE)) };
     deepAssign(G.rules, settings || {});
+    G.rules.S = G.rules.board && G.rules.board.size ? G.rules.board.size : 0;
     players = players || [];
     const names = shuffle(Array.from({ length: COUNTS.names }, (_, i) => i));
     const ak = G.rules.patients.ailmentKinds; G.ails = shuffle(Array.from({ length: COUNTS.ailments }, (_, i) => i)).slice(0, ak ? Math.min(ak, COUNTS.ailments) : COUNTS.ailments);
