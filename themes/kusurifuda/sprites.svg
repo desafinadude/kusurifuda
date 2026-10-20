@@ -68,13 +68,6 @@
 <path d="M0 -1.2 C-4.2 -4 -4.2 -9 -1.6 -10.6 L0 -9 L1.6 -10.6 C4.2 -9 4.2 -4 0 -1.2Z" transform="rotate(288)"></path>
 </g>
 <circle r="2" fill="#D6AC4E" stroke="#8E2A43" stroke-width=".6"></circle></symbol>
-<symbol id="s-boardMotif" viewBox="-100 -100 200 200"><g fill="none" stroke="#9B7637" stroke-width=".7">
-<circle r="97"></circle><circle r="92"></circle><circle r="80"></circle>
-<polygon points="0,-92 79.7,46 -79.7,46"></polygon>
-<polygon points="0,92 79.7,-46 -79.7,-46"></polygon>
-<rect x="-56.6" y="-56.6" width="113.2" height="113.2" transform="rotate(45)"></rect>
-</g>
-<g fill="#9B7637"><circle cy="-92" r="2.2"></circle><circle cx="79.7" cy="46" r="2.2"></circle><circle cx="-79.7" cy="46" r="2.2"></circle><circle cy="92" r="2.2"></circle><circle cx="79.7" cy="-46" r="2.2"></circle><circle cx="-79.7" cy="-46" r="2.2"></circle></g></symbol>
 <symbol id="s-tool-ladle" viewBox="0 0 64 64"><path d="M37 33 L56 8" stroke="#16120E" stroke-width="7" stroke-linecap="round"></path>
 <path d="M37 33 L56 8" stroke="#A9783A" stroke-width="3.5" stroke-linecap="round"></path>
 <path d="M8 34 H42 A17 17 0 0 1 8 34Z" fill="#7A5626" stroke="#16120E" stroke-width="3" stroke-linejoin="round"></path>
