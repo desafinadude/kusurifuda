@@ -278,6 +278,16 @@
       "image": "assets/table.svg",
       "size": "480px 480px",
       "color": "#1E150D"
+    },
+    "paper": {
+      "image": "assets/paper.webp",
+      "size": "640px",
+      "color": "#ECDDBA"
+    },
+    "sheet": {
+      "image": "assets/paper.webp",
+      "size": "640px",
+      "color": "#ECDDBA"
     }
   },
   "colors": {

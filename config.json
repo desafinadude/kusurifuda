@@ -1,5 +1,5 @@
 {
-  "_about": "Which theme and language to use. Players can switch in Menu › Settings when more than one is listed. quest: the Journey to Edo file; questOn: false hides the quest everywhere (its files stay as they are).",
+  "_about": "Which theme and language to use. Players can switch in Menu › Settings when more than one is listed. quest: the Journey to Edo file; questOn: false hides the quest everywhere (its files stay as they are). themePicker: false hides the theme switch.",
   "theme": "kusurifuda",
   "themes": {
     "kusurifuda": "themes/kusurifuda/theme.json",
@@ -15,5 +15,6 @@
   },
   "rules": "rules.json",
   "quest": "quest.json",
-  "questOn": false
+  "questOn": false,
+  "themePicker": false
 }
