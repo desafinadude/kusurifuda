@@ -350,7 +350,7 @@
     const row = (p, cls, label, pi) => `<div class="row${g.cur === pi && !g.over ? " cur" : ""}"><span class="who ${cls}">${crest(pi)}${esc(label)}</span><div class="bar ${cls}" style="grid-template-columns:repeat(${E},minmax(0,1fr))">${Array.from({ length: E }, (_, i) => `<i class="${i < p.fame ? "on" : ""}${(i + 1) % 5 === 0 ? " five" : ""}"></i>`).join("")}</div><span class="num" data-fame="${pi}">${p.fame}</span></div>`;
     return `<button class="fame" data-a="rival" aria-label="${attr(t("top.fameAria", { you: me().fame, rival: bot().fame }))}">${row(me(), "y", t("who.you"), 0)}${row(bot(), "r", t("who.rival"), 1)}</button>`;
   }
-  const goal = () => U.layout !== "land" ? `<div class="goal mong" role="img" aria-label="${attr(t("top.goal", { n: RU().endFame }))}">${monIc()}<span>${RU().endFame}</span></div>` : `<div class="goal" role="img" aria-label="${attr(t("top.goal", { n: RU().endFame }))}">${art("emblem")}<span>${RU().endFame}</span></div>`;
+  const goal = () => `<div class="goal mong" role="img" aria-label="${attr(t("top.goal", { n: RU().endFame }))}">${monIc()}<span>${RU().endFame}</span></div>`;
   const menuBtn = () => `<button class="iconbtn" data-a="menu" aria-label="${attr(t("menu.title"))}">${ICON.menu()}</button>`;
   function turnLabel() { const g = G(); if (g.over) return t("status.gameOver"); return t(g.cur === 0 ? "top.roundYou" : "top.roundRival", { n: g.round }); }
 
