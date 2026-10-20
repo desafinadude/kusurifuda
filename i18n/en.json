@@ -283,7 +283,7 @@
     },
     "trade": {
       "name": "Shrewd trader",
-      "text": "Once a turn, swap a card from your hand for one in the market. It doesn't use your action."
+      "text": "Twice a turn, swap a card from your hand for one in the market. It doesn't use your action."
     },
     "blessed": {
       "name": "Blessed",
@@ -1061,13 +1061,14 @@
     "done": "Traded",
     "aria": "Trade a card from your hand for one in the market",
     "title": "Trade at the market",
-    "sub": "Swap one card from your hand for one in the market. Once a turn; it doesn't use your action.",
+    "sub": "Swap one card from your hand for one in the market. Up to {n} a turn; it doesn't use your action.",
     "give": "Give from your hand",
     "get": "Take from the market",
     "tagGive": "Give",
     "tagGet": "Take",
     "do": "Trade",
     "toast": "You trade for",
-    "noHand": "No cards in hand to trade"
+    "noHand": "No cards in hand to trade",
+    "left": "Trade · {n} left"
   }
 }

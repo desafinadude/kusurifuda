@@ -464,7 +464,7 @@
   function botDo(m) {
     switch (m.type) {
       case "buy": buyTool(1, m.tool); G.botStage = "swap"; return {};
-      case "swap": { const gave = G.P[1].hand[m.hi], got = G.market[m.mi]; swapCard(1, m.hi, m.mi); G.botStage = "act"; return { gave, got }; }
+      case "swap": { const gave = G.P[1].hand[m.hi], got = G.market[m.mi]; swapCard(1, m.hi, m.mi); return { gave, got }; }
       case "cure": { const res = doCure(1, m.k, m.seq); G.botCured = true; G.botStage = "claim"; return { res }; }
       case "known": { const res = doKnownCure(1, m.k); G.botCured = true; G.botStage = "claim"; return { res }; }
       case "gather": { const cards = gather(1, m.idx); G.botStage = "claim"; return { cards }; }

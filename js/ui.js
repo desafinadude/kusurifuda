@@ -504,7 +504,8 @@
 
   // the trader's swap: a hand card for a market card, once a turn, on top of the action
   const canTrade = () => KF.limit(0, "swap") > 0;
-  const tradeBtn = (u) => (canTrade() ? `<button class="ic plotc trd" style="--u:${u}" data-a="trade" ${KF.canSwap(0) && !U.anim ? "" : "disabled"} aria-label="${attr(t("trade.aria"))}"><b class="sw">⇄</b>${KF.canSwap(0) ? t("trade.btn") : t("trade.done")}</button>` : "");
+  const tradeLabel = () => { const left = KF.limit(0, "swap") - (G().turn.swaps || 0); return !KF.canSwap(0) ? t("trade.done") : left > 1 && G().cur === 0 ? t("trade.left", { n: left }) : t("trade.btn"); };
+  const tradeBtn = (u) => (canTrade() ? `<button class="ic plotc trd" style="--u:${u}" data-a="trade" ${KF.canSwap(0) && !U.anim ? "" : "disabled"} aria-label="${attr(t("trade.aria"))}"><b class="sw">⇄</b>${tradeLabel()}</button>` : "");
 
   // ---------- actions bar (phone) ----------
   function phoneActs() {
@@ -575,7 +576,7 @@
           <div class="vgrid">${g.village.map((pt, k) => patCard(pt, k, { cls: k === U.sel ? "sel" : "", px: Math.max(50, Math.min(70, Math.floor((U.sh - 160) / 2))) })).join("")}</div></section>
         ${boardPanel()}
         <section class="rcol">
-          <div class="lbl"><span>${mkt ? t("label.marketDeck", { n: g.deck.length }) : t("label.handN", { n: me().hand.length, max: KF.limit(0, "handLimit") })}</span>${mkt && canTrade() ? `<button class="linkbtn" data-a="trade" ${KF.canSwap(0) && !U.anim ? "" : "disabled"}>⇄ ${KF.canSwap(0) ? t("trade.btn") : t("trade.done")}</button>` : ""}<button class="linkbtn" data-a="tab" data-i="${mkt ? "hand" : "market"}">${mkt ? t("label.toHand") : t("label.toMarket")}</button></div>
+          <div class="lbl"><span>${mkt ? t("label.marketDeck", { n: g.deck.length }) : t("label.handN", { n: me().hand.length, max: KF.limit(0, "handLimit") })}</span>${mkt && canTrade() ? `<button class="linkbtn" data-a="trade" ${KF.canSwap(0) && !U.anim ? "" : "disabled"}>⇄ ${tradeLabel()}</button>` : ""}<button class="linkbtn" data-a="tab" data-i="${mkt ? "hand" : "market"}">${mkt ? t("label.toHand") : t("label.toMarket")}</button></div>
           <div class="hrow"><div class="crow${(mkt ? g.market.length : me().hand.length) >= 5 ? " spread" : ""}">${row}</div></div>
           <div class="lbl"><span>${U.gview === "ward" ? t("label.wardN", { n: wardReady() }) : t("label.gardenN", { n: me().garden.length, max: KF.limit(0, "gardenMax") })}</span>${RU().ward.enabled ? `<button class="linkbtn" data-a="gview">${U.gview === "ward" ? t("label.toGarden") : t("label.toWard")}</button>` : `<span>${esc(owned)}</span>`}</div>
           <div class="grow${U.gview === "ward" ? " wardrow" : ""}">${U.gview === "ward" ? wardCards(0.667, "w") : gardenCards(0.667, "g", plots)}</div>
@@ -827,7 +828,7 @@
     },
     trade(s) {
       const p = me(), g = G();
-      return `<div class="sh"><div class="stamp" ${stampStyle("var(--gold)")}>⇄</div><div><h2>${t("trade.title")}</h2><div class="sub">${t("trade.sub")}</div></div></div>
+      return `<div class="sh"><div class="stamp" ${stampStyle("var(--gold)")}>⇄</div><div><h2>${t("trade.title")}</h2><div class="sub">${t("trade.sub", { n: KF.limit(0, "swap") })}</div></div></div>
         <span class="cap">${t("trade.give")}</span><div class="crow">${p.hand.map((c, i) => ingCard(c, { act: "trh", i, cls: s.h === i ? "pick" : "", noAnim: true, pressed: s.h === i, tag: s.h === i ? t("trade.tagGive") : null })).join("")}</div>
         <span class="cap">${t("trade.get")}</span><div class="crow">${g.market.map((c, i) => ingCard(c, { act: "trm", i, cls: s.m === i ? "pick" : "", noAnim: true, pressed: s.m === i, tag: s.m === i ? t("trade.tagGet") : null })).join("")}</div>
         ${U.route.length ? `<p class="muted">${t("plant.clearsRoute")}</p>` : ""}
