@@ -8,7 +8,7 @@ and it installs as an app and plays offline.
 
 | File | What you change there |
 |---|---|
-| `rules.json` | Every number: fame target, hand/garden limits, the deck and its moves, the board, patient generation, curse turns, **tools and their costs/effects**, whether hands are open. |
+| `rules.json` | Every number: fame target, hand/garden limits, the deck and its moves, the board, patient generation, **tools and their costs/effects**, whether hands are open. |
 | `i18n/en.json` | Every word, including patient, ailment, ingredient and tool names. |
 | `themes/<id>/theme.json` | Colours, fonts, decorative kanji (`glyphs`), element colours/glyphs, and which art file is which. |
 | `themes/<id>/assets/` | The art. `build/build.py` packs every SVG listed in a theme into `sprites.svg`. |
@@ -66,8 +66,10 @@ A theme can also set:
   sign(s): "2 火" is two towards fire.
 - Each ingredient is one kind of move, so it has its own name: `content.ingredients.<el>` lists
   the 1, 2 and 3-square names, `content.ingredients.AF` (and AW, FE, EW) the diagonal pairs.
-- `board.size` 8: 8 x 8 patient maps, each starting on one of the four middle squares. A curse
-  turns the map about its middle, so the start moves too; the patient's element doesn't turn.
+- `board.size` 8: 8 x 8 patient maps, each starting on one of the four middle squares.
+- Claims: once per turn, after your action, you may lay one of your oni on a patient. The other
+  player can't cure them until your next turn is over. Cure them by then for a `sakuraBonus`;
+  if the claim lapses, the other player gets it.
 - Ward patients leap like a knight: two squares one way and one to the side, any way, over
   anything between. The turn button cycles the kitsune and the leap through their ways.
 
@@ -88,7 +90,7 @@ All in `rules.json`, each with an `_about`:
 ### Characters, guilds and colours
 The game opens on a splash screen, then the title menu: **Continue** (a saved game), **Quick game**
 and **Journey to Edo** (when the quest is on). Quick game opens its options: the mon target, the rival's skill (how far
-ahead it looks: Gentle 2, Steady 3, Sharp 4, Master 5), whether it buys tools and curses, its
+ahead it looks: Gentle 2, Steady 3, Sharp 4, Master 5), whether it buys tools and claims patients, its
 head start, how many oni block each patient (few 0-2, some = rules.json, many 2-5) and open
 hands. They are remembered and are the same knobs the quest turns stop by stop; a quest stop
 starts with its own settings. "You play" on the title menu opens the setup sheet: pick a
@@ -116,13 +118,13 @@ Edo. Win a stop to travel on; the map between games shows how far you have come.
 - `rules`: changes to `rules.json` for that game only. Nested keys change just what they name
   (`"patients": {"oniMax": 2}` leaves the other patient settings alone).
 - `rival`: how the bot plays. `depth` is the longest cure it looks for (5 = full strength), `tools` and
-  `curse` set to `false` stop it buying tools or cursing, `headStart` is mon it starts with.
+  `curse` set to `false` stop it buying tools or claiming patients, `headStart` is mon it starts with.
 - `at`: [longitude, latitude] on the map. The land is `quest/japan.svg` (its `land` and `border` paths); `map.project`
   turns longitude and latitude into that drawing's coordinates. The map is cropped from
   [Regions and Prefectures of Japan - blank.svg](https://commons.wikimedia.org/wiki/File:Regions_and_Prefectures_of_Japan_-_blank.svg)
   by Bigmorr (public domain, based on a map by Orange Wave).
 
-Early stops are short games against a rival that only sees short cures, buys no tools and never curses,
+Early stops are short games against a rival that only sees short cures, buys no tools and never claims patients,
 on maps with few oni. Later stops have longer targets, more oni and far-off cures, a full-strength
 rival, hidden hands and finally a head start for the rival. Place names and their lines are under
 `quest.stops` in the language file. Progress is kept on the device (cleared stops can be replayed).
@@ -154,7 +156,7 @@ your own drawing and add its key to `skip` so the build leaves it alone.
 - `build/build.py` subsets fonts to the characters actually used (including all JSON text), builds
   icons, iOS launch screens, theme sprite sheets and `sw.js`. Needs the source TTFs in `build/fonts/`.
 - `node build/balance.js 200` plays bot-vs-bot games against `rules.json` and reports whether tools
-  and curses pay off.
+  and claims pay off.
 
 ## GitHub Pages
 `.github/workflows/pages.yml` publishes the game on every push to `master`. Turn it on once in the
