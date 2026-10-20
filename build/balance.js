@@ -1,6 +1,6 @@
 // Bot-vs-bot balance runs against rules.json.
 // Usage: node build/balance.js [games-per-matchup] [path/to/rules.json]
-// Both seats use the app's bot; one seat can be told not to buy tools or not to curse.
+// Both seats use the app's bot; one seat can be told not to buy tools or not to claim patients.
 const path = require("path");
 global.window = global; global.localStorage = { getItem() { return null; }, setItem() {}, removeItem() {} };
 require(path.join(__dirname, "../js/engine.js"));
@@ -8,7 +8,7 @@ const KF = window.KF;
 const rulesFile = process.argv[3] || path.join(__dirname, "../rules.json");
 KF.configure(JSON.parse(require("fs").readFileSync(rulesFile, "utf8")));
 
-const swap = (G) => { G.P.reverse(); G.village.forEach((pt) => { if (pt.cursed != null) pt.cursed = 1 - pt.cursed; }); };
+const swap = (G) => { G.P.reverse(); G.cur = 1 - G.cur; G.village.forEach((pt) => { if (pt.claim) pt.claim.p = 1 - pt.claim.p; }); };
 function playTurn(G) {
   const seat = G.cur; if (seat === 0) swap(G);
   G.botStage = "buy"; G.botCured = false;
@@ -32,7 +32,7 @@ const N = +process.argv[2] || 200;
 const FULL = {}, PLAIN = { tools: false, curse: false }, NOTOOLS = { tools: false }, NOCURSE = { curse: false };
 for (const open of [true, false]) {
   console.log(`— ${open ? "open" : "hidden"} hands —`);
-  match("A full bot     vs B plain (no tools/curse)", [FULL, PLAIN], { openHands: open }, N);
+  match("A full bot     vs B plain (no tools/claims)", [FULL, PLAIN], { openHands: open }, N);
   match("A tools only   vs B plain", [NOCURSE, PLAIN], { openHands: open }, N);
-  match("A curses only  vs B plain", [NOTOOLS, PLAIN], { openHands: open }, N);
+  match("A claims only  vs B plain", [NOTOOLS, PLAIN], { openHands: open }, N);
 }

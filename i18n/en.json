@@ -219,13 +219,13 @@
     "tools": {
       "ladle": {
         "name": "Ladle",
-        "text": "Once per brew, play one card as a neighbouring element: a quarter turn either way.",
-        "short": "One card as a neighbouring element"
+        "text": "Once per brew, turn one card to go another way: a quarter turn either way, or a half turn.",
+        "short": "Turn one card any way"
       },
       "mortar": {
         "name": "Mortar",
-        "text": "Once per brew, play one card as its opposite element: a half turn.",
-        "short": "One card as its opposite"
+        "text": "Once per brew, grind one card to go one square further or one square shorter.",
+        "short": "One card a square longer or shorter"
       },
       "charm": {
         "name": "Kitsune Charm",
@@ -234,8 +234,8 @@
       },
       "basket": {
         "name": "Basket",
-        "text": "When you gather, take 3 cards instead of 2.",
-        "short": "Gather 3 instead of 2"
+        "text": "When you gather or draw blind, take 4 cards instead of 2.",
+        "short": "Gather 4 instead of 2"
       }
     },
     "characters": {
@@ -282,8 +282,8 @@
       "text": "Your garden holds one more card and starts with two planted."
     },
     "trade": {
-      "name": "Good bargains",
-      "text": "Tools cost you 1 {{mon}} less."
+      "name": "Shrewd trader",
+      "text": "Twice a turn, swap a card from your hand for one in the market. It doesn't use your action."
     },
     "blessed": {
       "name": "Blessed",
@@ -309,7 +309,9 @@
     "step": "Once per brew, take one extra step in any direction.",
     "stepShort": "One free step, any way",
     "gather": "When you gather, take {amount} cards.",
-    "gatherShort": "Gather {amount}"
+    "gatherShort": "Gather {amount}",
+    "stretch": "Once per brew, play one card {by} square.",
+    "stretchShort": "One card {by} square"
   },
   "turns": {
     "1": "a quarter turn clockwise",
@@ -381,13 +383,12 @@
   },
   "patient": {
     "label": "Patient {name}, {ailment}, worth {value}",
-    "cursed": "cursed",
-    "cursedByYou": "Cursed by you",
-    "cursedByRival": "Cursed by your rival",
     "needs": "Needs {el}",
     "needsAria": "Needs a {el} ingredient",
     "becomes": "Cured, joins your ward as {move}",
-    "moveAria": "{el} {move}"
+    "moveAria": "{el} {move}",
+    "claimedByYou": "Claimed by you: cure them on your next turn",
+    "claimedByRival": "Claimed by your rival: you can't cure them yet"
   },
   "hints": {
     "you": "You can cure this patient now",
@@ -397,7 +398,6 @@
     "nobody": "Nobody left to cure",
     "mapOf": "{name}'s map",
     "mapAria": "{name}'s map. Reach {cure} from the centre.",
-    "cursed": "Cursed",
     "rivalTurn": "Rival's turn",
     "worth": "worth {n} {{mon}}",
     "swipe": "Swipe left or right for the next patient",
@@ -447,7 +447,10 @@
     "tapNumber": "tap a number to go back",
     "needEl": "Needs a {el} ingredient {glyph}",
     "needElWhy": "Kitsune Tail counts as any element",
-    "knownHint": "Or use your known cure: +{n} {{mon}}"
+    "knownHint": "Or use your known cure: +{n} {{mon}}",
+    "freeClaim": "claim a patient",
+    "claimedByRival": "Your rival has claimed this patient",
+    "claimedByRivalSub": "You can cure them once your rival's next turn is over"
   },
   "brew": {
     "backTo": "Go back to card {n}",
@@ -487,7 +490,9 @@
     "takeN": "Take {n} ({have}/{n})",
     "takeFromMarket": "Take {n} from market",
     "known": "Known cure",
-    "knownSub": "+{n} {{mon}} · uses {name}"
+    "knownSub": "+{n} {{mon}} · uses {name}",
+    "claim": "Claim",
+    "claimSub": "Cure them next turn: +{n} · miss: rival +{n}"
   },
   "tools": {
     "cost": "{n} {{mon}}",
@@ -511,21 +516,12 @@
     "sakura": "Sakura passed · +{n} {{mon}}",
     "fame": "+{n} {{mon}}",
     "track": "{from} → {to}",
-    "curseQ": "Curse a patient?",
-    "oniLeft": "{n} oni left · optional",
-    "curseWhyOpen": "Hands are open: turn the map of someone your rival can cure, so its route breaks. The whole map turns; ingredient directions stay the same.",
-    "curseWhyOpenHints": "Purple ticks show who your rival can cure next turn. Turn that map so its route breaks; the tick disappears in the preview when it works.",
-    "curseWhyHidden": "Turn one map so your rival's planned route breaks. The whole map turns; ingredient directions stay the same.",
-    "turnMap": "Turn the map",
-    "preview": "Preview",
     "new": "New",
-    "noCurse": "No curse",
-    "curseName": "Curse {name}",
-    "pickToCurse": "Pick someone to curse",
     "continue": "Continue",
     "known": "A known cure, remembered from {name}",
     "joins": "{name} joins your ward",
-    "joinsSub": "{move}: {text}"
+    "joinsSub": "{move}: {text}",
+    "kept": "Claim kept · +{n} {{mon}}"
   },
   "plant": {
     "title": "Plant a card",
@@ -577,7 +573,7 @@
     "theme": "Theme",
     "language": "Language",
     "open": "Open hands",
-    "openSub": "Both hands are face up, so curses aren't blind guesses.",
+    "openSub": "Both hands are face up, so you can see what your rival is after.",
     "target": "{{Mon}} to win",
     "targetSub": "First to this many wins"
   },
@@ -595,7 +591,8 @@
     "themes": "Choose a theme",
     "setup": "Choose your character",
     "quest": "Journey to Edo",
-    "quick": "Quick game"
+    "quick": "Quick game",
+    "trade": "Trade at the market"
   },
   "themeNames": {
     "_about": "Optional: names for the themes in config.json. A theme without one shows the name in its theme.json.",
@@ -641,11 +638,9 @@
       "p": "One of each in a two-player game, paid for with {{mon}} (your marker moves back). Each works once per brew."
     },
     "curse": {
-      "h": "Curses",
-      "p": "After a cure you may spend one of your {oni} oni cards to turn a village patient's map. The cure, the oni and the start move; ingredient directions and the patient's element don't, so the cure may now lie against the element it needs. A cursed patient can't be cursed again."
+      "h": "Claims",
+      "p": "Once per turn, after your action, you may lay one of your {oni} oni on a patient to claim them. Your rival can't cure a patient you've claimed. Cure them on your next turn and you get {sak} extra {{mon}}, like a sakura. If your next turn ends and they're still uncured, the oni goes and your rival gets the {sak} {{mon}} instead."
     },
-    "curseOpen": "Hands are open, so look for the patient your rival can cure next turn.",
-    "curseHidden": "Hands are hidden, so it's a guess.",
     "end": {
       "h": "Garden, hand, end",
       "p": "Garden holds {garden}; planting into a full garden discards one. Hand limit {hand} at the end of your turn. When someone reaches {end}, the round finishes so both play equally; it also ends after the village runs out. Most {{mon}} wins; ties go to most cures."
@@ -690,13 +685,22 @@
       "you": "You plant {card}.",
       "rival": "Rival plants {card}."
     },
-    "curse": {
-      "you": "You curse {name}: the map turns {turn}.",
-      "rival": "Rival curses {name}: the map turns {turn}."
-    },
     "known": {
       "you": "You cure {name} ({ailment}) with a known remedy: +{n} {{mon}}.",
       "rival": "Rival cures {name} ({ailment}) with a known remedy: +{n} {{mon}}."
+    },
+    "claim": {
+      "you": "You claim {name}.",
+      "rival": "Rival claims {name}."
+    },
+    "lapse": {
+      "you": "Your claim on {name} lapsed: rival +{n}.",
+      "rival": "Rival's claim on {name} lapsed: you +{n}."
+    },
+    "kept": "(claim kept +{n})",
+    "swap": {
+      "you": "You trade {gave} for {got}.",
+      "rival": "Rival trades {gave} for {got}."
     }
   },
   "rival": {
@@ -750,9 +754,6 @@
       "one": "Drew {n} card blind",
       "other": "Drew {n} cards blind"
     },
-    "curses": "Curses {name} {oni}",
-    "turnsMap": "Turns the map {turn} {glyph}",
-    "lineCurse": "Cursed {name}: map turned {turn}",
     "plants": "Plants a card in its garden",
     "plantsSub": "{card} · never used up",
     "popPlants": "plants a card",
@@ -765,7 +766,15 @@
     "knowsSub": "Remembers it from {name}",
     "lineKnown": "Cured {name} with a known remedy: +{n} {{mon}}",
     "ward": "Ward",
-    "wardN": "Ward {n}"
+    "wardN": "Ward {n}",
+    "claims": "Claims {name} {oni}",
+    "claimsSub": "You can't cure them until its next turn is over",
+    "lineClaim": "Claimed {name}: hands off until after its next turn",
+    "lineLapse": "Its claim on {name} lapsed: you get +{n} {{mon}}",
+    "trades": "Trades at the market",
+    "tradesSub": "{gave} for {got}",
+    "popTrades": "trades a card",
+    "lineTrade": "Traded {gave} for {got}"
   },
   "over": {
     "you": "You win!",
@@ -793,7 +802,11 @@
     },
     "bought": "You bought the {tool}",
     "paid": "Paid {n} {{mon}}.",
-    "buttonUnderMap": "Its button sits under the map while you brew."
+    "buttonUnderMap": "Its button sits under the map while you brew.",
+    "youClaim": "You claim {name}",
+    "youClaimSub": "Cure them on your next turn for +{n} {{mon}}. If you don't, your rival gets it.",
+    "lapse": "Your claim on {name} lapsed",
+    "lapseSub": "Your rival gets +{n} {{mon}}"
   },
   "msg": {
     "waitTurn": "Wait for your turn.",
@@ -902,7 +915,7 @@
       "depth4": "Your rival plans further ahead",
       "depth5": "Your rival plays at full strength",
       "noTools": "Your rival buys no tools",
-      "noCurse": "Your rival never curses",
+      "noCurse": "Your rival never claims patients",
       "headStart": "Your rival starts with {n} {{mon}}",
       "fewOni": "Few oni on the maps",
       "manyOni": "Oni everywhere",
@@ -1011,8 +1024,8 @@
     "skill5": "Master",
     "tools": "Rival buys tools",
     "toolsSub": "It can spend {{mon}} on tools, as you can.",
-    "curse": "Rival curses",
-    "curseSub": "It turns your patients’ maps when it cures.",
+    "curse": "Rival claims patients",
+    "curseSub": "It lays oni on patients it wants.",
     "head": "Rival head start",
     "headSub": "{{Mon}} it starts with",
     "oni": "Oni on the maps",
@@ -1042,5 +1055,20 @@
     "tools": "Tools",
     "oni": "Oni",
     "none": "None yet"
+  },
+  "trade": {
+    "btn": "Trade",
+    "done": "Traded",
+    "aria": "Trade a card from your hand for one in the market",
+    "title": "Trade at the market",
+    "sub": "Swap one card from your hand for one in the market. Up to {n} a turn; it doesn't use your action.",
+    "give": "Give from your hand",
+    "get": "Take from the market",
+    "tagGive": "Give",
+    "tagGet": "Take",
+    "do": "Trade",
+    "toast": "You trade for",
+    "noHand": "No cards in hand to trade",
+    "left": "Trade · {n} left"
   }
 }

@@ -282,7 +282,7 @@ Rules:
 ```
 
 - **Abilities are fixed mechanics** from `rules.json → abilities`:
-  `green` (garden +1, starts with a card in it), `trade` (tools cost 1 less),
+  `green` (garden +1, starts with a card in it), `trade` (swap a hand card for a market card once a turn),
   `blessed` (start with 2 fame), `trickster` (+2 curse cards, +1 starting card),
   `scholar` (hand limit +2, +2 starting cards), `forager` (+1 card when gathering).
   They are balanced against each other (`node build/abilities.js 200`). Give **4 characters

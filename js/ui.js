@@ -45,7 +45,7 @@
     const own = lookup("content.tools." + id + (short ? ".short" : ".text"));
     if (own) return own;
     const d = KF.rules.toolDefs[id]; if (!d) return "";
-    return t("toolEffects." + d.effect + (short ? "Short" : ""), { turns: (d.turns || []).map((k) => t("turns." + k)).join(" / "), amount: d.amount });
+    return t("toolEffects." + d.effect + (short ? "Short" : ""), { turns: (d.turns || []).map((k) => t("turns." + k)).join(" / "), amount: d.amount, by: (d.by || []).map((k) => (k > 0 ? "+" : "−") + Math.abs(k)).join(" / ") });
   }
   function cardName(c) {
     if (c.step) return toolName(c.step);
@@ -172,8 +172,7 @@
   function pendSteps() {
     const p = U.pend; if (!p) return null; const c = cardAt(p.g, p.i); if (!c) return null;
     if (isPick(c)) return p.dir ? [p.dir] : null;
-    const rot = selTurns().reduce((a, k) => a + RU().toolDefs[k].turns[U.turnSel[k]], 0);
-    return c.steps.map((v) => KF.rotK(v, rot));
+    return selTurns().reduce((st, k) => (st ? KF.applyTool(k, st, KF.toolOpts(k)[U.turnSel[k]]) : st), c.steps);
   }
   const pendFlags = () => { const p = U.pend; if (!p) return 0; const c = cardAt(p.g, p.i); if (!c || isPick(c)) return 0; return selTurns().reduce((a, k) => a | KF.bit(k), 0); };
   function routeState() {
@@ -193,6 +192,7 @@
   function curableBy(pi, pt) {
     const p = G().P[pi];
     const key = [pi, pt.id, pt.t, pt.haz.length, pt.rot, p.hand.map((c) => c.id).join("."), p.garden.map((c) => c.id).join("."), Object.keys(p.tools).sort().join("."), (p.ward || []).map((w) => w.id + ":" + w.uses).join(".")].join("|");
+    if (KF.barred(pi, pt)) return false;
     if (!HC.has(key)) { if (HC.size > 500) HC.clear(); const k = G().village.indexOf(pt); HC.set(key, (k >= 0 && KF.knownFor(pi, k) >= 0) || !!KF.solveFor(pi, pt, 6).best); }
     return HC.get(key);
   }
@@ -284,13 +284,17 @@
       <div class="face"${own || (themed && !c.ward) ? "" : ` style="background:${bg}"`}>${pic}</div>
       <div class="lab">${way}<span class="nm">${esc(cardName(c))}</span></div>${tag}</${tagName}>`;
   }
+  // a claimed patient: the claimer's oni tucked under the card
+  const claimKey = (pt) => (pt.claim ? (pt.claim.p === 0 ? "patient.claimedByYou" : "patient.claimedByRival") : null);
+  const claimTuck = (pt) => (pt.claim ? `<span class="tuck${pt.claim.p === 0 ? " mine" : ""}" title="${attr(t(claimKey(pt)))}">${art("oni")}</span>` : "");
+  const ptLabel = (pt) => t("patient.label", { name: whoOf(pt), ailment: ailOf(pt), value: pt.val }) + (pt.claim ? ", " + t(claimKey(pt)) : "");
   function patCard(pt, k, o = {}) {
-    const tuck = pt.cursed !== null && pt.cursed !== undefined ? `<span class="tuck${pt.cursed === 0 ? " mine" : ""}" aria-label="${attr(t(pt.cursed === 0 ? "patient.cursedByYou" : "patient.cursedByRival"))}">${art("oni")}</span>` : "";
+    const tuck = claimTuck(pt);
     const show = o.preview || pt;
-    const aria = attr(t("patient.label", { name: whoOf(pt), ailment: ailOf(pt), value: pt.val }) + (pt.cursed != null ? ", " + t("patient.cursed") : ""));
+    const aria = attr(ptLabel(pt));
     if (o.chip) return `<button class="pc vc paper${o.cls ? " " + o.cls : ""}${fresh("p" + pt.id + (o.zone || ""))}" data-a="sel" data-i="${k}" aria-label="${aria}">
       <div class="ph">${ptAvatar(pt)}${monVal(pt.val)}</div><span class="ail">${esc(ailOf(pt))}</span>${tuck}${hintBadges(pt)}</button>`;
-    return `<button class="pc paper${o.cls ? " " + o.cls : ""}${fresh("p" + pt.id + (o.zone || ""))}" data-a="${o.act || "sel"}" data-i="${k}" aria-label="${attr(t("patient.label", { name: whoOf(pt), ailment: ailOf(pt), value: pt.val }) + (pt.cursed != null ? ", " + t("patient.cursed") : ""))}" ${o.pressed != null ? `aria-pressed="${o.pressed}"` : ""}>
+    return `<button class="pc paper${o.cls ? " " + o.cls : ""}${fresh("p" + pt.id + (o.zone || ""))}" data-a="${o.act || "sel"}" data-i="${k}" aria-label="${aria}" ${o.pressed != null ? `aria-pressed="${o.pressed}"` : ""}>
       <div class="ph">${monVal(pt.val)}<span class="nm">${esc(whoOf(pt, !o.full))}</span>${o.full ? ptChip(pt) : ptChip(pt, false, true)}</div>
       ${mapSVG(show, { px: o.px || 63, icons: !!o.icons })}
       ${o.ail ? `<span class="ail">${esc(ailOf(pt))}</span>` : ""}${tuck}${hintBadges(show)}${o.extra || ""}</button>`;
@@ -366,7 +370,7 @@
       svg = mapSVG(pt, { icons: true, trail: rivalTurn ? null : rs.rp.trail, pos: showPos ? rs.rp.pos : null, prev: rivalTurn ? null : rs.prev, label: t("board.mapAria", { name: whoOf(pt), cure: gl("cure") }) });
     }
     const port = U.layout !== "land";
-    const cursedChip = pt.cursed == null ? "" : port ? `<span class="chip cur icon" role="img" aria-label="${attr(t("board.cursed"))}" title="${attr(t("board.cursed"))}">${art("oni")}</span>` : `<span class="chip cur">${art("oni")}${t("board.cursed")}</span>`;
+    const ck = claimKey(pt), cursedChip = !ck ? "" : port ? `<span class="chip cur${pt.claim.p === 0 ? " mine" : ""} icon" role="img" aria-label="${attr(t(ck))}" title="${attr(t(ck))}">${art("oni")}</span>` : `<span class="chip cur${pt.claim.p === 0 ? " mine" : ""}">${art("oni")}${t(ck)}</span>`;
     const sakChip = pt.bonus && port ? `<span class="sakic" role="img" aria-label="${attr(t("status.sakura"))}">${art("sakura")}</span>` : pt.bonus ? `<span class="chip sak">${art("sakura")}+${KF.limit(G().cur, "sakuraBonus")}</span>` : "";
     const elChip = pt.el ? `<span class="chip elc" title="${attr(KF.needEl(pt) ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }))}" style="--ec:${EL(pt.el).color}">${ptChip(pt, true)}${KF.needEl(pt) ? `<span>${t("patient.needs", { el: elName(pt.el) })}</span>` : ""}</span>` : "";
     const rvChip = rivalTurn ? `<span class="chip rvc">${gl("rival") || ASSET["icon.rival"] ? ic("rival") + " " : ""}${t("board.rivalTurn")}</span>` : "";
@@ -394,7 +398,8 @@
     const s = statusText(rs);
     const kw = rs && canAct() && !U.route.length && !U.pend ? KF.knownFor(0, U.sel) : -1;
     const known = kw >= 0 ? `<button class="cbtn known" data-a="known">${ic("cured")}<span><b>${t("act.known")}</b><small>${t("act.knownSub", { n: KF.knownPay(rs.pt), name: esc(whoOf({ who: me().ward[kw].who }, true)) })}</small></span></button>` : "";
-    return `<div class="strip"><div class="srow">${known}${chips.length ? `<div class="seqs">${chips.join("")}</div>` : ""}<span class="stxt${s.bad ? " bad" : ""}" aria-live="polite">${s.t}${s.s ? `<small>${s.s}</small>` : ""}</span></div>${controls(rs)}</div>`;
+    const pt = curPt(), cl = myTurn() && !U.anim && pt && KF.canClaim(0, U.sel) ? `<button class="cbtn claim" data-a="claim">${art("oni")}<span><b>${t("act.claim")}</b><small>${t("act.claimSub", { n: KF.claimBonus(0) })}</small></span></button>` : "";
+    return `<div class="strip"><div class="srow">${known}${cl}${chips.length ? `<div class="seqs">${chips.join("")}</div>` : ""}<span class="stxt${s.bad ? " bad" : ""}" aria-live="polite">${s.t}${s.s ? `<small>${s.s}</small>` : ""}</span></div>${controls(rs)}</div>`;
   }
   function controls(rs) {
     if (!canAct() || !rs) return "";
@@ -418,8 +423,8 @@
     r.turnTools.forEach((id) => {
       if (!p.tools[id]) return;
       const used = uf & KF.bit(id), idx = U.turnSel[id], sel = idx != null;
-      const turn = sel ? r.toolDefs[id].turns[idx] : null;
-      out.push(`<button class="sbtn tool${sel ? " on" : ""}" data-a="ttool" data-i="${id}" ${!on || used ? "disabled" : ""} aria-pressed="${sel}" aria-label="${attr(`${toolName(id)}: ${toolText(id, true)}${used ? " " + t("brew.usedThisBrew") : ""}`)}">${art(toolArt(id))}${sel ? `<span class="mk">${ic("turn." + turn)}</span>` : ""}</button>`);
+      const turn = sel ? KF.toolOpts(id)[idx] : null, mk = r.toolDefs[id].effect === "stretch" ? `<b>${turn > 0 ? "+" : "−"}${Math.abs(turn)}</b>` : ic("turn." + turn);
+      out.push(`<button class="sbtn tool${sel ? " on" : ""}" data-a="ttool" data-i="${id}" ${!on || used ? "disabled" : ""} aria-pressed="${sel}" aria-label="${attr(`${toolName(id)}: ${toolText(id, true)}${used ? " " + t("brew.usedThisBrew") : ""}`)}">${art(toolArt(id))}${sel ? `<span class="mk">${mk}</span>` : ""}</button>`);
     });
     r.stepTools.forEach((id, idx) => {
       if (!p.tools[id]) return;
@@ -433,8 +438,10 @@
     if (g.over) return { t: t("status.gameOver") };
     if (U.anim) return { t: "…" };
     if (U.msg) return { t: U.msg, bad: U.msgBad };
+    const cp = curPt();
+    if (!g.turn.acted && cp && KF.barred(0, cp)) return { t: t("status.claimedByRival"), s: t("status.claimedByRivalSub"), bad: true };
     if (g.turn.acted) {
-      const free = [!g.turn.planted ? t("status.freePlant") : null, !g.turn.bought ? t("status.freeBuy") : null].filter(Boolean);
+      const free = [!g.turn.planted ? t("status.freePlant") : null, !g.turn.claimed && me().oni > 0 ? t("status.freeClaim") : null, !g.turn.bought ? t("status.freeBuy") : null].filter(Boolean);
       return { t: t("status.actionDone"), s: free.length ? t("status.thenFree", { list: free.join(", ") }) : t("status.thenEnd") };
     }
     if (U.mkt.length) { const n = nTake(), left = n - U.mkt.length; return left > 0 ? { t: t("status.pickMore", { n: left }) } : { t: t("status.takeThese", { n }), s: t("status.thenDone") }; }
@@ -495,6 +502,11 @@
     }).join("");
   }
 
+  // the trader's swap: a hand card for a market card, once a turn, on top of the action
+  const canTrade = () => KF.limit(0, "swap") > 0;
+  const tradeLabel = () => { const left = KF.limit(0, "swap") - (G().turn.swaps || 0); return !KF.canSwap(0) ? t("trade.done") : left > 1 && G().cur === 0 ? t("trade.left", { n: left }) : t("trade.btn"); };
+  const tradeBtn = (u) => (canTrade() ? `<button class="ic plotc trd" style="--u:${u}" data-a="trade" ${KF.canSwap(0) && !U.anim ? "" : "disabled"} aria-label="${attr(t("trade.aria"))}"><b class="sw">⇄</b>${tradeLabel()}</button>` : "");
+
   // ---------- actions bar (phone) ----------
   function phoneActs() {
     const g = G(), mine = myTurn(), rs = routeState();
@@ -537,7 +549,7 @@
     else if (tb === "ward") tray = `<div class="crow${me().ward.length >= 5 ? " spread" : ""}">${wardCards(rowU(Math.max(1, me().ward.length), avail, 1, 1), "w")}</div>`;
     else if (tb === "garden") tray = `<div class="crow">${gardenCards(1, "g", () => `<button class="ic plotc" style="--u:1" data-a="plant" ${!myTurn() || g.turn.planted ? "disabled" : ""} aria-label="${attr(t("garden.plantAria"))}">${ICON.plant(22)}${t("garden.plant")}</button>`)}</div>`;
     else if (U.mview === "tools") tray = `<div class="tgrid2">${toolCards()}</div>`;
-    else tray = `<div class="crow spread">${marketCards(rowU(g.market.length, avail, 1, 1), "m")}</div>`;
+    else { const u = rowU(g.market.length + (canTrade() ? 1 : 0), avail, 1, 1); tray = `<div class="crow spread">${tradeBtn(u)}${marketCards(u, "m")}</div>`; }
     return `<div class="scr port lacquer">
       <header class="top">${menuBtn()}${fameBars()}${goal()}</header>
       <section class="vill" aria-label="${attr(t("label.village"))}">
@@ -564,7 +576,7 @@
           <div class="vgrid">${g.village.map((pt, k) => patCard(pt, k, { cls: k === U.sel ? "sel" : "", px: Math.max(50, Math.min(70, Math.floor((U.sh - 160) / 2))) })).join("")}</div></section>
         ${boardPanel()}
         <section class="rcol">
-          <div class="lbl"><span>${mkt ? t("label.marketDeck", { n: g.deck.length }) : t("label.handN", { n: me().hand.length, max: KF.limit(0, "handLimit") })}</span><button class="linkbtn" data-a="tab" data-i="${mkt ? "hand" : "market"}">${mkt ? t("label.toHand") : t("label.toMarket")}</button></div>
+          <div class="lbl"><span>${mkt ? t("label.marketDeck", { n: g.deck.length }) : t("label.handN", { n: me().hand.length, max: KF.limit(0, "handLimit") })}</span>${mkt && canTrade() ? `<button class="linkbtn" data-a="trade" ${KF.canSwap(0) && !U.anim ? "" : "disabled"}>⇄ ${tradeLabel()}</button>` : ""}<button class="linkbtn" data-a="tab" data-i="${mkt ? "hand" : "market"}">${mkt ? t("label.toHand") : t("label.toMarket")}</button></div>
           <div class="hrow"><div class="crow${(mkt ? g.market.length : me().hand.length) >= 5 ? " spread" : ""}">${row}</div></div>
           <div class="lbl"><span>${U.gview === "ward" ? t("label.wardN", { n: wardReady() }) : t("label.gardenN", { n: me().garden.length, max: KF.limit(0, "gardenMax") })}</span>${RU().ward.enabled ? `<button class="linkbtn" data-a="gview">${U.gview === "ward" ? t("label.toGarden") : t("label.toWard")}</button>` : `<span>${esc(owned)}</span>`}</div>
           <div class="grow${U.gview === "ward" ? " wardrow" : ""}">${U.gview === "ward" ? wardCards(0.667, "w") : gardenCards(0.667, "g", plots)}</div>
@@ -575,9 +587,9 @@
   // the tablet: the village as a column of named patients, the board as big as it fits, and a side column with
   // the hand always showing above the phone's tabs (garden, ward, market with its tools) and action bar
   function patRow(pt, k) {
-    const tuck = pt.cursed != null ? `<span class="tuck${pt.cursed === 0 ? " mine" : ""}" aria-hidden="true">${art("oni")}</span>` : "";
+    const tuck = claimTuck(pt);
     const px = Math.max(56, Math.min(74, Math.floor((U.sh - 330) / 4) - 26));
-    return `<button class="pc vr paper${k === U.sel ? " sel" : ""}${fresh("p" + pt.id)}" data-a="sel" data-i="${k}" aria-label="${attr(t("patient.label", { name: whoOf(pt), ailment: ailOf(pt), value: pt.val }) + (pt.cursed != null ? ", " + t("patient.cursed") : ""))}">
+    return `<button class="pc vr paper${k === U.sel ? " sel" : ""}${fresh("p" + pt.id)}" data-a="sel" data-i="${k}" aria-label="${attr(ptLabel(pt))}">
       <span class="vt"><span class="vh">${ptAvatar(pt, "big")}${hintBadges(pt, "inhead")}${monVal(pt.val)}</span><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small></span>${mapSVG(pt, { px, icons: true })}${tuck}</button>`;
   }
   function tablScreen() {
@@ -604,7 +616,7 @@
           <div class="vlist">${g.village.map((pt, k2) => patRow(pt, k2)).join("") || `<span class="empty">${t("label.villageEmpty")}</span>`}</div></section>
         ${boardPanel()}
         <section class="side"><div class="lbl"><span>${tools ? withGl(t("label.tools"), "tools") : withGl(t("label.market"), "market")}</span><span>${tools ? t("tools.paidWithFame") : t("label.deckDiscard", { n: g.deck.length, d: g.discard.length })}</span></div>
-          <div class="tray">${tools ? `<div class="tgrid2">${toolCards()}</div>` : `<div class="hgrid">${marketCards(mu, "m")}</div>`}</div>
+          <div class="tray">${tools ? `<div class="tgrid2">${toolCards()}</div>` : `<div class="hgrid">${marketCards(mu, "m")}${tradeBtn(mu)}</div>`}</div>
           ${macts}</section>
       </div>
       <div class="traybar">
@@ -663,7 +675,7 @@
     g.village.forEach((p) => U.seen.add("p" + p.id));
     render();
     if (g.over) openSheet({ type: "over", modal: true, quiet: true });
-    else if (g.phase === "reward" && g.pending) openSheet({ type: "reward", modal: true, k: null, rot: RU().curse.turns[0], quiet: true });
+    else if (g.phase === "reward" && g.pending) openSheet({ type: "reward", modal: true, quiet: true });
     else if (g.cur === 1 && !U.busy) runBot();
   }
   // quick-game options: the knobs the quest turns stop by stop
@@ -727,15 +739,7 @@
       next();
     });
   }
-  function rotateBoard(rot) {
-    return new Promise((done) => {
-      const s = $(".board .bsvg"); if (!s || reduced()) return done();
-      const deg = rot === 3 ? -90 : rot * 90, ms = 1000 * U.speed;
-      s.style.transition = `transform ${ms}ms cubic-bezier(.55,0,.25,1)`;
-      requestAnimationFrame(() => requestAnimationFrame(() => { s.style.transform = `rotate(${deg}deg)`; }));
-      setTimeout(done, ms + 80);
-    });
-  }
+
   function stampBoard(key, rival) {
     const b = $(".board"), html = ic(key); if (!b || !html) return;
     const d = document.createElement("div"); d.className = "bstamp" + (rival ? " r" : ""); d.innerHTML = html;
@@ -814,31 +818,21 @@
   const SHEETS = {
     reward(s) {
       const g = G(), res = g.pending, pt = res.pt, p = me(), sak = res.sak || 0, gain = res.gain != null ? res.gain : pt.val + sak;
-      const targets = KF.curseTargets();
-      const canCurse = p.oni > 0 && targets.length > 0;
-      let curse = "";
-      if (canCurse) {
-        const minis = targets.map(({ pt: q, k }) => {
-          const picked = s.k === k;
-          const prev = picked ? KF.rotatedCopy(q, s.rot) : null;
-          const tag = picked ? `<span class="ptag pv">${t("reward.preview")}</span>` : q.id === res.arrived ? `<span class="ptag new">${t("reward.new")}</span>` : "";
-          return patCard(q, k, { act: "ck", cls: (picked ? "sel" : "") + (s.k != null && !picked ? " dim" : ""), pressed: picked, preview: prev, extra: tag, zone: "s" });
-        }).join("");
-        const why = openHands() ? (PREFS.hints ? t("reward.curseWhyOpenHints") : t("reward.curseWhyOpen")) : t("reward.curseWhyHidden");
-        curse = `<div class="sect"><div class="hd">${art("oni")}<b>${t("reward.curseQ")}</b><span>${t("reward.oniLeft", { n: p.oni })}</span></div>
-          <p class="muted">${why}</p>
-          <div class="mrow">${minis}</div>
-          <div class="seg" role="group" aria-label="${attr(t("reward.turnMap"))}">${RU().curse.turns.map((r) => `<button data-a="crot" data-i="${r}" aria-pressed="${s.rot === r}">${ic("turn." + r)} ${t("turnsShort." + r)}</button>`).join("")}</div></div>`;
-      }
-      const pk = s.k != null ? g.village[s.k] : null;
-      const btns = canCurse
-        ? `<div class="btns"><button class="btn" data-a="rdone">${t("reward.noCurse")}</button><button class="btn primary" data-a="rcurse" ${pk ? "" : "disabled"}>${pk ? t("reward.curseName", { name: esc(whoOf(pk, true)) }) : t("reward.pickToCurse")}</button></div>`
-        : `<div class="btns"><button class="btn primary" data-a="rdone">${t("reward.continue")}</button></div>`;
-      const subs = [res.known ? t("reward.known", { name: esc(whoOf({ who: res.known }, true)) }) : "", sak ? `${art("sakura")}${t("reward.sakura", { n: sak })}` : ""].filter(Boolean);
+      const btns = `<div class="btns"><button class="btn primary" data-a="rdone">${t("reward.continue")}</button></div>`;
+      const kept = res.kept || 0;
+      const subs = [res.known ? t("reward.known", { name: esc(whoOf({ who: res.known }, true)) }) : "", sak ? `${art("sakura")}${t("reward.sakura", { n: sak })}` : "", kept ? `${art("oni")}${t("reward.kept", { n: kept })}` : ""].filter(Boolean);
       const joins = RU().ward.enabled && pt.el ? `<div class="gainrow joins">${ptChip(pt, true)}<div><b>${t("reward.joins", { name: esc(whoOf(pt, true)) })}</b><small>${t("reward.joinsSub", { move: moveName(pt.mv), text: moveText(pt.mv, pt.el) })}</small></div></div>` : "";
       return `<div class="sh"><div class="stamp por">${ptPortrait(pt)}<span class="cst">${ic("cured")}</span></div><div><h2>${t("reward.title", { name: esc(whoOf(pt)) })}</h2><div class="sub">${subs.length ? subs.join(" · ") : esc(ailOf(pt))}</div></div></div>
         <div class="gainrow">${monIc("em")}<div><b>${t("reward.fame", { n: gain })}</b><small>${t("reward.track", { from: p.fame - gain, to: p.fame })}</small></div></div>${joins}
-        ${curse}${btns}`;
+        ${btns}`;
+    },
+    trade(s) {
+      const p = me(), g = G();
+      return `<div class="sh"><div class="stamp" ${stampStyle("var(--gold)")}>⇄</div><div><h2>${t("trade.title")}</h2><div class="sub">${t("trade.sub", { n: KF.limit(0, "swap") })}</div></div></div>
+        <span class="cap">${t("trade.give")}</span><div class="crow">${p.hand.map((c, i) => ingCard(c, { act: "trh", i, cls: s.h === i ? "pick" : "", noAnim: true, pressed: s.h === i, tag: s.h === i ? t("trade.tagGive") : null })).join("")}</div>
+        <span class="cap">${t("trade.get")}</span><div class="crow">${g.market.map((c, i) => ingCard(c, { act: "trm", i, cls: s.m === i ? "pick" : "", noAnim: true, pressed: s.m === i, tag: s.m === i ? t("trade.tagGet") : null })).join("")}</div>
+        ${U.route.length ? `<p class="muted">${t("plant.clearsRoute")}</p>` : ""}
+        <div class="btns"><button class="btn" data-a="close">${t("common.cancel")}</button><button class="btn primary" data-a="trdo" ${s.h != null && s.m != null ? "" : "disabled"}>${t("trade.do")}</button></div>`;
     },
     plant(s) {
       const p = me(), full = p.garden.length >= KF.limit(0, "gardenMax");
@@ -919,7 +913,7 @@
       const tools = r.toolIds.map((id) => `<li><b>${esc(toolName(id))}</b> ${toolIc(id)} (${t("tools.cost", { n: KF.cost(id) })}): ${toolText(id)}</li>`).join("");
       const secs = ["goal", "turn", "brew", "fame", ...(r.ward.enabled ? ["patients"] : []), ...(r.knownCure.enabled ? ["known"] : []), ...(r.guilds.echo ? ["guild"] : []), "tools", "curse", "end"];
       return `<div class="sh"><div><h2>${withGl(t("rules.title"), "rules")}</h2><div class="sub">${t("rules.sub", { n: r.endFame })}${openHands() ? " · " + t("rules.openHands") : ""}</div></div></div><div class="rules">
-        ${secs.map((k) => `<h3>${t("rules." + k + ".h")}</h3><p>${t("rules." + k + ".p", Object.assign({ dirs, kitsune: elIc("V") }, v))}</p>${k === "tools" ? `<ul>${tools}</ul>` : ""}${k === "curse" ? `<p>${openHands() ? t("rules.curseOpen") : t("rules.curseHidden")}</p>` : ""}${k === "brew" && r.patients.requireElement ? `<p>${t("rules.needEl", { kitsune: elIc("V") })}</p>` : ""}`).join("")}
+        ${secs.map((k) => `<h3>${t("rules." + k + ".h")}</h3><p>${t("rules." + k + ".p", Object.assign({ dirs, kitsune: elIc("V") }, v))}</p>${k === "tools" ? `<ul>${tools}</ul>` : ""}${k === "brew" && r.patients.requireElement ? `<p>${t("rules.needEl", { kitsune: elIc("V") })}</p>` : ""}`).join("")}
       </div><div class="btns"><button class="btn primary" data-a="close">${t("rules.gotIt")}</button></div>`;
     },
     log() {
@@ -997,12 +991,14 @@
       case "new": return t(a.first ? "log.newRival" : "log.newYou");
       case "end": return t("over." + a.winner);
       case "buy": return t("log.buy." + who, { tool: esc(toolName(a.tool)), n: a.cost });
-      case "cure": return t("log.cure." + who, { name: esc(whoOf(pt)), ailment: esc(ailOf(pt).toLowerCase()), n: a.v }) + (a.sak ? " " + t("log.sakura", { n: a.sak }) : "");
+      case "cure": return t("log.cure." + who, { name: esc(whoOf(pt)), ailment: esc(ailOf(pt).toLowerCase()), n: a.v }) + (a.sak ? " " + t("log.sakura", { n: a.sak }) : "") + (a.kept ? " " + t("log.kept", { n: a.kept }) : "");
       case "known": return t("log.known." + who, { name: esc(whoOf(pt)), ailment: esc(ailOf(pt).toLowerCase()), n: a.v });
       case "gather": return t("log.gather." + who, { cards: (a.cards || []).map((c) => esc(cardLabel(c))).join(", ") });
       case "blind": return t("log.blind." + who, { n: a.n });
       case "plant": return t("log.plant." + who, { card: esc(cardLabel(a.card)) });
-      case "curse": return t("log.curse." + who, { name: esc(whoOf(pt)), turn: t("turns." + a.rot) });
+      case "swap": return t("log.swap." + who, { gave: esc(cardLabel(a.gave)), got: esc(cardLabel(a.got)) });
+      case "claim": return t("log.claim." + who, { name: esc(whoOf(pt)) });
+      case "lapse": return t("log.lapse." + who, { name: esc(whoOf(pt)), n: a.n });
     }
     return l.k;
   }
@@ -1054,7 +1050,7 @@
           trail = await walk(pt, trail, s.trail, { rival: true, stepBase: n }); n += s.trail.length; pos = s.pos;
           await sleep(140);
         }
-        const bonus = KF.replay(pt, m.seq).bonus ? KF.limit(1, "sakuraBonus") : 0;
+        const bonus = (KF.replay(pt, m.seq).bonus ? KF.limit(1, "sakuraBonus") : 0) + (pt.claim && pt.claim.p === 1 ? KF.claimBonus(1) : 0);
         U.bo.trail = trail; U.bo.pos = pos;
         U.rv.say = t("rival.cures", { name: esc(whoOf(pt)) }); U.rv.sub = t("rival.gains", { n: pt.val }) + (bonus ? " · " + t("rival.sakura", { n: bonus }) : "");
         render(); stampBoard("cured", true); SFX.cure();
@@ -1084,13 +1080,17 @@
         U.rv = { say: t("rival.drawsBlind", { n: m.n }), sub: t("rival.fromDeck"), pop: pop(t("rival.popBlind", { n: m.n }), `<div class="rvcards">${Array.from({ length: m.n }, () => `<span class="cback">${art("emblem")}</span>`).join("")}</div>`) };
         render(); SFX.blind(); await sleep(1300);
         KF.botDo(m); rvLine("blind", t("rival.lineBlind", { n: m.n })); g.lastBot = stripTags(t("rival.lineBlind", { n: m.n }));
-      } else if (m.type === "curse") {
+      } else if (m.type === "claim") {
         const pt = g.village[m.k]; U.sel = m.k;
-        U.rv = { say: t("rival.curses", { name: esc(whoOf(pt)), oni: ic("oni") }), sub: t("rival.turnsMap", { turn: t("turns." + m.rot), glyph: ic("turn." + m.rot) }) };
+        U.rv = { say: t("rival.claims", { name: esc(whoOf(pt)), oni: ic("oni") }), sub: t("rival.claimsSub") };
         render(); await sleep(500); SFX.curse(); stampBoard("oni", true);
-        await rotateBoard(m.rot);
-        KF.botDo(m); render(); await sleep(900);
-        rvLine("curse", t("rival.lineCurse", { name: esc(whoOf(pt)), turn: t("turns." + m.rot) })); g.lastBot = stripTags(t("rival.lineCurse", { name: whoOf(pt), turn: t("turns." + m.rot) }));
+        KF.botDo(m); render(); await sleep(1300);
+        rvLine("curse", t("rival.lineClaim", { name: esc(whoOf(pt)) })); g.lastBot = stripTags(t("rival.lineClaim", { name: whoOf(pt) }));
+      } else if (m.type === "swap") {
+        const gave = b.hand[m.hi], got = g.market[m.mi];
+        U.rv = { say: t("rival.trades"), sub: t("rival.tradesSub", { gave: esc(cardName(gave)), got: esc(cardName(got)) }), pop: pop(t("rival.popTrades"), `<div class="rvcards">${ingCard(gave, { u: 1.2, noAnim: true, static: true })}<b class="sw">⇄</b>${ingCard(got, { u: 1.2, noAnim: true, static: true })}</div>`) };
+        render(); SFX.gather(); await sleep(1400);
+        KF.botDo(m); rvLine("gather", t("rival.lineTrade", { gave: esc(cardName(gave)), got: esc(cardName(got)) }));
       } else if (m.type === "plant") {
         const c = b.hand[m.hi];
         U.rv = { say: t("rival.plants"), sub: t("rival.plantsSub", { card: esc(cardName(c)) }), pop: pop(t("rival.popPlants"), `<div class="rvcards">${ingCard(c, { u: 1.6, noAnim: true, static: true })}</div>`) };
@@ -1101,6 +1101,7 @@
       render(); await sleep(450);
     }
     const r = KF.endTurn(); U.busy = false; U.rv = null; U.bo = null; U.taking = null; U.speed = 1;
+    (G().lapsed || []).forEach((x) => rvLine("curse", t("rival.lineLapse", { name: esc(whoOf({ who: x.who })), n: x.n })));
     if (r === "over") return showOver();
     render();
     SFX.yourTurn();
@@ -1122,7 +1123,10 @@
     SFX.endTurn();
     const r = KF.endTurn();
     if (r === "over") return showOver();
-    render(); runBot();
+    render();
+    const lp = G().lapsed || [];
+    if (lp.length) { SFX.bad(); return announce(lp.map((x) => `<h3>${t("toast.lapse", { name: esc(whoOf({ who: x.who })) })}</h3><p>${t("toast.lapseSub", { n: x.n })}</p>`).join(""), 2400, runBot); }
+    runBot();
   }
 
   // ---------- my moves ----------
@@ -1173,30 +1177,25 @@
     if (navigator.vibrate) try { navigator.vibrate([20, 40, 20]); } catch (e) {}
     await sleep(1200);
     const res = KF.doCure(0, U.sel, route);
-    G().pending = { pt: res.pt, sak: res.sak, gain: res.pt.val + res.sak, arrived: res.arrived }; G().phase = "reward";
+    G().pending = { pt: res.pt, sak: res.sak, kept: res.kept, gain: res.pt.val + res.sak + res.kept, arrived: res.arrived }; G().phase = "reward";
     resetRoute(); U.mkt = []; U.anim = false;
-    render(); SFX.fame(); openSheet({ type: "reward", modal: true, k: null, rot: RU().curse.turns[0], quiet: true });
+    render(); SFX.fame(); openSheet({ type: "reward", modal: true, quiet: true });
   }
   async function doKnown() {
     if (!canAct() || KF.knownFor(0, U.sel) < 0) return;
     U.anim = true; stampBoard("cured"); SFX.cure(); await sleep(1200);
     const res = KF.doKnownCure(0, U.sel);
-    G().pending = { pt: res.pt, sak: 0, gain: res.pay, known: res.via.who, arrived: res.arrived }; G().phase = "reward";
+    G().pending = { pt: res.pt, sak: 0, kept: res.kept, gain: res.pay + res.kept, known: res.via.who, arrived: res.arrived }; G().phase = "reward";
     resetRoute(); U.mkt = []; U.anim = false;
-    render(); SFX.fame(); openSheet({ type: "reward", modal: true, k: null, rot: RU().curse.turns[0], quiet: true });
+    render(); SFX.fame(); openSheet({ type: "reward", modal: true, quiet: true });
   }
-  async function resolveReward(curseIt) {
-    const s = U.sheet, g = G();
-    g.pending = null; g.phase = "main";
-    const k = curseIt ? s.k : null, rot = s.rot;
-    closeSheet();
-    if (k != null) {
-      U.sel = k; U.anim = true; render();
-      await sleep(350); SFX.curse(); stampBoard("oni");
-      await rotateBoard(rot);
-      KF.curse(0, k, rot); U.anim = false;
-    }
-    render();
+  function resolveReward() { const g = G(); g.pending = null; g.phase = "main"; closeSheet(); render(); }
+  // lay one of your oni on the patient on the board
+  async function doClaim() {
+    const pt = curPt(); if (!pt || !KF.canClaim(0, U.sel)) return;
+    U.anim = true; SFX.curse(); stampBoard("oni"); await sleep(500);
+    KF.claim(0, U.sel); U.anim = false; render();
+    announce(`<div class="who y">${t("status.yourTurn")}</div><h3>${t("toast.youClaim", { name: esc(whoOf(pt)) })}</h3><p>${t("toast.youClaimSub", { n: KF.claimBonus(0) })}</p>`, 2600, null);
   }
 
   function onClick(e) {
@@ -1247,6 +1246,7 @@
       case "garden": tapIngredient(true, +i); return;
       case "ward": tapIngredient("w", +i); return;
       case "known": doKnown(); return;
+      case "claim": doClaim(); return;
       case "gview": U.gview = U.gview === "ward" ? "garden" : "ward"; SFX.open(); render(); return;
       case "dturn": turnAny(); return;
       case "pplay": if (U.pend) commitPend(); return;
@@ -1254,7 +1254,7 @@
       case "chip": { U.route.length = +i; U.pend = null; U.msg = null; SFX.undo(); render(); return; }
       case "undo": U.route.pop(); U.msg = null; SFX.undo(); render(); return;
       case "clear": resetRoute(); SFX.cancel(); render(); return;
-      case "ttool": { const n = RU().toolDefs[i].turns.length, c = U.turnSel[i]; U.turnSel[i] = c == null ? 0 : c + 1 < n ? c + 1 : null; SFX.toggle(); render(); return; }
+      case "ttool": { const n = KF.toolOpts(i).length, c = U.turnSel[i]; U.turnSel[i] = c == null ? 0 : c + 1 < n ? c + 1 : null; SFX.toggle(); render(); return; }
       case "stool": { const idx = +i; if (U.pend && U.pend.i === -1 - idx) { U.pend = null; SFX.cancel(); render(); return; } tapIngredient(true, -1 - idx); return; }
       case "brew": doBrew(); return;
       case "gather": U.tab = "market"; U.msg = null; resetRoute(); SFX.open(); render(); return;
@@ -1268,6 +1268,10 @@
       case "take": { if (!canAct() || U.mkt.length !== nTake()) return; const taken = KF.gather(0, U.mkt); U.mkt = []; U.tab = "hand"; resetRoute(); SFX.gather(); render(); announce(`<div class="who y">${t("status.yourTurn")}</div><h3>${t("toast.youTake", { n: taken.length })}</h3><div class="mini">${taken.map((c) => ingCard(c, { u: 0.8, noAnim: true, static: true })).join("")}</div>`, 1300, null); return; }
       case "blind": { if (!canAct()) return; const got = KF.drawBlind(0); U.mkt = []; U.tab = "hand"; resetRoute(); SFX.blind(); render(); announce(`<div class="who y">${t("status.yourTurn")}</div><h3>${t("toast.youDraw", { n: got.length })}</h3><div class="mini">${got.map((c) => ingCard(c, { u: 0.8, noAnim: true, static: true })).join("")}</div>`, 1600, null); return; }
       case "plant": if (!myTurn() || g.turn.planted) return; if (!me().hand.length) return say(t("msg.nothingToPlant"), true); openSheet({ type: "plant", h: null, r: null }); return;
+      case "trade": if (!KF.canSwap(0)) return; if (!me().hand.length) return say(t("trade.noHand"), true); openSheet({ type: "trade", h: null, m: null }); return;
+      case "trh": s.h = +i; SFX.tap(me().hand[+i].el); renderSheet(); return;
+      case "trm": s.m = +i; SFX.tap(g.market[+i].el); renderSheet(); return;
+      case "trdo": { const got = g.market[s.m]; if (!KF.swapCard(0, s.h, s.m)) return; resetRoute(); U.mkt = []; closeSheet(); SFX.gather(); render(); announce(`<div class="who y">${t("status.yourTurn")}</div><h3>${t("trade.toast")}</h3><div class="mini">${ingCard(got, { u: 0.8, noAnim: true, static: true })}</div>`, 1300, null); return; }
       case "pl": s.h = +i; SFX.tap(me().hand[+i].el); renderSheet(); return;
       case "pr": s.r = +i; SFX.tap(me().garden[+i].el); renderSheet(); return;
       case "pldo": KF.plantCard(0, s.h, s.r); resetRoute(); closeSheet(); SFX.plant(); render(); return;
@@ -1280,10 +1284,7 @@
       case "end": if (!myTurn() || !g.turn.acted) return; endMyTurn(); return;
       case "dc": { const k = +i, need = me().hand.length - KF.limit(0, "handLimit"); if (s.sel.includes(k)) s.sel = s.sel.filter((x) => x !== k); else if (s.sel.length < need) s.sel.push(k); SFX.tap(me().hand[k].el); renderSheet(); return; }
       case "dcdo": KF.discardFromHand(0, s.sel); finishMyTurn(); return;
-      case "ck": s.k = s.k === +i ? null : +i; SFX.tap("E"); renderSheet(); return;
-      case "crot": s.rot = +i; SFX.toggle(); renderSheet(); return;
       case "rdone": resolveReward(false); return;
-      case "rcurse": resolveReward(true); return;
     }
   }
 

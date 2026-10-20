@@ -18,7 +18,8 @@
     ids.forEach((id) => { tools[id] = Object.assign({ cost: 0, effect: "turn", turns: [1], amount: 3 }, t[id]); });
     const out = JSON.parse(JSON.stringify(r));
     out.toolIds = ids; out.toolDefs = tools;
-    out.turnTools = ids.filter((id) => tools[id].effect === "turn");
+    // tools that change how one card moves (flagged on that step): turn it, or stretch it a square longer or shorter
+    out.turnTools = ids.filter((id) => tools[id].effect === "turn" || tools[id].effect === "stretch");
     out.stepTools = ids.filter((id) => tools[id].effect === "step");
     out.gatherTools = ids.filter((id) => tools[id].effect === "gather");
     out.copies = (r.tools && r.tools.copies != null) ? r.tools.copies : 1; // players - 1 with 2 players
@@ -41,9 +42,10 @@
   const RU = () => (G && G.rules) || BASE;
   // a player's own value for a rule: the rule plus whatever their character's ability adds
   // (rules.abilities.<id> = { gardenMax: 1, toolCost: -1, ... })
-  const MODS = ["gardenMax", "handLimit", "startHand", "oniPerPlayer", "gather", "sakuraBonus", "toolCost", "startFame", "startGarden"];
+  const MODS = ["gardenMax", "handLimit", "startHand", "oniPerPlayer", "gather", "sakuraBonus", "toolCost", "startFame", "startGarden", "swap"];
+  const ZERO_BASE = ["toolCost", "startFame", "startGarden", "swap"]; // abilities that add to nothing in the base rules
   function abilityOf(pi) { const p = G && G.P && G.P[pi]; const a = p && p.ability && RU().abilities && RU().abilities[p.ability]; return a || null; }
-  function limit(pi, key, a) { const ab = a !== undefined ? a : abilityOf(pi); return (key === "toolCost" || key === "startFame" || key === "startGarden" ? 0 : RU()[key]) + ((ab && ab[key]) || 0); }
+  function limit(pi, key, a) { const ab = a !== undefined ? a : abilityOf(pi); return (ZERO_BASE.includes(key) ? 0 : RU()[key]) + ((ab && ab[key]) || 0); }
 
   // ---------- helpers ----------
   const rnd = () => Math.random();
@@ -103,7 +105,7 @@
       pt.val = md(t, [0, 0]) - 1 + (pt.haz.length >= P.bonusAtOni ? P.bonusValue : 0);
       pt.who = names.length ? names.pop() : Math.floor(rnd() * COUNTS.names);
       pt.ail = G.ails && G.ails.length ? G.ails[Math.floor(rnd() * G.ails.length)] : Math.floor(rnd() * COUNTS.ailments);
-      pt.id = G.uid++; pt.cursed = null; pt.rot = 0;
+      pt.id = G.uid++; pt.claim = null; pt.rot = 0;
       // element: one of the directions the cure lies in, weighted by how far; move: weighted from rules
       const cand = [[t[0] > 0 ? "right" : "left", Math.abs(t[0])], [t[1] < 0 ? "up" : "down", Math.abs(t[1])]].filter((c) => c[1] > 0);
       let roll = rnd() * cand.reduce((a, c) => a + c[1], 0), dir = cand[0][0];
@@ -136,9 +138,36 @@
   const ECHO = 1 << 20;
   const echoEl = (p) => (RU().guilds.echo && p && p.gel ? p.gel : null);
 
+  // ---------- claims ----------
+  // an oni laid on a patient: the other player can't cure them until the claimer's next turn is over.
+  // Cure them in time for a sakura bonus; let the claim lapse and the other player gets it instead
+  const barred = (pi, pt) => !!(pt && pt.claim && pt.claim.p !== pi);
+  const claimBonus = (pi) => limit(pi, "sakuraBonus");
+  function canClaim(pi, k) { const p = G.P[pi], pt = G.village[k]; return !!pt && !pt.claim && p.oni > 0 && G.cur === pi && !G.turn.claimed && (pi !== 0 || G.turn.acted); }
+  function claim(pi, k) {
+    if (!canClaim(pi, k)) return false;
+    const pt = G.village[k]; pt.claim = { p: pi, exp: G.tn + 2 }; G.P[pi].oni--; G.turn.claimed = true;
+    log("claim", pi, { who: pt.who, n: claimBonus(pi) }); return true;
+  }
+  // at the end of the claimer's next turn an unkept claim lapses and the other player takes the bonus
+  function lapseClaims(pi) {
+    const out = [];
+    G.village.forEach((pt) => { if (!pt.claim || pt.claim.p !== pi || pt.claim.exp > G.tn) return; const o = 1 - pi, n = claimBonus(o); G.P[o].fame += n; pt.claim = null; out.push({ who: pt.who, p: pi, n }); log("lapse", pi, { who: pt.who, n }); });
+    return out;
+  }
+
   // ---------- tools ----------
   const bit = (t) => 1 << RU().turnTools.indexOf(t);
   const toolsOfBits = (f) => RU().turnTools.filter((t) => f & bit(t));
+  // a modifier tool's choices (quarter turns, or squares longer/shorter) and what one does to a card's steps
+  const toolOpts = (t) => { const d = RU().toolDefs[t]; return (d.effect === "stretch" ? d.by : d.turns) || []; };
+  function applyTool(t, steps, o) {
+    if (RU().toolDefs[t].effect !== "stretch") return steps.map((v) => rotK(v, o));
+    const tot = steps.reduce((a, v) => [a[0] + v[0], a[1] + v[1]], [0, 0]), n = Math.max(Math.abs(tot[0]), Math.abs(tot[1])), m = n + o;
+    if (!n || m < 1) return null;
+    const u = [tot[0] / n, tot[1] / n];
+    return u[0] && u[1] ? [[u[0] * m, u[1] * m]] : Array.from({ length: m }, () => u);
+  }
   const stepCard = (idx) => ({ id: -1 - idx, el: "V", steps: null, step: RU().stepTools[idx] });
   const toolsLeft = (t) => RU().copies - G.P.filter((p) => p.tools[t]).length;
   const gatherCount = (p) => { const pi = G.P.indexOf(p), extra = limit(pi, "gather") - RU().gather; return Math.max(RU().gather, ...RU().gatherTools.filter((t) => p.tools[t]).map((t) => RU().toolDefs[t].amount)) + extra; };
@@ -163,7 +192,7 @@
     if (c.knight) return KNIGHT.map((s) => ({ steps: s, f: 0 }));
     if (isAny(c)) return KING.map((s) => ({ steps: s, f: 0 }));
     const out = [{ steps: c.steps, f: 0 }];
-    (avail || []).forEach((t) => RU().toolDefs[t].turns.forEach((k) => out.push({ steps: c.steps.map((v) => rotK(v, k)), f: bit(t) })));
+    (avail || []).forEach((t) => toolOpts(t).forEach((k) => { const s = applyTool(t, c.steps, k); if (s) out.push({ steps: s, f: bit(t) }); }));
     return out;
   }
   const ckey = (c) => (c.ward ? "w" + c.el + c.mv : c.el === "V" ? "V" : c.el + (c.el2 || "") + c.steps.map((s) => s.join(",")).join(";"));
@@ -213,7 +242,7 @@
   // a known cure: an unspent ward patient with the same ailment
   function knownFor(pi, k) {
     const r = RU(), p = G.P[pi], pt = G.village[k];
-    if (!r.knownCure.enabled || !pt || !p.ward) return -1;
+    if (!r.knownCure.enabled || !pt || !p.ward || barred(pi, pt)) return -1;
     return p.ward.findIndex((w) => w.ail === pt.ail && wardLeft(w) && !w.spent);
   }
   const knownPay = (pt) => Math.max(1, Math.floor(pt.val * RU().knownCure.payout));
@@ -255,12 +284,12 @@
     for (let i = 0; i < G.rules.villageSize; i++) G.village.push(G.pats.shift());
     G.P.forEach((p, pi) => { for (let i = 0; i < limit(pi, "startHand"); i++) p.hand.push(draw()); for (let i = 0; i < limit(pi, "startGarden"); i++) p.garden.push(draw()); });
     G.botPlan = shuffle(G.rules.toolIds.slice());
-    G.first = rnd() < 0.5 ? 0 : 1; G.cur = G.first;
+    G.first = rnd() < 0.5 ? 0 : 1; G.cur = G.first; G.tn = 1; G.lapsed = [];
     resetTurn();
     log("new", null, { first: G.first });
     return G;
   }
-  function resetTurn() { G.turn = { acted: false, planted: false, bought: false }; G.botStage = G.cur === 1 ? "buy" : null; G.botCured = false; }
+  function resetTurn() { G.turn = { acted: false, planted: false, bought: false, claimed: false }; G.botStage = G.cur === 1 ? "buy" : null; G.botCured = false; }
   function refillMarket() { while (G.market.length < RU().marketSize) { const c = draw(); if (!c) break; G.market.push(c); } }
 
   function gather(pi, idxs) {
@@ -277,7 +306,7 @@
   }
   // validate a route built by the UI (or bot) before curing. Returns an error code or null.
   function checkRoute(pi, k, route) {
-    const p = G.P[pi], pt = G.village[k], r = RU(); if (!pt) return "noPatient";
+    const p = G.P[pi], pt = G.village[k], r = RU(); if (!pt) return "noPatient"; if (barred(pi, pt)) return "claimed";
     let pos = [0, 0], flags = 0, hu = 0, em = 0, echoed = false; const seenH = new Set(), seenG = new Set(), seenW = new Set();
     for (const s of route) {
       if (s.g === "w") { const w = p.ward && p.ward[s.i]; if (!r.ward.enabled || !w || !wardLeft(w) || w.spent || seenW.has(s.i)) return "cardMisuse"; seenW.add(s.i); em |= elBit(w.el); }
@@ -306,25 +335,34 @@
     wUsed.forEach((w) => { if (w.uses > 0) w.uses--; });
     const used = hIdx.map((i) => p.hand.splice(i, 1)[0]); G.discard.push(...used);
     G.village.splice(k, 1); const arrived = G.pats.length ? G.pats.shift() : null; if (arrived) G.village.push(arrived);
-    const sak = rp.bonus ? limit(pi, "sakuraBonus") : 0;
-    p.cures++; p.fame += pt.val + sak;
+    const sak = rp.bonus ? limit(pi, "sakuraBonus") : 0, kept = keptClaim(pi, pt);
+    p.cures++; p.fame += pt.val + sak + kept;
     if (r_ward()) p.ward.push(wardEntry(pt));
     if (pi === 0) G.turn.acted = true;
-    log("cure", pi, { who: pt.who, ail: pt.ail, v: pt.val, sak });
-    return { pt, rp, sak, hand: used.length, used, gUsed, wUsed: wUsed.length, tl, arrived: arrived ? arrived.id : null };
+    log("cure", pi, { who: pt.who, ail: pt.ail, v: pt.val, sak, kept });
+    return { pt, rp, sak, kept, hand: used.length, used, gUsed, wUsed: wUsed.length, tl, arrived: arrived ? arrived.id : null };
   }
   const r_ward = () => RU().ward.enabled;
+  const keptClaim = (pi, pt) => (pt.claim && pt.claim.p === pi ? claimBonus(pi) : 0);
   // cure with a known remedy: no ingredients, a reduced payout, and the ward patient's move is spent
   function doKnownCure(pi, k) {
     const wi = knownFor(pi, k); if (wi < 0) return null;
     const p = G.P[pi], pt = G.village[k], w = p.ward[wi], pay = knownPay(pt);
+    const kept = keptClaim(pi, pt);
     w.spent = true; w.uses = 0;
     G.village.splice(k, 1); const arrived = G.pats.length ? G.pats.shift() : null; if (arrived) G.village.push(arrived);
-    p.cures++; p.fame += pay;
+    p.cures++; p.fame += pay + kept;
     if (r_ward()) p.ward.push(wardEntry(pt));
     if (pi === 0) G.turn.acted = true;
-    log("known", pi, { who: pt.who, ail: pt.ail, v: pay, via: w.who });
-    return { pt, pay, via: w, arrived: arrived ? arrived.id : null };
+    log("known", pi, { who: pt.who, ail: pt.ail, v: pay, via: w.who, kept });
+    return { pt, pay, via: w, kept, arrived: arrived ? arrived.id : null };
+  }
+  // the trader's ability: swap a hand card for a market card, a set number of times a turn, as well as the action
+  const canSwap = (pi) => G.cur === pi && !G.over && (G.turn.swaps || 0) < limit(pi, "swap");
+  function swapCard(pi, hi, mi) {
+    const p = G.P[pi], h = p.hand[hi], m = G.market[mi]; if (!canSwap(pi) || !h || !m) return false;
+    p.hand[hi] = m; G.market[mi] = h; G.turn.swaps = (G.turn.swaps || 0) + 1;
+    log("swap", pi, { gave: snap(h), got: snap(m) }); return true;
   }
   function plantCard(pi, hi, replace) {
     const p = G.P[pi]; const c = p.hand.splice(hi, 1)[0];
@@ -333,21 +371,17 @@
     log("plant", pi, { card: snap(c) });
     return c;
   }
-  function curse(pi, k, rot) {
-    const p = G.P[pi], pt = G.village[k]; rotatePatient(pt, rot); pt.cursed = pi; p.oni--;
-    log("curse", pi, { who: pt.who, rot });
-  }
-  const curseTargets = () => G.village.map((pt, k) => ({ pt, k })).filter((x) => x.pt.cursed === null);
   function discardFromHand(pi, idxs) { const p = G.P[pi]; idxs.slice().sort((a, b) => b - a).forEach((i) => G.discard.push(p.hand.splice(i, 1)[0])); }
 
   // end the current player's turn. Returns "over" | "next"
   function endTurn() {
-    const pi = G.cur, p = G.P[pi];
-    if (p.fame >= RU().endFame) G.trigger = true;
+    const pi = G.cur;
+    G.lapsed = lapseClaims(pi);
+    if (G.P.some((p) => p.fame >= RU().endFame)) G.trigger = true;
     const last = pi !== G.first;
     if (last && (G.trigger || !G.village.length)) { gameOver(); return "over"; }
     G.cur = 1 - pi; if (G.cur === G.first) G.round++;
-    resetTurn();
+    G.tn++; resetTurn();
     return "next";
   }
   function gameOver() {
@@ -361,7 +395,7 @@
   // ---------- bot ----------
   function evalHand(p, hand, depth = 4) {
     let v = -99;
-    for (const pt of G.village) { const s = solve(pt, p.garden, hand, depth, p.tools, undefined, { ward: p.ward, echo: echoEl(p) }); const x = s.best ? 20 + s.best.fame - 0.5 * s.best.handUsed : pt.val * 0.25 - s.minD; if (x > v) v = x; }
+    for (const pt of G.village) { if (barred(1, pt)) continue; const s = solve(pt, p.garden, hand, depth, p.tools, undefined, { ward: p.ward, echo: echoEl(p) }); const x = s.best ? 20 + s.best.fame - 0.5 * s.best.handUsed : pt.val * 0.25 - s.minD; if (x > v) v = x; }
     return v;
   }
   function botWants() { const p = G.P[1]; return G.botPlan.filter((t) => RU().toolDefs[t] && !p.tools[t] && toolsLeft(t) > 0); }
@@ -373,13 +407,22 @@
       switch (G.botStage) {
         case "buy": {
           if (st.tools !== false && p.fame < r.endFame - r.bot.stopBuyingWithin) { const w = botWants(); if (w.length && canBuy(1, w[0])) return { type: "buy", tool: w[0] }; }
+          G.botStage = "swap"; continue;
+        }
+        case "swap": {
+          // a trader swaps when one hand card for one market card makes its hand clearly better
+          if (canSwap(1)) {
+            const base = evalHand(p, p.hand); let best = null;
+            p.hand.forEach((h, hi) => G.market.forEach((m, mi) => { const hand = p.hand.slice(); hand[hi] = m; const v = evalHand(p, hand); if (v > base + 0.01 && (!best || v > best.v)) best = { hi, mi, v }; }));
+            if (best) return { type: "swap", hi: best.hi, mi: best.mi };
+          }
           G.botStage = "act"; continue;
         }
         case "act": {
           let best = null;
           const score = (s) => s.fame - 0.3 * s.handUsed - (r.ward.uses > 0 ? 0.6 * (s.ward || 0) : 0);
-          G.village.forEach((pt, k) => { const s = solveFor(1, pt, st.depth || 5).best; if (s && (!best || score(s) > best.v)) best = { k, s, v: score(s) }; });
-          G.village.forEach((pt, k) => { if (knownFor(1, k) < 0) return; const v = knownPay(pt) - 0.4; if (!best || v > best.v) best = { k, known: true, v }; });
+          G.village.forEach((pt, k) => { if (barred(1, pt)) return; const s = solveFor(1, pt, st.depth || 5).best; const v = s && score(s) + keptClaim(1, pt); if (s && (!best || v > best.v)) best = { k, s, v }; });
+          G.village.forEach((pt, k) => { if (knownFor(1, k) < 0) return; const v = knownPay(pt) + keptClaim(1, pt) - 0.4; if (!best || v > best.v) best = { k, known: true, v }; });
           if (best && best.known) return { type: "known", k: best.k };
           if (best) return { type: "cure", k: best.k, seq: best.s.seq };
           const n = gatherCount(p), m = G.market; let bp = null;
@@ -389,25 +432,17 @@
           if (!bp || blind > bp.v) return { type: "blind", n };
           return { type: "gather", idx: bp.idx, ids: bp.idx.map((i) => m[i].id) };
         }
-        case "curse": {
-          if (st.curse !== false && G.botCured && p.oni > 0) {
-            let pick = null;
-            if (r.openHands) {
-              // open hands: turn the patient the opponent can cure now so that they no longer can
-              const o = G.P[0];
-              G.village.forEach((pt, k) => {
-                if (pt.cursed !== null) return; const os = solve(pt, o.garden, o.hand, 5, o.tools, undefined, { ward: o.ward, echo: echoEl(o) }).best; if (!os) return;
-                for (const rot of r.curse.turns) { const c = rotatedCopy(pt, rot); if (solve(c, o.garden, o.hand, 5, o.tools, undefined, { ward: o.ward, echo: echoEl(o) }).best) continue; const v = os.fame + (solve(c, p.garden, p.hand, 4, p.tools).best ? 2 : 0) + rnd() * 0.1; if (!pick || v > pick.v) pick = { k, rot, v }; }
-              });
-              if (pick) return { type: "curse", k: pick.k, rot: pick.rot };
-            } else {
-              // hidden hands: a guess. Curse a valuable patient it can't reach itself, preferring a turn it CAN solve
-              G.village.forEach((pt, k) => {
-                if (pt.cursed !== null) return; if (solve(pt, p.garden, p.hand, 4, p.tools).best) return;
-                for (const rot of r.curse.turns) { const mine = !!solve(rotatedCopy(pt, rot), p.garden, p.hand, 4, p.tools).best; const v = pt.val + (mine ? 4 : 0) + rnd(); if (!pick || v > pick.v) pick = { k, rot, v }; }
-              });
-              if (pick && (pick.v >= 5 || rnd() < 0.25)) return { type: "curse", k: pick.k, rot: pick.rot };
-            }
+        case "claim": {
+          // claim the patient it is closest to curing (or, with open hands, one the player could cure next)
+          if (st.curse !== false && p.oni > 0 && !G.turn.claimed) {
+            let pick = null; const o = G.P[0];
+            G.village.forEach((pt, k) => {
+              if (pt.claim) return;
+              const s = solveFor(1, pt, 4); let v = s.best ? 6 + pt.val : s.minD <= 1 ? pt.val - 1 : -9;
+              if (r.openHands && solve(pt, o.garden, o.hand, 4, o.tools, undefined, { ward: o.ward, echo: echoEl(o) }).best) v += 3;
+              v += rnd() * 0.5; if (!pick || v > pick.v) pick = { k, v };
+            });
+            if (pick && pick.v >= 4 + (3 - p.oni)) return { type: "claim", k: pick.k };
           }
           G.botStage = "plant"; continue;
         }
@@ -428,12 +463,13 @@
   }
   function botDo(m) {
     switch (m.type) {
-      case "buy": buyTool(1, m.tool); G.botStage = "act"; return {};
-      case "cure": { const res = doCure(1, m.k, m.seq); G.botCured = true; G.botStage = "curse"; return { res }; }
-      case "known": { const res = doKnownCure(1, m.k); G.botCured = true; G.botStage = "curse"; return { res }; }
-      case "gather": { const cards = gather(1, m.idx); G.botStage = "curse"; return { cards }; }
-      case "blind": { const cards = drawBlind(1); G.botStage = "curse"; return { cards }; }
-      case "curse": curse(1, m.k, m.rot); G.botStage = "plant"; return {};
+      case "buy": buyTool(1, m.tool); G.botStage = "swap"; return {};
+      case "swap": { const gave = G.P[1].hand[m.hi], got = G.market[m.mi]; swapCard(1, m.hi, m.mi); return { gave, got }; }
+      case "cure": { const res = doCure(1, m.k, m.seq); G.botCured = true; G.botStage = "claim"; return { res }; }
+      case "known": { const res = doKnownCure(1, m.k); G.botCured = true; G.botStage = "claim"; return { res }; }
+      case "gather": { const cards = gather(1, m.idx); G.botStage = "claim"; return { cards }; }
+      case "blind": { const cards = drawBlind(1); G.botStage = "claim"; return { cards }; }
+      case "claim": claim(1, m.k); G.botStage = "plant"; return {};
       case "plant": { const card = plantCard(1, m.hi, null); G.botStage = "discard"; return { card }; }
     }
     return {};
@@ -447,6 +483,7 @@
     try { const s = localStorage.getItem(KEY); if (!s) return null; const g = JSON.parse(s); if (!g || g.v !== 2 || !g.P || !g.rules || !g.rules.deck || !g.rules.deck.straight) return null;
       // an older save: keep its rules, add what newer versions expect
       fillDefaults(g.rules); g.P.forEach((p) => { p.ward = p.ward || []; });
+      if (g.tn == null) { g.tn = 1; g.lapsed = []; }
       G = g; return G; } catch (e) { return null; }
   }
   function clearSave() { try { localStorage.removeItem(KEY); } catch (e) {} }
@@ -454,9 +491,9 @@
   window.KF = {
     configure, get G() { return G; }, get rules() { return RU(); },
     DIRV, rotK, md, dirsOf, elOfDir, isHaz, stepCells, variants, replay, solve, rotatedCopy,
-    bit, toolsOfBits, stepCard, toolsLeft, gatherCount, cost, canBuy, buyTool, limit, abilityOf, MODS,
+    bit, toolsOfBits, toolOpts, applyTool, stepCard, toolsLeft, gatherCount, cost, canBuy, buyTool, limit, abilityOf, MODS,
     wardCard, wardLeft, isAny, needEl, elBit, cardBits, hasEl, inP, reach, solveFor, knownFor, knownPay, doKnownCure, echoEl,
-    newGame, gather, drawBlind, checkRoute, doCure, plantCard, curse, curseTargets, discardFromHand, endTurn,
+    newGame, gather, drawBlind, checkRoute, doCure, plantCard, canClaim, claim, barred, claimBonus, canSwap, swapCard, discardFromHand, endTurn,
     botStep, botNext, botDo, save, load, clearSave,
   };
 })();

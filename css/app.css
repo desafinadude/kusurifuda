@@ -472,6 +472,11 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .cbtn.known .gi{font-size:18px}
 .cbtn.known span{display:flex;flex-direction:column;line-height:1.15}
 .cbtn.known small{font-weight:500;font-size:10px;opacity:.9}
+.cbtn.claim{background:var(--oni-card);border-color:var(--shu);color:var(--parch-hi);height:auto;min-height:38px;padding:4px 10px 4px 6px;gap:7px;text-align:left}
+.cbtn.claim .ai{width:24px;height:24px;flex-shrink:0}
+.cbtn.claim span{display:flex;flex-direction:column;line-height:1.15}
+.cbtn.claim small{font-weight:500;font-size:10px;opacity:.85}
+.chip.cur.mine{border-color:var(--gold)}
 /* guilds */
 .gld .gel{display:inline-flex;align-items:center;gap:3px;margin-top:3px;padding:1px 7px;border-radius:999px;color:#fff;font-size:10.5px;font-weight:700}
 .gcraft{margin-top:6px}
@@ -512,7 +517,7 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 :is(.port,.tabl) .board .cmp.w{left:-11px;top:calc(50% - 11px)}
 :is(.port,.tabl) .strip:not(.rvs){flex-direction:row;align-items:center;min-height:50px;gap:6px}
 :is(.port,.tabl) .strip:not(.rvs) .srow{flex:0 1 auto;min-width:0}
-:is(.port,.tabl) .strip:not(.rvs) .srow:has(.stxt.bad),:is(.port,.tabl) .strip:not(.rvs) .srow:has(.known){flex:1}
+:is(.port,.tabl) .strip:not(.rvs) .srow:has(.stxt.bad),:is(.port,.tabl) .strip:not(.rvs) .srow:has(.known),:is(.port,.tabl) .strip:not(.rvs) .srow:has(.claim){flex:1}
 .port .strip:not(.rvs) .stxt:not(.bad){position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 :is(.port,.tabl) .strip:not(.rvs) .ctrls{flex:1;min-width:0}
 :is(.port,.tabl) .strip:not(.rvs) .ctrls .cr{flex:1;justify-content:flex-end}
@@ -782,3 +787,7 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .tfoot .tpill{font-size:11px}
 .onis .oc{width:22px;height:30px}.onis .oc .ai{width:18px;height:18px}
 .tlast{font-size:11.5px;margin:0}
+.plotc.trd{border-style:solid!important;border-color:var(--gold)!important;color:var(--parch-hi)!important;flex-direction:column}
+.plotc.trd .sw,.rvcards .sw,.linkbtn .sw{font-size:22px;line-height:1;color:var(--gold)}
+.plotc.trd:disabled{opacity:.45}
+.rvcards .sw{align-self:center;margin:0 4px}
