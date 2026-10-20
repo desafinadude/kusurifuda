@@ -1,6 +1,6 @@
 /* Kusurifuda service worker — precaches the whole game so it plays offline.
    Version is a hash of the app files, so any change ships a fresh cache. */
-const VERSION = "34cae32eae";
+const VERSION = "12e55fbcdf";
 const CACHE = "kusurifuda-" + VERSION;
 const PRECACHE = [
  "./",
@@ -93,10 +93,10 @@ const PRECACHE = [
  "themes/kusurifuda/icons/turn-3.svg",
  "themes/kusurifuda/icons/village.svg",
  "themes/kusurifuda/icons/win.svg",
- "themes/kusurifuda/people/guild-pine.svg",
- "themes/kusurifuda/people/guild-plum.svg",
- "themes/kusurifuda/people/guild-wave.svg",
- "themes/kusurifuda/people/guild-wisteria.svg",
+ "themes/kusurifuda/people/guild-boar.svg",
+ "themes/kusurifuda/people/guild-moon.svg",
+ "themes/kusurifuda/people/guild-rain.svg",
+ "themes/kusurifuda/people/guild-sake.svg",
  "themes/kusurifuda/people/herbalist.svg",
  "themes/kusurifuda/people/kunoichi.svg",
  "themes/kusurifuda/people/merchant.svg",

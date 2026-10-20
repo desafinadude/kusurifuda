@@ -78,10 +78,10 @@
     "char.merchant": "people/merchant.svg",
     "char.miko": "people/miko.svg",
     "char.kunoichi": "people/kunoichi.svg",
-    "guild.plum": "people/guild-plum.svg",
-    "guild.wisteria": "people/guild-wisteria.svg",
-    "guild.pine": "people/guild-pine.svg",
-    "guild.wave": "people/guild-wave.svg"
+    "guild.sake": "people/guild-sake.svg",
+    "guild.moon": "people/guild-moon.svg",
+    "guild.boar": "people/guild-boar.svg",
+    "guild.rain": "people/guild-rain.svg"
   },
   "elements": {
     "W": {
@@ -157,26 +157,26 @@
   ],
   "guilds": [
     {
-      "id": "plum",
-      "art": "guild.plum",
+      "id": "sake",
+      "art": "guild.sake",
       "color": "#B23A24",
       "element": "F"
     },
     {
-      "id": "wisteria",
-      "art": "guild.wisteria",
+      "id": "moon",
+      "art": "guild.moon",
       "color": "#9A4E8A",
       "element": "A"
     },
     {
-      "id": "pine",
-      "art": "guild.pine",
-      "color": "#43664A",
+      "id": "boar",
+      "art": "guild.boar",
+      "color": "#7A5626",
       "element": "E"
     },
     {
-      "id": "wave",
-      "art": "guild.wave",
+      "id": "rain",
+      "art": "guild.rain",
       "color": "#2F5D8A",
       "element": "W"
     }
@@ -184,7 +184,7 @@
   "playerColors": [
     "#B23A24",
     "#9A6512",
-    "#43664A",
+    "#7A5626",
     "#2F5D8A",
     "#9A4E8A",
     "#1E7A7A"
