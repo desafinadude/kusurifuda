@@ -45,7 +45,7 @@
     const own = lookup("content.tools." + id + (short ? ".short" : ".text"));
     if (own) return own;
     const d = KF.rules.toolDefs[id]; if (!d) return "";
-    return t("toolEffects." + d.effect + (short ? "Short" : ""), { turns: (d.turns || []).map((k) => t("turns." + k)).join(" / "), amount: d.amount });
+    return t("toolEffects." + d.effect + (short ? "Short" : ""), { turns: (d.turns || []).map((k) => t("turns." + k)).join(" / "), amount: d.amount, by: (d.by || []).map((k) => (k > 0 ? "+" : "−") + Math.abs(k)).join(" / ") });
   }
   function cardName(c) {
     if (c.step) return toolName(c.step);
@@ -172,8 +172,7 @@
   function pendSteps() {
     const p = U.pend; if (!p) return null; const c = cardAt(p.g, p.i); if (!c) return null;
     if (isPick(c)) return p.dir ? [p.dir] : null;
-    const rot = selTurns().reduce((a, k) => a + RU().toolDefs[k].turns[U.turnSel[k]], 0);
-    return c.steps.map((v) => KF.rotK(v, rot));
+    return selTurns().reduce((st, k) => (st ? KF.applyTool(k, st, KF.toolOpts(k)[U.turnSel[k]]) : st), c.steps);
   }
   const pendFlags = () => { const p = U.pend; if (!p) return 0; const c = cardAt(p.g, p.i); if (!c || isPick(c)) return 0; return selTurns().reduce((a, k) => a | KF.bit(k), 0); };
   function routeState() {
@@ -424,8 +423,8 @@
     r.turnTools.forEach((id) => {
       if (!p.tools[id]) return;
       const used = uf & KF.bit(id), idx = U.turnSel[id], sel = idx != null;
-      const turn = sel ? r.toolDefs[id].turns[idx] : null;
-      out.push(`<button class="sbtn tool${sel ? " on" : ""}" data-a="ttool" data-i="${id}" ${!on || used ? "disabled" : ""} aria-pressed="${sel}" aria-label="${attr(`${toolName(id)}: ${toolText(id, true)}${used ? " " + t("brew.usedThisBrew") : ""}`)}">${art(toolArt(id))}${sel ? `<span class="mk">${ic("turn." + turn)}</span>` : ""}</button>`);
+      const turn = sel ? KF.toolOpts(id)[idx] : null, mk = r.toolDefs[id].effect === "stretch" ? `<b>${turn > 0 ? "+" : "−"}${Math.abs(turn)}</b>` : ic("turn." + turn);
+      out.push(`<button class="sbtn tool${sel ? " on" : ""}" data-a="ttool" data-i="${id}" ${!on || used ? "disabled" : ""} aria-pressed="${sel}" aria-label="${attr(`${toolName(id)}: ${toolText(id, true)}${used ? " " + t("brew.usedThisBrew") : ""}`)}">${art(toolArt(id))}${sel ? `<span class="mk">${mk}</span>` : ""}</button>`);
     });
     r.stepTools.forEach((id, idx) => {
       if (!p.tools[id]) return;
@@ -1236,7 +1235,7 @@
       case "chip": { U.route.length = +i; U.pend = null; U.msg = null; SFX.undo(); render(); return; }
       case "undo": U.route.pop(); U.msg = null; SFX.undo(); render(); return;
       case "clear": resetRoute(); SFX.cancel(); render(); return;
-      case "ttool": { const n = RU().toolDefs[i].turns.length, c = U.turnSel[i]; U.turnSel[i] = c == null ? 0 : c + 1 < n ? c + 1 : null; SFX.toggle(); render(); return; }
+      case "ttool": { const n = KF.toolOpts(i).length, c = U.turnSel[i]; U.turnSel[i] = c == null ? 0 : c + 1 < n ? c + 1 : null; SFX.toggle(); render(); return; }
       case "stool": { const idx = +i; if (U.pend && U.pend.i === -1 - idx) { U.pend = null; SFX.cancel(); render(); return; } tapIngredient(true, -1 - idx); return; }
       case "brew": doBrew(); return;
       case "gather": U.tab = "market"; U.msg = null; resetRoute(); SFX.open(); render(); return;

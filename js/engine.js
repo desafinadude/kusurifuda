@@ -18,7 +18,8 @@
     ids.forEach((id) => { tools[id] = Object.assign({ cost: 0, effect: "turn", turns: [1], amount: 3 }, t[id]); });
     const out = JSON.parse(JSON.stringify(r));
     out.toolIds = ids; out.toolDefs = tools;
-    out.turnTools = ids.filter((id) => tools[id].effect === "turn");
+    // tools that change how one card moves (flagged on that step): turn it, or stretch it a square longer or shorter
+    out.turnTools = ids.filter((id) => tools[id].effect === "turn" || tools[id].effect === "stretch");
     out.stepTools = ids.filter((id) => tools[id].effect === "step");
     out.gatherTools = ids.filter((id) => tools[id].effect === "gather");
     out.copies = (r.tools && r.tools.copies != null) ? r.tools.copies : 1; // players - 1 with 2 players
@@ -157,6 +158,15 @@
   // ---------- tools ----------
   const bit = (t) => 1 << RU().turnTools.indexOf(t);
   const toolsOfBits = (f) => RU().turnTools.filter((t) => f & bit(t));
+  // a modifier tool's choices (quarter turns, or squares longer/shorter) and what one does to a card's steps
+  const toolOpts = (t) => { const d = RU().toolDefs[t]; return (d.effect === "stretch" ? d.by : d.turns) || []; };
+  function applyTool(t, steps, o) {
+    if (RU().toolDefs[t].effect !== "stretch") return steps.map((v) => rotK(v, o));
+    const tot = steps.reduce((a, v) => [a[0] + v[0], a[1] + v[1]], [0, 0]), n = Math.max(Math.abs(tot[0]), Math.abs(tot[1])), m = n + o;
+    if (!n || m < 1) return null;
+    const u = [tot[0] / n, tot[1] / n];
+    return u[0] && u[1] ? [[u[0] * m, u[1] * m]] : Array.from({ length: m }, () => u);
+  }
   const stepCard = (idx) => ({ id: -1 - idx, el: "V", steps: null, step: RU().stepTools[idx] });
   const toolsLeft = (t) => RU().copies - G.P.filter((p) => p.tools[t]).length;
   const gatherCount = (p) => { const pi = G.P.indexOf(p), extra = limit(pi, "gather") - RU().gather; return Math.max(RU().gather, ...RU().gatherTools.filter((t) => p.tools[t]).map((t) => RU().toolDefs[t].amount)) + extra; };
@@ -181,7 +191,7 @@
     if (c.knight) return KNIGHT.map((s) => ({ steps: s, f: 0 }));
     if (isAny(c)) return KING.map((s) => ({ steps: s, f: 0 }));
     const out = [{ steps: c.steps, f: 0 }];
-    (avail || []).forEach((t) => RU().toolDefs[t].turns.forEach((k) => out.push({ steps: c.steps.map((v) => rotK(v, k)), f: bit(t) })));
+    (avail || []).forEach((t) => toolOpts(t).forEach((k) => { const s = applyTool(t, c.steps, k); if (s) out.push({ steps: s, f: bit(t) }); }));
     return out;
   }
   const ckey = (c) => (c.ward ? "w" + c.el + c.mv : c.el === "V" ? "V" : c.el + (c.el2 || "") + c.steps.map((s) => s.join(",")).join(";"));
@@ -463,7 +473,7 @@
   window.KF = {
     configure, get G() { return G; }, get rules() { return RU(); },
     DIRV, rotK, md, dirsOf, elOfDir, isHaz, stepCells, variants, replay, solve, rotatedCopy,
-    bit, toolsOfBits, stepCard, toolsLeft, gatherCount, cost, canBuy, buyTool, limit, abilityOf, MODS,
+    bit, toolsOfBits, toolOpts, applyTool, stepCard, toolsLeft, gatherCount, cost, canBuy, buyTool, limit, abilityOf, MODS,
     wardCard, wardLeft, isAny, needEl, elBit, cardBits, hasEl, inP, reach, solveFor, knownFor, knownPay, doKnownCure, echoEl,
     newGame, gather, drawBlind, checkRoute, doCure, plantCard, canClaim, claim, barred, claimBonus, discardFromHand, endTurn,
     botStep, botNext, botDo, save, load, clearSave,

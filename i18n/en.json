@@ -219,13 +219,13 @@
     "tools": {
       "ladle": {
         "name": "Ladle",
-        "text": "Once per brew, play one card as a neighbouring element: a quarter turn either way.",
-        "short": "One card as a neighbouring element"
+        "text": "Once per brew, turn one card to go another way: a quarter turn either way, or a half turn.",
+        "short": "Turn one card any way"
       },
       "mortar": {
         "name": "Mortar",
-        "text": "Once per brew, play one card as its opposite element: a half turn.",
-        "short": "One card as its opposite"
+        "text": "Once per brew, grind one card to go one square further or one square shorter.",
+        "short": "One card a square longer or shorter"
       },
       "charm": {
         "name": "Kitsune Charm",
@@ -234,8 +234,8 @@
       },
       "basket": {
         "name": "Basket",
-        "text": "When you gather, take 3 cards instead of 2.",
-        "short": "Gather 3 instead of 2"
+        "text": "When you gather or draw blind, take 4 cards instead of 2.",
+        "short": "Gather 4 instead of 2"
       }
     },
     "characters": {
@@ -309,7 +309,9 @@
     "step": "Once per brew, take one extra step in any direction.",
     "stepShort": "One free step, any way",
     "gather": "When you gather, take {amount} cards.",
-    "gatherShort": "Gather {amount}"
+    "gatherShort": "Gather {amount}",
+    "stretch": "Once per brew, play one card {by} square.",
+    "stretchShort": "One card {by} square"
   },
   "turns": {
     "1": "a quarter turn clockwise",
