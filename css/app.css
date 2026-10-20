@@ -787,3 +787,7 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .tfoot .tpill{font-size:11px}
 .onis .oc{width:22px;height:30px}.onis .oc .ai{width:18px;height:18px}
 .tlast{font-size:11.5px;margin:0}
+.plotc.trd{border-style:solid!important;border-color:var(--gold)!important;color:var(--parch-hi)!important;flex-direction:column}
+.plotc.trd .sw,.rvcards .sw,.linkbtn .sw{font-size:22px;line-height:1;color:var(--gold)}
+.plotc.trd:disabled{opacity:.45}
+.rvcards .sw{align-self:center;margin:0 4px}

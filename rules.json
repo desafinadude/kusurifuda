@@ -96,13 +96,13 @@
     }
   },
   "abilities": {
-    "_about": "What a character's ability changes, as additions to the rules above for that player only. Themes decide which character has which ability. Keys: gardenMax, handLimit, startHand, oniPerPlayer, gather, sakuraBonus, toolCost, startFame, startGarden.",
+    "_about": "What a character's ability changes, as additions to the rules above for that player only. Themes decide which character has which ability. Keys: gardenMax, handLimit, startHand, oniPerPlayer, gather, sakuraBonus, toolCost, startFame, startGarden, swap (hand-for-market swaps a turn).",
     "green": {
       "gardenMax": 1,
       "startGarden": 2
     },
     "trade": {
-      "toolCost": -1
+      "swap": 1
     },
     "blessed": {
       "startFame": 2

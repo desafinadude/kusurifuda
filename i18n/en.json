@@ -282,8 +282,8 @@
       "text": "Your garden holds one more card and starts with two planted."
     },
     "trade": {
-      "name": "Good bargains",
-      "text": "Tools cost you 1 {{mon}} less."
+      "name": "Shrewd trader",
+      "text": "Once a turn, swap a card from your hand for one in the market. It doesn't use your action."
     },
     "blessed": {
       "name": "Blessed",
@@ -591,7 +591,8 @@
     "themes": "Choose a theme",
     "setup": "Choose your character",
     "quest": "Journey to Edo",
-    "quick": "Quick game"
+    "quick": "Quick game",
+    "trade": "Trade at the market"
   },
   "themeNames": {
     "_about": "Optional: names for the themes in config.json. A theme without one shows the name in its theme.json.",
@@ -696,7 +697,11 @@
       "you": "Your claim on {name} lapsed: rival +{n}.",
       "rival": "Rival's claim on {name} lapsed: you +{n}."
     },
-    "kept": "(claim kept +{n})"
+    "kept": "(claim kept +{n})",
+    "swap": {
+      "you": "You trade {gave} for {got}.",
+      "rival": "Rival trades {gave} for {got}."
+    }
   },
   "rival": {
     "turn": "Rival's turn",
@@ -765,7 +770,11 @@
     "claims": "Claims {name} {oni}",
     "claimsSub": "You can't cure them until its next turn is over",
     "lineClaim": "Claimed {name}: hands off until after its next turn",
-    "lineLapse": "Its claim on {name} lapsed: you get +{n} {{mon}}"
+    "lineLapse": "Its claim on {name} lapsed: you get +{n} {{mon}}",
+    "trades": "Trades at the market",
+    "tradesSub": "{gave} for {got}",
+    "popTrades": "trades a card",
+    "lineTrade": "Traded {gave} for {got}"
   },
   "over": {
     "you": "You win!",
@@ -1046,5 +1055,19 @@
     "tools": "Tools",
     "oni": "Oni",
     "none": "None yet"
+  },
+  "trade": {
+    "btn": "Trade",
+    "done": "Traded",
+    "aria": "Trade a card from your hand for one in the market",
+    "title": "Trade at the market",
+    "sub": "Swap one card from your hand for one in the market. Once a turn; it doesn't use your action.",
+    "give": "Give from your hand",
+    "get": "Take from the market",
+    "tagGive": "Give",
+    "tagGet": "Take",
+    "do": "Trade",
+    "toast": "You trade for",
+    "noHand": "No cards in hand to trade"
   }
 }

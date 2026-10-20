@@ -42,9 +42,10 @@
   const RU = () => (G && G.rules) || BASE;
   // a player's own value for a rule: the rule plus whatever their character's ability adds
   // (rules.abilities.<id> = { gardenMax: 1, toolCost: -1, ... })
-  const MODS = ["gardenMax", "handLimit", "startHand", "oniPerPlayer", "gather", "sakuraBonus", "toolCost", "startFame", "startGarden"];
+  const MODS = ["gardenMax", "handLimit", "startHand", "oniPerPlayer", "gather", "sakuraBonus", "toolCost", "startFame", "startGarden", "swap"];
+  const ZERO_BASE = ["toolCost", "startFame", "startGarden", "swap"]; // abilities that add to nothing in the base rules
   function abilityOf(pi) { const p = G && G.P && G.P[pi]; const a = p && p.ability && RU().abilities && RU().abilities[p.ability]; return a || null; }
-  function limit(pi, key, a) { const ab = a !== undefined ? a : abilityOf(pi); return (key === "toolCost" || key === "startFame" || key === "startGarden" ? 0 : RU()[key]) + ((ab && ab[key]) || 0); }
+  function limit(pi, key, a) { const ab = a !== undefined ? a : abilityOf(pi); return (ZERO_BASE.includes(key) ? 0 : RU()[key]) + ((ab && ab[key]) || 0); }
 
   // ---------- helpers ----------
   const rnd = () => Math.random();
@@ -356,6 +357,13 @@
     log("known", pi, { who: pt.who, ail: pt.ail, v: pay, via: w.who, kept });
     return { pt, pay, via: w, kept, arrived: arrived ? arrived.id : null };
   }
+  // the trader's ability: swap a hand card for a market card, a set number of times a turn, as well as the action
+  const canSwap = (pi) => G.cur === pi && !G.over && (G.turn.swaps || 0) < limit(pi, "swap");
+  function swapCard(pi, hi, mi) {
+    const p = G.P[pi], h = p.hand[hi], m = G.market[mi]; if (!canSwap(pi) || !h || !m) return false;
+    p.hand[hi] = m; G.market[mi] = h; G.turn.swaps = (G.turn.swaps || 0) + 1;
+    log("swap", pi, { gave: snap(h), got: snap(m) }); return true;
+  }
   function plantCard(pi, hi, replace) {
     const p = G.P[pi]; const c = p.hand.splice(hi, 1)[0];
     if (p.garden.length >= limit(pi, "gardenMax")) { const old = p.garden.splice(replace == null ? 0 : replace, 1)[0]; G.discard.push(old); }
@@ -399,6 +407,15 @@
       switch (G.botStage) {
         case "buy": {
           if (st.tools !== false && p.fame < r.endFame - r.bot.stopBuyingWithin) { const w = botWants(); if (w.length && canBuy(1, w[0])) return { type: "buy", tool: w[0] }; }
+          G.botStage = "swap"; continue;
+        }
+        case "swap": {
+          // a trader swaps when one hand card for one market card makes its hand clearly better
+          if (canSwap(1)) {
+            const base = evalHand(p, p.hand); let best = null;
+            p.hand.forEach((h, hi) => G.market.forEach((m, mi) => { const hand = p.hand.slice(); hand[hi] = m; const v = evalHand(p, hand); if (v > base + 0.01 && (!best || v > best.v)) best = { hi, mi, v }; }));
+            if (best) return { type: "swap", hi: best.hi, mi: best.mi };
+          }
           G.botStage = "act"; continue;
         }
         case "act": {
@@ -446,7 +463,8 @@
   }
   function botDo(m) {
     switch (m.type) {
-      case "buy": buyTool(1, m.tool); G.botStage = "act"; return {};
+      case "buy": buyTool(1, m.tool); G.botStage = "swap"; return {};
+      case "swap": { const gave = G.P[1].hand[m.hi], got = G.market[m.mi]; swapCard(1, m.hi, m.mi); G.botStage = "act"; return { gave, got }; }
       case "cure": { const res = doCure(1, m.k, m.seq); G.botCured = true; G.botStage = "claim"; return { res }; }
       case "known": { const res = doKnownCure(1, m.k); G.botCured = true; G.botStage = "claim"; return { res }; }
       case "gather": { const cards = gather(1, m.idx); G.botStage = "claim"; return { cards }; }
@@ -475,7 +493,7 @@
     DIRV, rotK, md, dirsOf, elOfDir, isHaz, stepCells, variants, replay, solve, rotatedCopy,
     bit, toolsOfBits, toolOpts, applyTool, stepCard, toolsLeft, gatherCount, cost, canBuy, buyTool, limit, abilityOf, MODS,
     wardCard, wardLeft, isAny, needEl, elBit, cardBits, hasEl, inP, reach, solveFor, knownFor, knownPay, doKnownCure, echoEl,
-    newGame, gather, drawBlind, checkRoute, doCure, plantCard, canClaim, claim, barred, claimBonus, discardFromHand, endTurn,
+    newGame, gather, drawBlind, checkRoute, doCure, plantCard, canClaim, claim, barred, claimBonus, canSwap, swapCard, discardFromHand, endTurn,
     botStep, botNext, botDo, save, load, clearSave,
   };
 })();

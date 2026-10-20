@@ -98,8 +98,8 @@ character, a guild (house in Moonwort) and a colour. In a game, Menu > Main menu
 the title menu; the game stays saved behind Continue.
 - **Abilities** are mechanics and live in `rules.json` under `abilities`, as additions to the
   normal rules for that player only (`gardenMax`, `handLimit`, `startHand`, `startGarden`,
-  `oniPerPlayer`, `gather`, `sakuraBonus`, `toolCost`, `startFame`). Their words are in the
-  language file under `abilities`.
+  `oniPerPlayer`, `gather`, `sakuraBonus`, `toolCost`, `startFame`, and `swap`: hand-for-market
+  swaps a turn). Their words are in the language file under `abilities`.
 - **Characters** belong to a theme: `characters` in theme.json gives each an `ability` and a
   portrait (`art`); names are under `content.characters` in the language file (or the theme's
   `text`). Switching theme mid-game keeps your ability and shows that theme's character for it.
