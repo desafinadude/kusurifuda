@@ -157,16 +157,18 @@
     },
     "A": {
       "glyph": "風",
-      "color": "#43664A",
-      "ink": "#43664A",
-      "art": "art.A"
+      "color": "#A2BCC8",
+      "ink": "#3E6E8C",
+      "art": "art.A",
+      "on": "#1E1914"
     },
     "V": {
       "glyph": "狐",
       "color": "#D29A34",
       "ink": "#8A5E10",
       "art": "art.V"
-    }
+    },
+    "_about": "color: the element's colour; ink: its sign and text on parchment; on: text and signs drawn on the colour (white if left out)."
   },
   "tools": {
     "ladle": {

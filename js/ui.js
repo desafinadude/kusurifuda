@@ -63,6 +63,8 @@
 
   // ---------- theme ----------
   const EL = (el) => (T.elements && T.elements[el]) || { glyph: el, color: "#888", ink: "#555" };
+  // text and signs drawn on an element's colour: dark on a pale colour like sky-blue air, else white
+  const onEl = (el) => EL(el).on || "#fff";
   const MC = (k) => PCOL[k] || (T.map && T.map[k]) || "#000";
   const toolGlyph = (id) => (T.tools && T.tools[id] && T.tools[id].glyph) || "";
   const elIc = (e) => (ASSET["icon.el." + e] ? art("icon.el." + e, "gi") : esc(EL(e).glyph));
@@ -300,9 +302,9 @@
   // a patient's element and the move it gives once cured
   function ptChip(pt, big, mini) {
     if (!pt.el) return "";
-    if (mini) return `<span class="pel mini" style="background:${EL(pt.el).color}" title="${attr(t("patient.moveAria", { el: elName(pt.el), move: moveName(pt.mv) }))}">${elIc(pt.el)}</span>`;
+    if (mini) return `<span class="pel mini" style="background:${EL(pt.el).color};color:${onEl(pt.el)}" title="${attr(t("patient.moveAria", { el: elName(pt.el), move: moveName(pt.mv) }))}">${elIc(pt.el)}</span>`;
     const c = KF.wardCard({ id: pt.id, el: pt.el, mv: pt.mv || "step", who: pt.who });
-    return `<span class="pel${big ? " big" : ""}" style="background:${EL(pt.el).color}" title="${attr(t("patient.moveAria", { el: elName(pt.el), move: moveName(c.mv) }))}">${elIc(pt.el)}${pathSVG(c, c.steps, big ? 18 : 13)}</span>`;
+    return `<span class="pel${big ? " big" : ""}" style="background:${EL(pt.el).color};color:${onEl(pt.el)}" title="${attr(t("patient.moveAria", { el: elName(pt.el), move: moveName(c.mv) }))}">${elIc(pt.el)}${pathSVG(c, c.steps, big ? 18 : 13)}</span>`;
   }
   // a patient's portrait: art named patient.<n> (n = their place in content.patients), else a figure on their element's colour
   function ptPortrait(pt, cls = "") {
@@ -313,14 +315,15 @@
   function ptAvatar(pt, cls = "") {
     if (!pt.el) return ptPortrait(pt, cls);
     const need = KF.needEl(pt), tip = attr(need ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }));
-    return `<span class="pav${cls ? " " + cls : ""}">${ptPortrait(pt, cls)}<span class="pelc${need ? " need" : ""}" role="img" style="background:${EL(pt.el).color}" aria-label="${tip}" title="${tip}">${elIc(pt.el)}</span></span>`;
+    return `<span class="pav${cls ? " " + cls : ""}">${ptPortrait(pt, cls)}<span class="pelc${need ? " need" : ""}" role="img" style="background:${EL(pt.el).color};color:${onEl(pt.el)}" aria-label="${tip}" title="${tip}">${elIc(pt.el)}</span></span>`;
   }
   // a numbered chip for a played card; its colour is split between the elements its path used
   function chipFor(c, steps, n, o = {}) {
     const els = dirEls(c, steps), cols = els.map((e) => EL(e).color);
     const bg = cols.length === 1 ? cols[0] : `linear-gradient(135deg,${cols.map((col, i) => `${col} ${(i * 100) / cols.length}% ${((i + 1) * 100) / cols.length}%`).join(",")})`;
     const tl = o.f ? `<span class="tl">${KF.toolsOfBits(o.f).map(toolIc).join("")}</span>` : "";
-    const inner = `${els.map(elIc).join("")}<span class="n">${n}</span>${tl}${o.x ? '<span class="xx">×</span>' : ""}`;
+    const pend = (o.cls || "").includes("pend");
+    const inner = `${els.map((e) => (pend ? elIc(e) : `<i class="eo" style="color:${onEl(e)}">${elIc(e)}</i>`)).join("")}<span class="n">${n}</span>${tl}${o.x ? '<span class="xx">×</span>' : ""}`;
     return o.btn ? `<button class="sq${els.length > 1 ? " w2" : ""}${o.cls ? " " + o.cls : ""}" data-a="${o.btn}" data-i="${n - 1}" aria-label="${attr(o.aria || "")}" style="background:${bg}">${inner}</button>`
       : `<span class="sq${els.length > 1 ? " w2" : ""}${o.cls ? " " + o.cls : ""}" style="background:${bg}">${inner}</span>`;
   }
@@ -375,7 +378,7 @@
     return `<section class="boardp paper${rivalTurn ? " rv" : ""}"><div class="frame"></div><div class="motif">${art("boardMotif")}</div>
       ${port ? phoneHead(pt, rivalTurn, rvChip, cursedChip + sakChip) : `<div class="bhead"><span class="badge ring">${pt.val}</span><div class="t"><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small></div>${rvChip}${rivalTurn ? "" : hintBadges(pt, "inhead") + elChip + cursedChip + sakChip}</div>`}
       <div class="bwrap" ${n > 1 ? `aria-roledescription="${attr(t("board.swipe"))}"` : ""}><div class="board${U.shake ? " shake" : ""}${U.enter ? (U.enter > 0 ? " from-r" : " from-l") : ""}"><div class="bsvg">${svg}</div>
-        ${["up", "right", "down", "left"].map((d, i) => { const e = KF.elOfDir(d); return e ? `<span class="cmp ${"nesw"[i]}" aria-hidden="true" style="color:${EL(e).ink};--ec:${EL(e).color}">${elIc(e)}</span>` : ""; }).join("")}
+        ${["up", "right", "down", "left"].map((d, i) => { const e = KF.elOfDir(d); return e ? `<span class="cmp ${"nesw"[i]}" aria-hidden="true" style="color:${EL(e).ink};--ec:${EL(e).color};--eo:${onEl(e)}">${elIc(e)}</span>` : ""; }).join("")}
         ${rivalTurn && U.rv && U.rv.pop ? `<div class="rvpop paper">${U.rv.pop}</div>` : ""}</div>${dots}</div>
       ${rivalTurn ? rivalStrip() : strip(rs)}</section>`;
   }
@@ -811,7 +814,7 @@
     },
     plant(s) {
       const p = me(), full = p.garden.length >= KF.limit(0, "gardenMax");
-      return `<div class="sh"><div class="stamp" ${stampStyle("var(--A)")}>${ic("garden")}</div><div><h2>${t("plant.title")}</h2><div class="sub">${t("plant.sub")}</div></div></div>
+      return `<div class="sh"><div class="stamp" ${stampStyle("var(--Ai)")}>${ic("garden")}</div><div><h2>${t("plant.title")}</h2><div class="sub">${t("plant.sub")}</div></div></div>
         <span class="cap">${t("plant.fromHand")}</span><div class="crow">${p.hand.map((c, i) => ingCard(c, { act: "pl", i, cls: s.h === i ? "pick" : "", noAnim: true, pressed: s.h === i })).join("")}</div>
         ${full ? `<span class="cap">${t("plant.full")}</span><div class="crow">${p.garden.map((c, i) => ingCard(c, { act: "pr", i, cls: s.r === i ? "pick" : "", noAnim: true, pressed: s.r === i, tag: s.r === i ? t("card.tagDiscard") : null })).join("")}</div>` : ""}
         ${U.route.length ? `<p class="muted">${t("plant.clearsRoute")}</p>` : ""}
@@ -870,7 +873,7 @@
       const chars = CHARS(), guilds = GUILDS(), cols = T.playerColors || [];
       const w = s.who;
       const ch = chars.map((c) => `<button class="chr${w.char === c.id ? " on" : ""}" data-a="pickc" data-i="${attr(c.id)}" aria-pressed="${w.char === c.id}" style="--pc:${attr(w.color || "var(--shu)")}">${art(c.art, "por")}<span class="tx"><b>${esc(charName(c))}</b><small>${esc(charTitle(c))}</small><i>${esc(abilityName(c.ability))}</i><span>${esc(abilityText(c.ability))}</span></span></button>`).join("");
-      const gs = guilds.map((g, i) => `<button class="gld${w.guild === i ? " on" : ""}" data-a="pickg" data-i="${i}" aria-pressed="${w.guild === i}">${art(g.art, "crest")}<b>${esc(guildName(g))}</b><small>${esc(lookup("content.guilds." + g.id + ".motto") || "")}</small>${g.element && RU().guilds.echo ? `<span class="gel" style="background:${EL(g.element).color}">${elIc(g.element)} ${esc(elName(g.element))}</span>` : ""}</button>`).join("");
+      const gs = guilds.map((g, i) => `<button class="gld${w.guild === i ? " on" : ""}" data-a="pickg" data-i="${i}" aria-pressed="${w.guild === i}">${art(g.art, "crest")}<b>${esc(guildName(g))}</b><small>${esc(lookup("content.guilds." + g.id + ".motto") || "")}</small>${g.element && RU().guilds.echo ? `<span class="gel" style="background:${EL(g.element).color};color:${onEl(g.element)}">${elIc(g.element)} ${esc(elName(g.element))}</span>` : ""}</button>`).join("");
       const gpick = guilds[w.guild], craft = gpick && gpick.element && RU().guilds.echo ? `<p class="muted gcraft"><b>${t("guildAbility.name")}</b> · ${t("guildAbility.text", { el: elName(gpick.element) })}</p>` : "";
       const cs = cols.map((c, i) => `<button class="sw${(w.color || "").toLowerCase() === c.toLowerCase() ? " on" : ""}" data-a="pickk" data-i="${attr(c)}" aria-pressed="${(w.color || "").toLowerCase() === c.toLowerCase()}" aria-label="${attr(t("setup.colourN", { n: i + 1 }))}" style="background:${attr(c)}"></button>`).join("");
       return `<div class="sh"><div><h2>${t("setup.title")}</h2><div class="sub">${t("setup.sub")}</div></div></div>
@@ -1344,7 +1347,7 @@
     }
     // colours, fonts and element colours become CSS custom properties
     const vars = Object.entries(th.colors || {}).filter(([k]) => !k.startsWith("_")).map(([k, v]) => `--${k}:${v}`);
-    Object.entries(th.elements || {}).forEach(([k, v]) => { vars.push(`--${k}:${v.color}`); if (k === "V") vars.push(`--Vs:${v.ink}`); });
+    Object.entries(th.elements || {}).forEach(([k, v]) => { if (k.startsWith("_")) return; vars.push(`--${k}:${v.color}`, `--${k}i:${v.ink || v.color}`); if (k === "V") vars.push(`--Vs:${v.ink}`); });
     const fam = (f) => `"${f.family}",${f.fallback || "serif"}`;
     if (th.fonts && th.fonts.display) vars.push(`--serif:${fam(th.fonts.display)}`);
     if (th.fonts && th.fonts.body) vars.push(`--sans:${fam(th.fonts.body)}`);
