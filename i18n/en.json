@@ -589,7 +589,7 @@
     "menu": "Menu",
     "rules": "How to play",
     "log": "Game log",
-    "rival": "Rival's table",
+    "rival": "Tables",
     "over": "Game over",
     "install": "Install",
     "themes": "Choose a theme",
@@ -999,13 +999,10 @@
     "quickGame": "Quick game",
     "score": "{you} – {rival} of {n} {{mon}}",
     "quick": "Quick game",
-    "quickSub": "One game, your rules",
-    "youPlay": "You play",
-    "chooseChar": "Choose your character",
-    "change": "Change"
+    "quickSub": "One game, your rules"
   },
   "opts": {
-    "sub": "Set the game up how you like. Your choices are remembered.",
+    "sub": "Choose who you play and how the game runs. Your choices are remembered.",
     "skill": "Rival",
     "skillSub": "How far ahead it looks for a cure",
     "skill2": "Gentle",
@@ -1023,6 +1020,27 @@
     "oniFew": "Few",
     "oniSome": "Some",
     "oniMany": "Many",
-    "start": "Start the game"
+    "start": "Start the game",
+    "you": "You",
+    "rules": "Rules"
+  },
+  "table": {
+    "you": "Your table",
+    "cures": {
+      "one": "{n} cure",
+      "other": "{n} cures"
+    },
+    "ability": "Ability",
+    "guild": "Guild",
+    "hand": "Hand",
+    "hidden": {
+      "one": "Hidden · {n} card",
+      "other": "Hidden · {n} cards"
+    },
+    "garden": "Garden",
+    "ward": "Ward",
+    "tools": "Tools",
+    "oni": "Oni",
+    "none": "None yet"
   }
 }

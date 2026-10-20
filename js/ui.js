@@ -69,10 +69,6 @@
   const toolGlyph = (id) => (T.tools && T.tools[id] && T.tools[id].glyph) || "";
   const elIc = (e) => (ASSET["icon.el." + e] ? art("icon.el." + e, "gi") : esc(EL(e).glyph));
   // ---------- people: characters, guilds, colours ----------
-  function personRow(pi) {
-    const c = charOf(pi), g = guildOf(pi);
-    return `<div class="who-row">${portrait(pi)}<div><b>${esc(charName(c))}${charTitle(c) ? ` <small>${esc(charTitle(c))}</small>` : ""}</b><span><i>${esc(abilityName(c.ability))}</i> · ${esc(abilityText(c.ability))}</span>${g ? `<span class="gl">${crest(pi)}${esc(guildName(g))}${G().P[pi].gel && RU().guilds.echo ? ` · ${elIc(G().P[pi].gel)} ${t("guildAbility.text", { el: elName(G().P[pi].gel) })}` : ""}</span>` : ""}</div></div>`;
-  }
   const CHARS = () => (T.characters || []).filter((c) => KF.rules.abilities && KF.rules.abilities[c.ability]);
   const GUILDS = () => T.guilds || [];
   // the theme's character for a player's ability (a theme switch mid-game keeps the ability, changes the face)
@@ -622,6 +618,18 @@
       </div></div>`;
   }
 
+  // who you play: character, guild and colour (part of the quick-game sheet)
+  function whoPicker(w) {
+    const chars = CHARS(), guilds = GUILDS(), cols = T.playerColors || [];
+      const ch = chars.map((c) => `<button class="chr${w.char === c.id ? " on" : ""}" data-a="pickc" data-i="${attr(c.id)}" aria-pressed="${w.char === c.id}" style="--pc:${attr(w.color || "var(--shu)")}">${art(c.art, "por")}<span class="tx"><b>${esc(charName(c))}</b><small>${esc(charTitle(c))}</small><i>${esc(abilityName(c.ability))}</i><span>${esc(abilityText(c.ability))}</span></span></button>`).join("");
+      const gs = guilds.map((g, i) => `<button class="gld${w.guild === i ? " on" : ""}" data-a="pickg" data-i="${i}" aria-pressed="${w.guild === i}">${art(g.art, "crest")}<b>${esc(guildName(g))}</b><small>${esc(lookup("content.guilds." + g.id + ".motto") || "")}</small>${g.element && RU().guilds.echo ? `<span class="gel" style="background:${EL(g.element).color};color:${onEl(g.element)}">${elIc(g.element)} ${esc(elName(g.element))}</span>` : ""}</button>`).join("");
+      const gpick = guilds[w.guild], craft = gpick && gpick.element && RU().guilds.echo ? `<p class="muted gcraft"><b>${t("guildAbility.name")}</b> · ${t("guildAbility.text", { el: elName(gpick.element) })}</p>` : "";
+      const cs = cols.map((c, i) => `<button class="sw${(w.color || "").toLowerCase() === c.toLowerCase() ? " on" : ""}" data-a="pickk" data-i="${attr(c)}" aria-pressed="${(w.color || "").toLowerCase() === c.toLowerCase()}" aria-label="${attr(t("setup.colourN", { n: i + 1 }))}" style="background:${attr(c)}"></button>`).join("");
+    return `${chars.length ? `<span class="cap">${t("setup.character")}</span><div class="chrs">${ch}</div>` : ""}
+        ${guilds.length ? `<span class="cap">${t("setup.guild")} <small>${t("setup.guildSub")}</small></span><div class="glds">${gs}</div>${craft}` : ""}
+        ${cols.length ? `<span class="cap">${t("setup.colour")}</span><div class="sws">${cs}</div>` : ""}`;
+  }
+
   // ---------- splash and title menu ----------
   const brandMark = () => (gl("brand") || ASSET["icon.brand"] ? `<span class="tbrand">${ic("brand")}</span>` : "");
   function splashScreen() {
@@ -642,8 +650,7 @@
         <button class="mb${cont ? "" : " primary"}" data-a="quick"><b>${t("title.quick")}</b><small>${t("title.quickSub")}</small></button>
         ${QUEST ? `<button class="mb" data-a="quest"><b>${t("quest.menu")}</b><small>${questDone() ? t("quest.menuAt", { n: questDone(), total: QUEST.stops.length }) : t("quest.menuNew")}</small></button>` : ""}
       </div>
-      <button class="tme" data-a="who">${c ? art(c.art, "por") : ""}<span><small>${t("title.youPlay")}</small><b>${c ? esc(charName(c)) : t("title.chooseChar")}</b></span><i>${t("title.change")}</i></button>
-      <div class="tlinks"><button class="tlink" data-a="rules">${t("menu.howToPlay")}</button>${Object.keys(CFG.themes || {}).length > 1 ? `<button class="tlink" data-a="themes">${t("menu.theme")}</button>` : ""}<button class="tlink" data-a="sound">${SFX.isOn() ? t("settings.soundOn") : t("settings.soundOff")}</button>${inst}</div>
+      <div class="tlinks"><button class="tlink" data-a="rules">${t("menu.howToPlay")}</button>${inst}</div>
     </div></div>`;
   }
   function toTitle() { U.screen = "title"; closeSheet(); applyPlayerColor(); render(); }
@@ -844,8 +851,7 @@
       const themes = Object.keys(CFG.themes || {}), langs = Object.keys(CFG.languages || {});
       const sel = (a, cur, opts) => `<div class="seg wrap" role="group">${opts.map(([v, l]) => `<button data-a="${a}" data-i="${attr(v)}" aria-pressed="${v === cur}">${esc(l)}</button>`).join("")}</div>`;
       return `<div class="sh"><div><h2>${gl("brand") || ASSET["icon.brand"] ? ic("brand") + " " : ""}${t("app.name")}</h2><div class="sub">${G().quest && QUEST ? `${t("quest.toast", { n: G().quest.n + 1, place: esc(stopName(G().quest.n)) })} · ` : `${t("app.edition")} · `}${turnLabel()}</div></div></div>
-        ${charOf(0) ? personRow(0) : ""}
-        <div class="menu"><button class="btn" data-a="rules">${t("menu.howToPlay")}<small>${ic("rules")}</small></button><button class="btn" data-a="log">${t("menu.log")}</button><button class="btn" data-a="rival">${t("menu.rivalTable")}</button><button class="btn" data-a="title" ${U.busy ? "disabled" : ""}>${t("menu.main")}<small>${t("menu.mainSub")}</small></button>${themes.length > 1 ? `<button class="btn" data-a="themes">${t("menu.theme")}<small>${esc(themeName(CUR_THEME))}</small></button>` : ""}${inst}</div>
+        <div class="menu"><button class="btn" data-a="rules">${t("menu.howToPlay")}<small>${ic("rules")}</small></button><button class="btn" data-a="log">${t("menu.log")}</button><button class="btn" data-a="rival">${t("menu.rivalTable")}</button><button class="btn" data-a="mytable">${t("table.you")}</button><button class="btn" data-a="title" ${U.busy ? "disabled" : ""}>${t("menu.main")}<small>${t("menu.mainSub")}</small></button>${themes.length > 1 && CFG.themePicker !== false ? `<button class="btn" data-a="themes">${t("menu.theme")}<small>${esc(themeName(CUR_THEME))}</small></button>` : ""}${inst}</div>
         <div class="sect"><div class="hd"><b>${t("settings.title")}</b></div>
           ${toggleRow("sound", "", SFX.isOn(), t("settings.sound"), t("settings.soundSub"))}
           ${toggleRow("hints", "", PREFS.hints, t("settings.hints"), openHands() ? t("settings.hintsSubOpen") : t("settings.hintsSub"))}
@@ -869,24 +875,13 @@
         <div class="thms">${tiles}</div>
         <div class="btns"><button class="btn" data-a="menu">${t("common.back")}</button><button class="btn primary" data-a="close">${t("common.done")}</button></div>`;
     },
-    setup(s) {
-      const chars = CHARS(), guilds = GUILDS(), cols = T.playerColors || [];
-      const w = s.who;
-      const ch = chars.map((c) => `<button class="chr${w.char === c.id ? " on" : ""}" data-a="pickc" data-i="${attr(c.id)}" aria-pressed="${w.char === c.id}" style="--pc:${attr(w.color || "var(--shu)")}">${art(c.art, "por")}<span class="tx"><b>${esc(charName(c))}</b><small>${esc(charTitle(c))}</small><i>${esc(abilityName(c.ability))}</i><span>${esc(abilityText(c.ability))}</span></span></button>`).join("");
-      const gs = guilds.map((g, i) => `<button class="gld${w.guild === i ? " on" : ""}" data-a="pickg" data-i="${i}" aria-pressed="${w.guild === i}">${art(g.art, "crest")}<b>${esc(guildName(g))}</b><small>${esc(lookup("content.guilds." + g.id + ".motto") || "")}</small>${g.element && RU().guilds.echo ? `<span class="gel" style="background:${EL(g.element).color};color:${onEl(g.element)}">${elIc(g.element)} ${esc(elName(g.element))}</span>` : ""}</button>`).join("");
-      const gpick = guilds[w.guild], craft = gpick && gpick.element && RU().guilds.echo ? `<p class="muted gcraft"><b>${t("guildAbility.name")}</b> · ${t("guildAbility.text", { el: elName(gpick.element) })}</p>` : "";
-      const cs = cols.map((c, i) => `<button class="sw${(w.color || "").toLowerCase() === c.toLowerCase() ? " on" : ""}" data-a="pickk" data-i="${attr(c)}" aria-pressed="${(w.color || "").toLowerCase() === c.toLowerCase()}" aria-label="${attr(t("setup.colourN", { n: i + 1 }))}" style="background:${attr(c)}"></button>`).join("");
-      return `<div class="sh"><div><h2>${t("setup.title")}</h2><div class="sub">${t("setup.sub")}</div></div></div>
-        ${chars.length ? `<span class="cap">${t("setup.character")}</span><div class="chrs">${ch}</div>` : ""}
-        ${guilds.length ? `<span class="cap">${t("setup.guild")} <small>${t("setup.guildSub")}</small></span><div class="glds">${gs}</div>${craft}` : ""}
-        ${cols.length ? `<span class="cap">${t("setup.colour")}</span><div class="sws">${cs}</div>` : ""}
-        <div class="btns"><button class="btn" data-a="close">${t("common.cancel")}</button><button class="btn primary" data-a="setupgo">${t("common.done")}</button></div>`;
-    },
-    quick() {
+    quick(s) {
       const o = quickOpts();
       const seg = (k, opts) => `<div class="seg wrap" role="group">${opts.map(([v, l]) => `<button data-a="opt" data-k="${k}" data-i="${attr(String(v))}" aria-pressed="${String(o[k]) === String(v)}">${esc(String(l))}</button>`).join("")}</div>`;
       const tg = (k, title, sub) => `<button class="tg" data-a="optt" data-k="${k}" aria-pressed="${!!o[k]}"><span class="sw"></span><span><b>${title}</b><small>${sub}</small></span></button>`;
       return `<div class="sh"><div><h2>${t("title.quick")}</h2><div class="sub">${t("opts.sub")}</div></div></div>
+        <div class="sect qyou"><div class="hd"><b>${t("opts.you")}</b></div>${whoPicker(s.who || PREFS.who || {})}</div>
+        <div class="sect"><div class="hd"><b>${t("opts.rules")}</b></div></div>
         <span class="cap">${t("settings.target")} <small>${t("settings.targetSub")}</small></span>${seg("endFame", [10, 15, 25, 35].map((v) => [v, v]))}
         <span class="cap">${t("opts.skill")} <small>${t("opts.skillSub")}</small></span>${seg("depth", [2, 3, 4, 5].map((v) => [v, t("opts.skill" + v)]))}
         ${tg("tools", t("opts.tools"), t("opts.toolsSub"))}
@@ -910,16 +905,27 @@
       const g = G();
       return `<div class="sh"><div><h2>${t("menu.log")}</h2><div class="sub">${turnLabel()}</div></div></div><div class="log">${g.log.map((l) => `<p class="${l.p === 1 ? "b" : l.p === 0 ? "y" : ""}"><span>${t("log.round", { n: l.r })}</span>${logLine(l)}</p>`).join("")}</div><div class="btns"><button class="btn" data-a="close">${t("common.close")}</button></div>`;
     },
-    rival() {
-      const b = bot();
-      return `<div class="sh"><div><h2>${t("menu.rivalTable")}</h2><div class="sub">${t("rival.summary", { fame: b.fame, n: b.cures, hand: b.hand.length })}${openHands() ? "" : " " + t("rival.hidden")}</div></div></div>
-        ${charOf(1) ? personRow(1) : ""}
-        ${G().lastBot ? `<p class="muted">${t("rival.lastTurn", { what: esc(G().lastBot) })}</p>` : ""}
-        ${openHands() ? `<span class="cap">${t("rival.handOpen")}</span><div class="crow">${b.hand.map((c) => ingCard(c, { u: 0.8, noAnim: true, static: true })).join("") || `<span class="muted">${t("garden.empty")}</span>`}</div>` : ""}
-        <span class="cap">${t("rival.garden")}</span><div class="crow">${b.garden.map((c) => ingCard(c, { u: 0.8, noAnim: true, static: true })).join("") || `<span class="muted">${t("garden.empty")}</span>`}</div>
-        ${RU().ward.enabled ? `<span class="cap">${t("rival.ward")}</span><div class="crow">${(b.ward || []).map((w) => ingCard(KF.wardCard(w), { u: 0.8, noAnim: true, static: true, cls: !KF.wardLeft(w) || w.spent ? "spent" : "", tag: !KF.wardLeft(w) || w.spent ? t("card.tagSpent") : moveName(w.mv) })).join("") || `<span class="muted">${t("garden.empty")}</span>`}</div>` : ""}
-        <span class="cap">${t("label.tools")}</span><div class="purse">${RU().toolIds.filter((id) => b.tools[id]).map((id) => `<span class="tpill rv">${art(toolArt(id))}${esc(toolName(id))}</span>`).join("") || `<span class="muted">${t("rival.none")}</span>`}</div>
-        <span class="cap">${t("rival.oni")}</span><div class="purse">${Array.from({ length: KF.limit(1, "oniPerPlayer") }, (_, i) => `<span class="oc${i >= b.oni ? " gone" : ""}">${art("oni")}</span>`).join("")}</div>
+    rival(s) {
+      const pi = s.p == null ? 1 : s.p, g = G(), p = g.P[pi], c = charOf(pi), gd = guildOf(pi), mine = pi === 0;
+      const small = (list, f) => (list.length ? `<div class="crow tc">${list.map(f).join("")}</div>` : `<span class="muted tnone">${t("table.none")}</span>`);
+      const card = (o) => (x) => ingCard(x, Object.assign({ u: 0.6, noAnim: true, static: true }, o || {}));
+      const tabs = `<div class="seg ttabs" role="tablist">${[1, 0].map((k) => `<button role="tab" data-a="tview" data-i="${k}" aria-pressed="${pi === k}">${t(k ? "who.rival" : "who.you")}</button>`).join("")}</div>`;
+      const head = `<div class="tp">${portrait(pi) || `<span class="por"></span>`}<div class="tn"><b>${c ? esc(charName(c)) : t(mine ? "who.you" : "who.rival")}</b>${c && charTitle(c) ? `<small>${esc(charTitle(c))}</small>` : ""}</div>
+        <div class="ts">${monVal(p.fame, "big")}<small>${t("table.cures", { n: p.cures })}</small></div></div>`;
+      const ability = c ? `<div class="tbx"><span class="cap">${t("table.ability")}</span><b>${esc(abilityName(c.ability))}</b><small>${esc(abilityText(c.ability))}</small></div>` : "";
+      const guild = gd ? `<div class="tbx gb">${crest(pi, "gcr")}<span class="cap">${t("table.guild")}</span><b>${esc(guildName(gd))}</b><small>${esc(lookup("content.guilds." + gd.id + ".motto") || "")}</small>${p.gel && RU().guilds.echo ? `<small class="craft">${elIc(p.gel)} ${t("guildAbility.text", { el: elName(p.gel) })}</small>` : ""}</div>` : "";
+      const hand = mine || openHands() ? small(p.hand, card()) : `<span class="muted tnone">${t("table.hidden", { n: p.hand.length })}</span>`;
+      const ward = RU().ward.enabled ? `<div class="tsec"><span class="cap">${t("table.ward")} <small>${p.ward.filter((w) => KF.wardLeft(w) && !w.spent).length}</small></span>${small(p.ward || [], (w) => ingCard(KF.wardCard(w), { u: 0.6, noAnim: true, static: true, cls: !KF.wardLeft(w) || w.spent ? "spent" : "", tag: !KF.wardLeft(w) || w.spent ? t("card.tagSpent") : null }))}</div>` : "";
+      const tools = RU().toolIds.filter((id) => p.tools[id]).map((id) => `<span class="tpill${mine ? "" : " rv"}">${art(toolArt(id))}${esc(toolName(id))}</span>`).join("") || `<span class="muted tnone">${t("table.none")}</span>`;
+      const oni = Array.from({ length: KF.limit(pi, "oniPerPlayer") }, (_, i) => `<span class="oc${i >= p.oni ? " gone" : ""}">${art("oni")}</span>`).join("");
+      return `<div class="sh"><div><h2>${t(mine ? "table.you" : "menu.rivalTable")}</h2></div></div>${tabs}
+        ${head}
+        ${ability || guild ? `<div class="tinfo">${ability}${guild}</div>` : ""}
+        <div class="tsec"><span class="cap">${t("table.hand")} <small>${p.hand.length}/${KF.limit(pi, "handLimit")}</small></span>${hand}</div>
+        <div class="tsec"><span class="cap">${t("table.garden")} <small>${p.garden.length}/${KF.limit(pi, "gardenMax")}</small></span>${small(p.garden, card())}</div>
+        ${ward}
+        <div class="tfoot"><div class="tsec"><span class="cap">${t("table.tools")}</span><div class="purse">${tools}</div></div><div class="tsec"><span class="cap">${t("table.oni")} <small>${p.oni}</small></span><div class="purse onis">${oni}</div></div></div>
+        ${!mine && g.lastBot ? `<p class="muted tlast">${t("rival.lastTurn", { what: esc(g.lastBot) })}</p>` : ""}
         <div class="btns"><button class="btn" data-a="close">${t("common.close")}</button></div>`;
     },
     quest(s) {
@@ -1186,19 +1192,19 @@
       case "themes": openSheet({ type: "themes" }); return;
       case "rules": openSheet({ type: "rules" }); return;
       case "log": openSheet({ type: "log" }); return;
-      case "rival": openSheet({ type: "rival" }); return;
+      case "rival": openSheet({ type: "rival", p: 1 }); return;
+      case "mytable": openSheet({ type: "rival", p: 0 }); return;
+      case "tview": s.p = +i; SFX.tap("E"); renderSheet(); return;
       case "splash": U.screen = "title"; SFX.open(); render(); return;
       case "title": toTitle(); return;
       case "continue": resume(); return;
-      case "quick": openSheet({ type: "quick" }); return;
-      case "quickgo": startQuick(); return;
+      case "quick": openQuick(); return;
+      case "quickgo": if (s && s.who) { PREFS.who = Object.assign({}, s.who); savePrefs(); } startQuick(); return;
       case "opt": { const o = quickOpts(), k = tg.dataset.k; o[k] = k === "oni" ? i : +i; PREFS.opts = o; savePrefs(); SFX.toggle(); renderSheet(); return; }
       case "optt": { const o = quickOpts(), k = tg.dataset.k; o[k] = !o[k]; PREFS.opts = o; savePrefs(); SFX.toggle(); renderSheet(); return; }
-      case "who": openSetup(true); return;
       case "pickc": U.sheet.who.char = i; SFX.tap("V"); renderSheet(); return;
       case "pickg": { const gi = +i, w = U.sheet.who; w.guild = gi; const g = GUILDS()[gi]; if (g && g.color) w.color = g.color; SFX.tap("E"); renderSheet(); return; }
       case "pickk": U.sheet.who.color = i; SFX.tap("W"); renderSheet(); return;
-      case "setupgo": PREFS.who = Object.assign({}, U.sheet.who); savePrefs(); closeSheet(); applyPlayerColor(); render(); return;
       case "quest": openSheet({ type: "quest", sel: Math.min(questDone(), QUEST.stops.length - 1) }); return;
       case "questmap": openSheet({ type: "quest", sel: +i }); return;
       case "qsel": s.sel = +i; SFX.tap("E"); renderSheet(); return;
@@ -1416,12 +1422,12 @@
     return [{ ability: mine ? mine.ability : null, guild: myG, gel: myG != null && gs[myG] ? gs[myG].element || null : null, color: w.color || (myG != null && gs[myG].color) || null },
             { ability: theirs ? theirs.ability : null, guild: rg, gel: rg != null && gs[rg] ? gs[rg].element || null : null, color: null }];
   }
-  function openSetup(canCancel) {
+  function openQuick() {
     const chars = CHARS(), gs = GUILDS(), w = Object.assign({}, PREFS.who || {});
     if (!chars.find((c) => c.id === w.char)) w.char = chars.length ? chars[0].id : null;
     if (w.guild == null || w.guild >= gs.length) w.guild = gs.length ? 0 : null;
     if (!w.color) w.color = (gs[w.guild] && gs[w.guild].color) || (T.playerColors || [])[0] || null;
-    openSheet({ type: "setup", who: w, canCancel, modal: !canCancel });
+    openSheet({ type: "quick", who: w });
   }
   // quiet: set the table up behind the first-run setup sheet, without the "you go first" toast or the rival moving
   // q: a quest stop to play ({ settings, players, quest }) instead of a free game with the house rules
@@ -1503,7 +1509,7 @@
     U.screen = go ? "title" : "splash";
     if (!g) startNew(true);
     applyPlayerColor(); fit(); render();
-    if (go === "new") openSheet({ type: "quick" });
+    if (go === "new") openQuick();
     else if (go === "rules") openSheet({ type: "rules" });
     else setTimeout(() => { if (U.screen === "splash") { U.screen = "title"; render(); } }, 2600);
   }
