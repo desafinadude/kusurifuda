@@ -740,6 +740,27 @@
     const b = $(".board"), html = ic(key); if (!b || !html) return;
     const d = document.createElement("div"); d.className = "bstamp" + (rival ? " r" : ""); d.innerHTML = html;
     b.appendChild(d); setTimeout(() => d.remove(), 1600);
+    if (key === "cured") brewFX(b, rival);
+  }
+  // a cure goes off like a chemistry bench: a flash, a burst of sparks, bubbles and a puff of smoke
+  function brewFX(b, rival) {
+    if (reduced()) return;
+    const fx = document.createElement("div"), pt = G() && G().village[U.sel]; fx.className = "brewfx" + (rival ? " r" : "");
+    if (pt && pt.el) fx.style.setProperty("--tint", `var(--${pt.el})`);
+    const W = b.clientWidth || 300, rnd = (a, z) => a + Math.random() * (z - a), pc = (v) => v.toFixed(1) + "%", px = (v) => (v * W / 100).toFixed(0) + "px";
+    let h = `<i class="flash"></i><i class="ring"></i>`;
+    for (let i = 0; i < 34; i++) {
+      const a = rnd(0, Math.PI * 2), r = rnd(20, 52);
+      h += `<i class="spark" style="--dx:${px(Math.cos(a) * r)};--dy:${px(Math.sin(a) * r - 8)};--d:${rnd(0, 0.18).toFixed(2)}s;--t:${rnd(0.6, 1.1).toFixed(2)}s;--s:${rnd(4, 9).toFixed(1)}px"></i>`;
+    }
+    for (let i = 0; i < 12; i++)
+      h += `<i class="bub" style="--x:${pc(rnd(32, 68))};--dx:${px(rnd(-6, 6))};--dy:${px(-rnd(25, 40))};--d:${rnd(0.05, 0.5).toFixed(2)}s;--s:${rnd(6, 14).toFixed(0)}px"></i>`;
+    for (let i = 0; i < 13; i++)
+      h += `<i class="smoke" style="--x:${pc(rnd(28, 72))};--dx:${px(rnd(-20, 20))};--dy:${px(-rnd(30, 55))};--d:${rnd(0.05, 0.6).toFixed(2)}s;--t:${rnd(1.5, 2.3).toFixed(2)}s;--s:${rnd(20, 34).toFixed(0)}%"></i>`;
+    // pinned over the board on the page, so it keeps going when the board redraws and the reward sheet opens
+    const r = b.getBoundingClientRect();
+    Object.assign(fx.style, { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px" });
+    fx.innerHTML = h; document.body.appendChild(fx); setTimeout(() => fx.remove(), 3000);
   }
 
   // ---------- swiping between patients ----------
@@ -1150,7 +1171,7 @@
     const err = KF.checkRoute(0, U.sel, route); if (err) return say(t("errors." + err), true);
     U.anim = true; stampBoard("cured"); SFX.cure();
     if (navigator.vibrate) try { navigator.vibrate([20, 40, 20]); } catch (e) {}
-    await sleep(900);
+    await sleep(1200);
     const res = KF.doCure(0, U.sel, route);
     G().pending = { pt: res.pt, sak: res.sak, gain: res.pt.val + res.sak, arrived: res.arrived }; G().phase = "reward";
     resetRoute(); U.mkt = []; U.anim = false;
@@ -1158,7 +1179,7 @@
   }
   async function doKnown() {
     if (!canAct() || KF.knownFor(0, U.sel) < 0) return;
-    U.anim = true; stampBoard("cured"); SFX.cure(); await sleep(800);
+    U.anim = true; stampBoard("cured"); SFX.cure(); await sleep(1200);
     const res = KF.doKnownCure(0, U.sel);
     G().pending = { pt: res.pt, sak: 0, gain: res.pay, known: res.via.who, arrived: res.arrived }; G().phase = "reward";
     resetRoute(); U.mkt = []; U.anim = false;
