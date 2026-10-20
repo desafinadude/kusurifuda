@@ -257,21 +257,21 @@
       }
     },
     "guilds": {
-      "plum": {
-        "name": "Plum Blossom Guild",
-        "motto": "First to bloom"
+      "sake": {
+        "name": "Sake Cup Guild",
+        "motto": "A cup shared heals twice"
       },
-      "wisteria": {
-        "name": "Wisteria Guild",
-        "motto": "Patient and long-reaching"
+      "moon": {
+        "name": "Moon Guild",
+        "motto": "Patient as the night sky"
       },
-      "pine": {
-        "name": "Pine Guild",
-        "motto": "Green through every winter"
+      "boar": {
+        "name": "Boar Guild",
+        "motto": "Charges straight through"
       },
-      "wave": {
-        "name": "Wave Guild",
-        "motto": "Steady as the tide"
+      "rain": {
+        "name": "Rain Man Guild",
+        "motto": "Fine in any weather"
       }
     }
   },

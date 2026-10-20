@@ -749,3 +749,5 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .ic .lab .nm{max-width:100%;font-size:calc(7px*var(--u));font-weight:700;line-height:1.05;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ic.tiny .lab .nm{display:none}
 .ic .tag{z-index:2}
+/* the emblem is a round crest: show it as a medallion */
+.spl .emb,.thead .emb{border-radius:50%;border:0;background:transparent}

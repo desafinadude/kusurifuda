@@ -31,9 +31,30 @@
     "art.E": "assets/earth.svg",
     "art.A": "assets/wind.svg",
     "art.V": "assets/kitsune.svg",
+    "ing.F.1": "cards/ing-F-1.webp",
+    "ing.F.2": "cards/ing-F-2.webp",
+    "ing.F.3": "cards/ing-F-3.webp",
+    "ing.W.1": "cards/ing-W-1.webp",
+    "ing.W.2": "cards/ing-W-2.webp",
+    "ing.W.3": "cards/ing-W-3.webp",
+    "ing.A.1": "cards/ing-A-1.webp",
+    "ing.A.2": "cards/ing-A-2.webp",
+    "ing.A.3": "cards/ing-A-3.webp",
+    "ing.E.1": "cards/ing-E-1.webp",
+    "ing.E.2": "cards/ing-E-2.webp",
+    "ing.E.3": "cards/ing-E-3.webp",
+    "ing.AF.1": "cards/ing-AF-1.webp",
+    "ing.AF.2": "cards/ing-AF-2.webp",
+    "ing.AW.1": "cards/ing-AW-1.webp",
+    "ing.AW.2": "cards/ing-AW-2.webp",
+    "ing.FE.1": "cards/ing-FE-1.webp",
+    "ing.FE.2": "cards/ing-FE-2.webp",
+    "ing.EW.1": "cards/ing-EW-1.webp",
+    "ing.EW.2": "cards/ing-EW-2.webp",
+    "ing.V": "cards/ing-V.webp",
     "oni": "assets/oni.svg",
     "sakura": "assets/sakura.svg",
-    "emblem": "assets/emblem.svg",
+    "emblem": "assets/emblem.webp",
     "boardMotif": "assets/boardbg.svg",
     "tool.ladle": "assets/ladle.svg",
     "tool.mortar": "assets/mortar.svg",
@@ -74,14 +95,14 @@
     "icon.tl.mortar": "icons/tl-mortar.svg",
     "icon.tl.charm": "icons/tl-charm.svg",
     "icon.tl.basket": "icons/tl-basket.svg",
-    "char.herbalist": "people/herbalist.svg",
-    "char.merchant": "people/merchant.svg",
-    "char.miko": "people/miko.svg",
-    "char.kunoichi": "people/kunoichi.svg",
-    "guild.plum": "people/guild-plum.svg",
-    "guild.wisteria": "people/guild-wisteria.svg",
-    "guild.pine": "people/guild-pine.svg",
-    "guild.wave": "people/guild-wave.svg"
+    "char.herbalist": "people/char-herbalist.webp",
+    "char.merchant": "people/char-merchant.webp",
+    "char.miko": "people/char-miko.webp",
+    "char.kunoichi": "people/char-kunoichi.webp",
+    "guild.sake": "people/guild-sake.webp",
+    "guild.moon": "people/guild-moon.webp",
+    "guild.boar": "people/guild-boar.webp",
+    "guild.rain": "people/guild-rain.webp"
   },
   "elements": {
     "W": {
@@ -157,26 +178,26 @@
   ],
   "guilds": [
     {
-      "id": "plum",
-      "art": "guild.plum",
+      "id": "sake",
+      "art": "guild.sake",
       "color": "#B23A24",
       "element": "F"
     },
     {
-      "id": "wisteria",
-      "art": "guild.wisteria",
+      "id": "moon",
+      "art": "guild.moon",
       "color": "#9A4E8A",
       "element": "A"
     },
     {
-      "id": "pine",
-      "art": "guild.pine",
-      "color": "#43664A",
+      "id": "boar",
+      "art": "guild.boar",
+      "color": "#7A5626",
       "element": "E"
     },
     {
-      "id": "wave",
-      "art": "guild.wave",
+      "id": "rain",
+      "art": "guild.rain",
       "color": "#2F5D8A",
       "element": "W"
     }
@@ -184,7 +205,7 @@
   "playerColors": [
     "#B23A24",
     "#9A6512",
-    "#43664A",
+    "#7A5626",
     "#2F5D8A",
     "#9A4E8A",
     "#1E7A7A"
