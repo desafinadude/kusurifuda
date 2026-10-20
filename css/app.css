@@ -89,7 +89,7 @@ img,.ai{display:block}
 .board .cmp.n{top:-17px;left:0;right:0;text-align:center;color:var(--W)}
 .board .cmp.e{right:-16px;top:calc(50% - 6px);color:var(--F)}
 .board .cmp.s{bottom:-17px;left:0;right:0;text-align:center;color:var(--E)}
-.board .cmp.w{left:-16px;top:calc(50% - 6px);color:var(--A)}
+.board .cmp.w{left:-16px;top:calc(50% - 6px);color:var(--Ai)}
 .board.shake{animation:shake .35s}
 @keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
 .nobody{font-family:var(--serif);font-weight:800;font-size:16px;color:var(--brown)}
@@ -205,7 +205,7 @@ img,.ai{display:block}
 .mrow .pc{width:80px;height:96px}
 .mrow .pc[aria-pressed=false].dim{opacity:.45}
 .ptag{position:absolute;top:-8px;right:-4px;font-size:8.5px;font-weight:700;padding:2px 5px;border-radius:4px;color:var(--parch-hi);background:var(--ink)}
-.ptag.new{background:var(--A)} .ptag.pv{background:var(--shu)}
+.ptag.new{background:var(--Ai)} .ptag.pv{background:var(--shu)}
 .seg{display:flex;gap:4px;height:44px;padding:3px;border-radius:10px;background:color-mix(in srgb,var(--ink) 8%,transparent);border:1px solid var(--muted)}
 .seg button{flex:1;border:0;border-radius:7px;background:transparent;color:var(--ink);font-size:12px;font-weight:500}
 .seg button[aria-pressed=true]{background:var(--ink);color:var(--parch-hi);font-weight:700}
@@ -275,7 +275,7 @@ img,.ai{display:block}
 button.sq{cursor:pointer}
 .sq .xx{position:absolute;bottom:-6px;right:-7px;width:15px;height:15px;border-radius:50%;background:var(--shu);color:var(--parch-hi);font-family:var(--sans);font-size:11px;line-height:15px;text-align:center}
 .sq.rv{border-color:var(--rival-deep);box-shadow:0 0 0 1.5px var(--rival-hi);animation:chipin .3s cubic-bezier(.2,.8,.3,1)}
-.sq.gd::after{content:"庭";position:absolute;bottom:-6px;right:-7px;font-size:8px;background:var(--A);color:var(--parch-hi);border-radius:3px;padding:0 2px;line-height:1.3;font-family:var(--serif)}
+.sq.gd::after{content:"庭";position:absolute;bottom:-6px;right:-7px;font-size:8px;background:var(--Ai);color:var(--parch-hi);border-radius:3px;padding:0 2px;line-height:1.3;font-family:var(--serif)}
 .strip .seqs .sq:last-child{animation:chipin .28s cubic-bezier(.2,.8,.3,1)}
 @keyframes chipin{from{transform:scale(.4) translateY(6px);opacity:0}}
 .ctrls{display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:40px}
@@ -327,7 +327,7 @@ button.sq{cursor:pointer}
 .gainrow .em{width:48px;height:48px;border-radius:8px;border:2px solid var(--ink)}
 .gainrow b{display:block;font-family:var(--serif);font-weight:800;font-size:22px;line-height:1.1}
 .gainrow small{font-size:12px;color:var(--brown)}
-.ptag.rv{background:var(--rival-deep)} .ptag.ok{background:var(--A)}
+.ptag.rv{background:var(--rival-deep)} .ptag.ok{background:var(--Ai)}
 .tg{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 12px;border-radius:12px;border:1.5px solid color-mix(in srgb,var(--frame) 60%,transparent);background:rgba(255,255,255,.25);color:var(--ink)}
 .tg b{display:block;font-size:14px}
 .tg small{display:block;font-size:11.5px;color:var(--brown);line-height:1.3;margin-top:2px}
@@ -498,7 +498,7 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .sakic .ai{width:24px;height:24px}
 .port .boardp{margin:0 -4px;padding:8px}
 .port .board{width:calc(min(100cqw,100cqh) - 26px)}
-:is(.port,.tabl) .board .cmp{width:22px;height:22px;border-radius:50%;background:var(--ec);color:var(--parch-hi)!important;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:12px;z-index:1}
+:is(.port,.tabl) .board .cmp{width:22px;height:22px;border-radius:50%;background:var(--ec);color:var(--eo,var(--parch-hi))!important;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:12px;z-index:1}
 :is(.port,.tabl) .board .cmp.n{top:-11px;left:calc(50% - 11px);right:auto}
 :is(.port,.tabl) .board .cmp.s{bottom:-11px;left:calc(50% - 11px);right:auto}
 :is(.port,.tabl) .board .cmp.e{right:-11px;top:calc(50% - 11px)}
@@ -754,3 +754,4 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 /* phone tools view: a tidy 2 x 2 grid that scrolls if the phone is short */
 .port .tray.mk .tgrid2{max-height:100%;overflow-y:auto;scrollbar-width:none}
 .port .tray.mk .tgrid2::-webkit-scrollbar{display:none}
+.sq .eo{font-style:normal;display:contents}
