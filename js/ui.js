@@ -635,9 +635,9 @@
     return `<div class="scr title ${U.layout} lacquer"><div class="tcol">
       <div class="thead"><div class="emb">${art("emblem")}</div><div>${brandMark()}<h1>${t("app.name")}</h1><small>${t("app.edition")}</small></div></div>
       <div class="tbtns">
-        ${cont ? `<button class="tb primary" data-a="continue"><b>${t("title.continue")}</b><small>${where}</small></button>` : ""}
-        <button class="tb${cont ? "" : " primary"}" data-a="quick"><b>${t("title.quick")}</b><small>${t("title.quickSub")}</small></button>
-        ${QUEST ? `<button class="tb" data-a="quest"><b>${t("quest.menu")}</b><small>${questDone() ? t("quest.menuAt", { n: questDone(), total: QUEST.stops.length }) : t("quest.menuNew")}</small></button>` : ""}
+        ${cont ? `<button class="mb primary" data-a="continue"><b>${t("title.continue")}</b><small>${where}</small></button>` : ""}
+        <button class="mb${cont ? "" : " primary"}" data-a="quick"><b>${t("title.quick")}</b><small>${t("title.quickSub")}</small></button>
+        ${QUEST ? `<button class="mb" data-a="quest"><b>${t("quest.menu")}</b><small>${questDone() ? t("quest.menuAt", { n: questDone(), total: QUEST.stops.length }) : t("quest.menuNew")}</small></button>` : ""}
       </div>
       <button class="tme" data-a="who">${c ? art(c.art, "por") : ""}<span><small>${t("title.youPlay")}</small><b>${c ? esc(charName(c)) : t("title.chooseChar")}</b></span><i>${t("title.change")}</i></button>
       <div class="tlinks"><button class="tlink" data-a="rules">${t("menu.howToPlay")}</button>${Object.keys(CFG.themes || {}).length > 1 ? `<button class="tlink" data-a="themes">${t("menu.theme")}</button>` : ""}<button class="tlink" data-a="sound">${SFX.isOn() ? t("settings.soundOn") : t("settings.soundOff")}</button>${inst}</div>

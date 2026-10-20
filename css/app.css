@@ -715,11 +715,11 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .thead h1{margin:2px 0 0;font-family:var(--serif);font-weight:800;font-size:30px;line-height:1;color:var(--parch-hi)}
 .thead small{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .tbtns{display:flex;flex-direction:column;gap:10px}
-.tb{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:14px 18px;border-radius:14px;border:1px solid var(--line);background:var(--ink);color:var(--parch);text-align:left}
-.tb b{font-family:var(--serif);font-weight:800;font-size:21px;line-height:1.1}
-.tb small{font-size:12.5px;color:var(--soft)}
-.tb.primary{border-color:var(--shu-line);background:var(--shu);color:var(--parch-hi);box-shadow:inset 0 0 0 2px var(--shu),inset 0 0 0 3px color-mix(in srgb,var(--parch-hi) 45%,transparent),0 4px 0 var(--shu-shadow)}
-.tb.primary small{color:color-mix(in srgb,var(--parch-hi) 85%,transparent)}
+.mb{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:14px 18px;border-radius:14px;border:1px solid var(--line);background:var(--ink);color:var(--parch);text-align:left}
+.mb b{font-family:var(--serif);font-weight:800;font-size:21px;line-height:1.1}
+.mb small{font-size:12.5px;color:var(--soft)}
+.mb.primary{border-color:var(--shu-line);background:var(--shu);color:var(--parch-hi);box-shadow:inset 0 0 0 2px var(--shu),inset 0 0 0 3px color-mix(in srgb,var(--parch-hi) 45%,transparent),0 4px 0 var(--shu-shadow)}
+.mb.primary small{color:color-mix(in srgb,var(--parch-hi) 85%,transparent)}
 .tme{display:flex;align-items:center;gap:12px;padding:8px 14px 8px 8px;border-radius:12px;border:1px dashed var(--line);background:transparent;color:var(--parch);text-align:left}
 .tme .por{width:44px;height:44px;border-radius:9px;overflow:hidden;flex-shrink:0}
 .tme span{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
@@ -730,7 +730,7 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .tlink{border:0;background:none;padding:6px 2px;color:var(--soft);font-size:13px;font-weight:600;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
 .title.land .tcol{max-width:720px;display:grid;grid-template-columns:1fr 1.1fr;grid-template-areas:"head btns" "me btns" "links btns";gap:12px 28px;align-items:center}
 .title.land .thead{grid-area:head}.title.land .tbtns{grid-area:btns}.title.land .tme{grid-area:me}.title.land .tlinks{grid-area:links}
-.title.land .tb{padding:10px 16px}.title.land .tb b{font-size:18px}
+.title.land .mb{padding:10px 16px}.title.land .mb b{font-size:18px}
 
 /* ingredient cards: one picture, with a label in the lower middle (62%-88% down) */
 .ic .face{position:absolute;inset:0;overflow:hidden}
@@ -751,3 +751,6 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .ic .tag{z-index:2}
 /* the emblem is a round crest: show it as a medallion */
 .spl .emb,.thead .emb{border-radius:50%;border:0;background:transparent}
+/* phone tools view: a tidy 2 x 2 grid that scrolls if the phone is short */
+.port .tray.mk .tgrid2{max-height:100%;overflow-y:auto;scrollbar-width:none}
+.port .tray.mk .tgrid2::-webkit-scrollbar{display:none}
