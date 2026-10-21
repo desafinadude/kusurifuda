@@ -818,3 +818,14 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 @keyframes spk{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),calc(var(--dy) + 14px)) scale(.3);opacity:0}}
 .sparkfx b{position:absolute;left:-22px;top:-22px;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle,#FFF6D8 0%,color-mix(in srgb,var(--tint,#F2A23A) 55%,transparent) 40%,transparent 70%);animation:spkf .5s ease-out forwards}
 @keyframes spkf{0%{transform:scale(.3);opacity:0}25%{opacity:1}100%{transform:scale(1.6);opacity:0}}
+/* scrollbars: never the browser's own; a thin rounded thumb that suits paper and lacquer alike */
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:var(--sb-thumb) transparent}}
+:root{--sb-thumb:color-mix(in srgb,var(--brown) 45%,transparent);--sb-hover:color-mix(in srgb,var(--brown) 70%,transparent)}
+.lacquer,.lacquer *{--sb-thumb:color-mix(in srgb,var(--parch) 30%,transparent);--sb-hover:color-mix(in srgb,var(--parch) 50%,transparent)}
+.lacquer .paper,.lacquer .paper *{--sb-thumb:color-mix(in srgb,var(--brown) 45%,transparent);--sb-hover:color-mix(in srgb,var(--brown) 70%,transparent)}
+::-webkit-scrollbar{width:6px;height:6px;background:transparent}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--sb-thumb);border-radius:999px;border:1px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:var(--sb-hover);background-clip:padding-box}
+::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar-button{display:none;width:0;height:0}
