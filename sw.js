@@ -1,6 +1,6 @@
 /* Kusurifuda service worker — precaches the whole game so it plays offline.
    Version is a hash of the app files, so any change ships a fresh cache. */
-const VERSION = "6fd831e5d8";
+const VERSION = "9cbb8c71ce";
 const CACHE = "kusurifuda-" + VERSION;
 const PRECACHE = [
  "./",
@@ -41,16 +41,28 @@ const PRECACHE = [
  "themes/kusurifuda/assets/basket.svg",
  "themes/kusurifuda/assets/boardbg.svg",
  "themes/kusurifuda/assets/charm.svg",
+ "themes/kusurifuda/assets/cure.webp",
+ "themes/kusurifuda/assets/cured.webp",
  "themes/kusurifuda/assets/earth.svg",
  "themes/kusurifuda/assets/emblem.webp",
  "themes/kusurifuda/assets/fire.svg",
  "themes/kusurifuda/assets/kitsune.svg",
  "themes/kusurifuda/assets/ladle.svg",
  "themes/kusurifuda/assets/mortar.svg",
+ "themes/kusurifuda/assets/oni-A.webp",
+ "themes/kusurifuda/assets/oni-E.webp",
+ "themes/kusurifuda/assets/oni-F.webp",
+ "themes/kusurifuda/assets/oni-W.webp",
  "themes/kusurifuda/assets/oni.svg",
+ "themes/kusurifuda/assets/oni.webp",
  "themes/kusurifuda/assets/paper.webp",
  "themes/kusurifuda/assets/sakura.svg",
+ "themes/kusurifuda/assets/sakura.webp",
  "themes/kusurifuda/assets/table.svg",
+ "themes/kusurifuda/assets/tool-basket.webp",
+ "themes/kusurifuda/assets/tool-charm.webp",
+ "themes/kusurifuda/assets/tool-ladle.webp",
+ "themes/kusurifuda/assets/tool-mortar.webp",
  "themes/kusurifuda/assets/water.svg",
  "themes/kusurifuda/assets/wind.svg",
  "themes/kusurifuda/cards/ing-A-1.webp",

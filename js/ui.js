@@ -85,6 +85,9 @@
   const crest = (pi, cls = "crest") => { const g = guildOf(pi); return g && g.art ? art(g.art, cls) : ""; };
   // a guild's colour is its element's: the colour itself, or its deeper ink when the colour is too pale for white text (air)
   const guildColor = (g) => { if (!g) return null; if (!g.element) return g.color || null; const e = EL(g.element); return e.on ? e.ink || e.color : e.color; };
+  // a player's own oni: their guild's (by its element) when the theme has one, else the plain oni
+  const oniKey = (pi) => { const g = guildOf(pi), k = g && g.element ? "oni." + g.element : null; return k && (ASSET[k] || SPR[k]) ? k : "oni"; };
+  const oniArt = (pi, cls) => art(oniKey(pi), cls);
   const portrait = (pi, cls = "por") => { const c = charOf(pi); return c && c.art ? art(c.art, cls) : ""; };
   // hex colour arithmetic for the player's colour
   const hx = (h) => { const m = /^#?([0-9a-f]{6})$/i.exec(h || ""); return m ? [0, 2, 4].map((i) => parseInt(m[1].substr(i, 2), 16)) : null; };
@@ -243,7 +246,8 @@
       g += `<rect x="${c}" y="${r}" width="1" height="1" fill="${bg}" stroke="${MC("grid")}" stroke-width=".025"/>`;
       if (oni && o.icons) g += artIn("oni", c + 0.12, r + 0.12, 0.76, 0.76);
       if (sak) g += artIn("sakura", c + 0.14, r + 0.14, 0.72, 0.72);
-      if (cure && ASSET["icon.cure"]) g += `<g style="color:${ink}">${artIn("icon.cure", c + 0.17, r + 0.17, 0.66, 0.66)}</g>`;
+      if (cure && (ASSET.cure || SPR.cure)) g += artIn("cure", c + 0.1, r + 0.08, 0.8, 0.8);
+      else if (cure && ASSET["icon.cure"]) g += `<g style="color:${ink}">${artIn("icon.cure", c + 0.17, r + 0.17, 0.66, 0.66)}</g>`;
       else if (cure) g += `<text x="${c + 0.5}" y="${r + 0.53}" text-anchor="middle" dominant-baseline="central" style="font-family:var(--serif)" font-weight="800" font-size=".56" fill="${ink}">${esc(gl("cure"))}</text>`;
     }
     g += `<circle cx="${CX}" cy="${CY}" r=".22" fill="none" stroke="${ink}" stroke-width=".07"/>`;
@@ -292,7 +296,7 @@
   }
   // a claimed patient: the claimer's oni tucked under the card
   const claimKey = (pt) => (pt.claim ? (pt.claim.p === 0 ? "patient.claimedByYou" : "patient.claimedByRival") : null);
-  const claimTuck = (pt) => (pt.claim ? `<span class="tuck${pt.claim.p === 0 ? " mine" : ""}" title="${attr(t(claimKey(pt)))}">${art("oni")}</span>` : "");
+  const claimTuck = (pt) => (pt.claim ? `<span class="tuck${pt.claim.p === 0 ? " mine" : ""}" title="${attr(t(claimKey(pt)))}">${oniArt(pt.claim.p)}</span>` : "");
   const ptLabel = (pt) => t("patient.label", { name: whoOf(pt), ailment: ailOf(pt), value: pt.val }) + (pt.claim ? ", " + t(claimKey(pt)) : "");
   function patCard(pt, k, o = {}) {
     const tuck = claimTuck(pt);
@@ -378,7 +382,7 @@
       svg = mapSVG(pt, { icons: true, trail: rivalTurn ? null : rs.rp.trail, pos: showPos ? rs.rp.pos : null, prev: rivalTurn ? null : rs.prev, label: t("board.mapAria", { name: whoOf(pt), cure: gl("cure") }) });
     }
     const port = U.layout !== "land";
-    const ck = claimKey(pt), cursedChip = !ck ? "" : port ? `<span class="chip cur${pt.claim.p === 0 ? " mine" : ""} icon" role="img" aria-label="${attr(t(ck))}" title="${attr(t(ck))}">${art("oni")}</span>` : `<span class="chip cur${pt.claim.p === 0 ? " mine" : ""}">${art("oni")}${t(ck)}</span>`;
+    const ck = claimKey(pt), cursedChip = !ck ? "" : port ? `<span class="chip cur${pt.claim.p === 0 ? " mine" : ""} icon" role="img" aria-label="${attr(t(ck))}" title="${attr(t(ck))}">${oniArt(pt.claim.p)}</span>` : `<span class="chip cur${pt.claim.p === 0 ? " mine" : ""}">${oniArt(pt.claim.p)}${t(ck)}</span>`;
     const sakChip = pt.bonus && port ? `<span class="sakic" role="img" aria-label="${attr(t("status.sakura"))}">${art("sakura")}</span>` : pt.bonus ? `<span class="chip sak">${art("sakura")}+${KF.limit(G().cur, "sakuraBonus")}</span>` : "";
     const elChip = pt.el ? `<span class="chip elc" title="${attr(KF.needEl(pt) ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }))}" style="--ec:${EL(pt.el).color}">${ptChip(pt, true)}${KF.needEl(pt) ? `<span>${t("patient.needs", { el: elName(pt.el) })}</span>` : ""}</span>` : "";
     const rvChip = rivalTurn ? `<span class="chip rvc">${gl("rival") || ASSET["icon.rival"] ? ic("rival") + " " : ""}${t("board.rivalTurn")}</span>` : "";
@@ -406,7 +410,7 @@
     const s = statusText(rs);
     const kw = rs && canAct() && !U.route.length && !U.pend ? KF.knownFor(0, U.sel) : -1;
     const known = kw >= 0 ? `<button class="cbtn known" data-a="known">${ic("cured")}<span><b>${t("act.known")}</b><small>${t("act.knownSub", { n: KF.knownPay(rs.pt), name: esc(whoOf({ who: me().ward[kw].who }, true)) })}</small></span></button>` : "";
-    const pt = curPt(), cl = myTurn() && !U.anim && pt && KF.canClaim(0, U.sel) ? `<button class="cbtn claim" data-a="claim">${art("oni")}<span><b>${t("act.claim")}</b><small>${t("act.claimSub", { n: KF.claimBonus(0) })}</small></span></button>` : "";
+    const pt = curPt(), cl = myTurn() && !U.anim && pt && KF.canClaim(0, U.sel) ? `<button class="cbtn claim" data-a="claim">${oniArt(0)}<span><b>${t("act.claim")}</b><small>${t("act.claimSub", { n: KF.claimBonus(0) })}</small></span></button>` : "";
     return `<div class="strip"><div class="srow">${known}${cl}${chips.length ? `<div class="seqs">${chips.join("")}</div>` : ""}<span class="stxt${s.bad ? " bad" : ""}" aria-live="polite">${s.t}${s.s ? `<small>${s.s}</small>` : ""}</span></div>${controls(rs)}</div>`;
   }
   function controls(rs) {
@@ -577,7 +581,7 @@
     const owned = RU().toolIds.filter((k) => me().tools[k]).map(toolName).join(" · ");
     return `<div class="scr land lacquer">
       <header class="top">${menuBtn()}${gl("brand") || ASSET["icon.brand"] ? `<span class="brandk">${ic("brand")}</span>` : ""}${fameBars()}
-        <button class="rivbtn" data-a="rival" aria-label="${attr(t("rival.showTable"))}"><b>${rivalLabel()}</b><span>${t("rival.handN", { n: b.hand.length })}</span><span>${t("rival.gardenN", { n: b.garden.length })}</span>${RU().toolIds.filter((k) => b.tools[k]).map((k) => art(toolArt(k))).join("")}<span class="oniN">${art("oni")}${b.oni}</span></button>
+        <button class="rivbtn" data-a="rival" aria-label="${attr(t("rival.showTable"))}"><b>${rivalLabel()}</b><span>${t("rival.handN", { n: b.hand.length })}</span><span>${t("rival.gardenN", { n: b.garden.length })}</span>${RU().toolIds.filter((k) => b.tools[k]).map((k) => art(toolArt(k))).join("")}<span class="oniN">${oniArt(1)}${b.oni}</span></button>
         ${goal()}</header>
       <div class="mid">
         <section class="vcol"><div class="lbl"><span>${withGl(t("label.village"), "village")}</span><span>${t("label.deck", { n: g.pats.length })}</span></div>
@@ -617,7 +621,7 @@
       <header class="top">${menuBtn()}<div class="brand"><div class="b1">${gl("brand") || ASSET["icon.brand"] ? `<span>${ic("brand")}</span>` : ""}<span>${t("app.name")}</span></div><small>${turnLabel()}</small></div>${fameBars()}${goal()}</header>
       <button class="rivstrip${g.cur === 1 ? " live" : ""}" data-a="rival" aria-label="${attr(t("rival.showTable"))}">${portrait(1)}<b>${rivalLabel()}</b>${charOf(1) ? `<span class="rch">${esc(abilityName(charOf(1).ability))}</span>` : ""}${rivHand}<span class="g">${t("rival.garden")} ${b.garden.map((c) => `<span class="ga" style="background:${EL(c.el).color}">${art(EL(c.el).art, "", { slice: true })}</span>`).join("") || "—"}</span>
         ${RU().toolIds.filter((id) => b.tools[id]).map((id) => `<span class="g">${art(toolArt(id))}${esc(toolName(id))}</span>`).join("")}
-        <span class="g">${Array.from({ length: b.oni }, () => art("oni")).join("") || t("rival.noOni")}</span>
+        <span class="g">${Array.from({ length: b.oni }, () => oniArt(1)).join("") || t("rival.noOni")}</span>
         <span class="last">${g.cur === 1 && U.rv ? esc(stripTags(U.rv.say)) : esc(g.lastBot || "")}</span></button>
       <div class="mid">
         <section class="vcol" aria-label="${attr(t("label.village"))}"><div class="lbl"><span>${withGl(t("label.village"), "village")}</span><span>${t("label.patientDeck", { n: g.pats.length })}</span></div>
@@ -631,7 +635,7 @@
         <div class="hand"><div class="lbl"><span>${withGl(t("label.yourHand"), "hand")} ${me().hand.length}/${KF.limit(0, "handLimit")}</span><span class="n">${t("hand.tapToPreview")}</span></div><div class="crow${me().hand.length >= 6 ? " spread" : ""}">${handCards(rowU(me().hand.length, handW, 1, 1), "h")}</div></div>
         <div class="gard"><div class="lbl"><span>${U.gview === "ward" ? `${t("label.ward")} · ${wardReady()}` : `${withGl(t("label.garden"), "garden")} ${me().garden.length}/${KF.limit(0, "gardenMax")}`}</span>${RU().ward.enabled ? `<button class="linkbtn" data-a="gview">${U.gview === "ward" ? t("label.toGarden") : t("label.toWard")}</button>` : `<span class="n">${t("garden.neverUsedUp")}</span>`}</div><div class="crow${U.gview === "ward" ? " wardrow" : ""}">${U.gview === "ward" ? wardCards(Math.min(1, rowU(Math.max(4, me().ward.length), 300, 1, 1)), "w") : gardenCards(1, "g", plot)}</div></div>
         <div class="stash">
-          <div class="s"><span>${t("stash.oniLeft", { n: me().oni })}</span><div class="onis">${Array.from({ length: KF.limit(0, "oniPerPlayer") }, (_, i) => `<span class="oc${i >= me().oni ? " gone" : ""}">${art("oni")}</span>`).join("")}</div></div>
+          <div class="s"><span>${t("stash.oniLeft", { n: me().oni })}</span><div class="onis">${Array.from({ length: KF.limit(0, "oniPerPlayer") }, (_, i) => `<span class="oc${i >= me().oni ? " gone" : ""}">${oniArt(0)}</span>`).join("")}</div></div>
           <div class="s"><span>${t("label.tools")}</span>${RU().toolIds.filter((id) => me().tools[id]).map((id) => `<span class="tpill">${art(toolArt(id))}${esc(toolName(id))}</span>`).join("") || `<span class="empty" style="font-size:11px">${t("stash.noneYet")}</span>`}</div>
         </div>
         <div class="tacts">${brew}</div>
@@ -747,8 +751,9 @@
   }
 
   function stampBoard(key, rival) {
-    const b = $(".board"), html = ic(key); if (!b || !html) return;
-    const d = document.createElement("div"); d.className = "bstamp" + (rival ? " r" : ""); d.innerHTML = html;
+    const pic = key === "oni" ? oniArt(rival ? 1 : 0) : key === "cured" && (ASSET.seal || SPR.seal) ? art("seal") : "";
+    const b = $(".board"), html = pic || ic(key); if (!b || !html) return;
+    const d = document.createElement("div"); d.className = "bstamp" + (rival ? " r" : "") + (pic ? " pic" : ""); d.innerHTML = html;
     b.appendChild(d); setTimeout(() => d.remove(), 1600);
     if (key === "cured") brewFX(b, rival);
   }
@@ -842,9 +847,9 @@
       const g = G(), res = g.pending, pt = res.pt, p = me(), sak = res.sak || 0, gain = res.gain != null ? res.gain : pt.val + sak;
       const btns = `<div class="btns"><button class="btn primary" data-a="rdone">${t("reward.continue")}</button></div>`;
       const kept = res.kept || 0;
-      const subs = [res.known ? t("reward.known", { name: esc(whoOf({ who: res.known }, true)) }) : "", sak ? `${art("sakura")}${t("reward.sakura", { n: sak })}` : "", kept ? `${art("oni")}${t("reward.kept", { n: kept })}` : ""].filter(Boolean);
+      const subs = [res.known ? t("reward.known", { name: esc(whoOf({ who: res.known }, true)) }) : "", sak ? `${art("sakura")}${t("reward.sakura", { n: sak })}` : "", kept ? `${oniArt(0)}${t("reward.kept", { n: kept })}` : ""].filter(Boolean);
       const joins = RU().ward.enabled && pt.el ? `<div class="gainrow joins">${ptChip(pt, true)}<div><b>${t("reward.joins", { name: esc(whoOf(pt, true)) })}</b><small>${t("reward.joinsSub", { move: moveName(pt.mv), text: moveText(pt.mv, pt.el) })}</small></div></div>` : "";
-      return `<div class="sh"><div class="stamp por">${ptPortrait(pt)}<span class="cst">${ic("cured")}</span></div><div><h2>${t("reward.title", { name: esc(whoOf(pt)) })}</h2><div class="sub">${subs.length ? subs.join(" · ") : esc(ailOf(pt))}</div></div></div>
+      return `<div class="sh"><div class="stamp por">${ptPortrait(pt)}<span class="cst${ASSET.seal || SPR.seal ? " pic" : ""}">${ASSET.seal || SPR.seal ? art("seal") : ic("cured")}</span></div><div><h2>${t("reward.title", { name: esc(whoOf(pt)) })}</h2><div class="sub">${subs.length ? subs.join(" · ") : esc(ailOf(pt))}</div></div></div>
         <div class="gainrow">${monIc("em")}<div><b>${t("reward.fame", { n: gain })}</b><small>${t("reward.track", { from: p.fame - gain, to: p.fame })}</small></div></div>${joins}
         ${btns}`;
     },
@@ -955,7 +960,7 @@
       const hand = mine || openHands() ? small(p.hand, card()) : `<span class="muted tnone">${t("table.hidden", { n: p.hand.length })}</span>`;
       const ward = RU().ward.enabled ? `<div class="tsec"><span class="cap">${t("table.ward")} <small>${p.ward.filter((w) => KF.wardLeft(w) && !w.spent).length}</small></span>${small(p.ward || [], (w) => ingCard(KF.wardCard(w), { u: 0.6, noAnim: true, static: true, cls: !KF.wardLeft(w) || w.spent ? "spent" : "", tag: !KF.wardLeft(w) || w.spent ? t("card.tagSpent") : null }))}</div>` : "";
       const tools = RU().toolIds.filter((id) => p.tools[id]).map((id) => `<span class="tpill${mine ? "" : " rv"}">${art(toolArt(id))}${esc(toolName(id))}</span>`).join("") || `<span class="muted tnone">${t("table.none")}</span>`;
-      const oni = Array.from({ length: KF.limit(pi, "oniPerPlayer") }, (_, i) => `<span class="oc${i >= p.oni ? " gone" : ""}">${art("oni")}</span>`).join("");
+      const oni = Array.from({ length: KF.limit(pi, "oniPerPlayer") }, (_, i) => `<span class="oc${i >= p.oni ? " gone" : ""}">${oniArt(pi)}</span>`).join("");
       return `<div class="sh"><div><h2>${t(mine ? "table.you" : "menu.rivalTable")}</h2></div></div>${tabs}
         ${head}
         ${ability || guild ? `<div class="tinfo">${ability}${guild}</div>` : ""}
@@ -1108,7 +1113,7 @@
         KF.botDo(m); rvLine("blind", t("rival.lineBlind", { n: m.n })); g.lastBot = stripTags(t("rival.lineBlind", { n: m.n }));
       } else if (m.type === "claim") {
         const pt = g.village[m.k]; U.sel = m.k;
-        U.rv = { say: t("rival.claims", { name: esc(whoOf(pt)), oni: ic("oni") }), sub: t("rival.claimsSub"), pop: pop(t("rival.popClaims", { name: esc(whoOf(pt, true)) }), `<div class="rvcards">${ptPortrait(pt, "rvpt")}<span class="rvoni">${art("oni")}</span></div>`) };
+        U.rv = { say: t("rival.claims", { name: esc(whoOf(pt)), oni: ic("oni") }), sub: t("rival.claimsSub"), pop: pop(t("rival.popClaims", { name: esc(whoOf(pt, true)) }), `<div class="rvcards">${ptPortrait(pt, "rvpt")}<span class="rvoni">${oniArt(1)}</span></div>`) };
         render(); await sleep(500); SFX.curse(); stampBoard("oni", true);
         KF.botDo(m); render(); await sleep(1300);
         rvLine("curse", t("rival.lineClaim", { name: esc(whoOf(pt)) })); g.lastBot = stripTags(t("rival.lineClaim", { name: whoOf(pt) }));
@@ -1148,7 +1153,7 @@
       ${row(t("table.garden"), mini(b.garden) || `<span class="none">${t("table.none")}</span>`)}
       ${RU().ward.enabled ? row(t("table.ward"), ward.length ? mini(ward.map(KF.wardCard)) : `<span class="none">${t("table.none")}</span>`) : ""}
       ${row(t("table.tools"), tools || `<span class="none">${t("table.none")}</span>`)}
-      ${row(t("table.oni"), `<span class="ro">${Array.from({ length: b.oni }, () => art("oni")).join("") || `<span class="none">${t("table.none")}</span>`}</span>`)}
+      ${row(t("table.oni"), `<span class="ro">${Array.from({ length: b.oni }, () => oniArt(1)).join("") || `<span class="none">${t("table.none")}</span>`}</span>`)}
       ${claims ? row(t("table.claims"), claims) : ""}</div>`;
   }
   function showOver() {
