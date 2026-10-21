@@ -393,7 +393,7 @@
   function rivalStrip() {
     const r = U.rv || { say: t("rival.thinking"), sub: "" };
     const chips = (r.chips || []).join("");
-    return `<div class="strip rvs"><div class="srow">${chips ? `<div class="seqs">${chips}</div>` : ""}<span class="stxt" aria-live="polite">${r.say}${r.think ? '<span class="think"><i></i><i></i><i></i></span>' : ""}${r.sub ? `<small>${r.sub}</small>` : ""}</span>${U.busy ? `<button class="cbtn ghost" data-a="fast" aria-label="${attr(t("rival.speedUp"))}">${U.speed < 1 ? t("rival.fast") : t("rival.skip")}</button>` : ""}</div></div>`;
+    return `<div class="strip rvs"><div class="srow">${portrait(1, "rvsf")}${chips ? `<div class="seqs">${chips}</div>` : ""}<span class="stxt" aria-live="polite">${r.say}${r.think ? '<span class="think"><i></i><i></i><i></i></span>' : ""}${r.sub ? `<small>${r.sub}</small>` : ""}</span>${U.busy ? `<button class="cbtn ghost" data-a="fast" aria-label="${attr(t("rival.speedUp"))}">${U.speed < 1 ? t("rival.fast") : t("rival.skip")}</button>` : ""}</div></div>`;
   }
   function strip(rs) {
     const chips = U.route.map((r, j) => chipFor(cardAt(r.g, r.i), r.opt, j + 1, { f: r.f, btn: canAct() ? "chip" : null, aria: t("brew.backTo", { n: j + 1 }) }));
@@ -1019,7 +1019,10 @@
 
   // ---------- the rival's turn, played out on the board ----------
   function rvLine(k, text) { U.botLines.push({ k, text }); }
-  function pop(title, body) { return `<div class="rvh">${gl("rival") || ASSET["icon.rival"] ? ic("rival") + " " : ""}${title}</div>${body || ""}`; }
+  // the rival's popup over the board: their face and name, what they do, then the cards or tool
+  function pop(title, body) { return `<div class="rvh">${portrait(1, "rvpf") || (gl("rival") || ASSET["icon.rival"] ? ic("rival") : "")}<span><b>${rivalLabel()}</b> ${title}</span></div>${body || ""}`; }
+  // cards in the popup shrink with how many there are, so they always fit
+  const popU = (n) => Math.min(1.6, 3.4 / Math.max(1, n));
   const toolChip = (id) => `<div class="rvrow"><span class="ti paper">${art(toolArt(id))}</span><small>${toolText(id)}</small></div>`;
   async function runBot() {
     const g = G(); if (!g || g.over || g.cur !== 1) return;
@@ -1064,7 +1067,7 @@
         if (U.sel >= g.village.length) U.sel = 0;
       } else if (m.type === "known") {
         const pt = g.village[m.k], wi = KF.knownFor(1, m.k), via = b.ward[wi], pay = KF.knownPay(pt); U.sel = m.k;
-        U.rv = { say: t("rival.knows", { ailment: esc(ailOf(pt).toLowerCase()) }), sub: t("rival.knowsSub", { name: esc(whoOf({ who: via.who }, true)) }) };
+        U.rv = { say: t("rival.knows", { ailment: esc(ailOf(pt).toLowerCase()) }), sub: t("rival.knowsSub", { name: esc(whoOf({ who: via.who }, true)) }), pop: pop(t("rival.popKnows", { name: esc(whoOf(pt, true)) }), `<div class="rvcards">${ptPortrait(pt, "rvpt")}</div>`) };
         render(); SFX.select(); await sleep(1100);
         U.rv.say = t("rival.cures", { name: esc(whoOf(pt)) }); U.rv.sub = t("rival.gains", { n: pay });
         render(); stampBoard("cured", true); SFX.cure(); await sleep(1300);
@@ -1074,7 +1077,7 @@
       } else if (m.type === "gather") {
         const cs = m.idx.map((i) => g.market[i]);
         U.taking = m.ids;
-        U.rv = { say: t("rival.takes", { n: cs.length }), sub: cs.map((c) => esc(cardName(c))).join(", "), pop: pop(t("rival.popTakes", { n: cs.length }), `<div class="rvcards">${cs.map((c) => ingCard(c, { u: cs.length > 2 ? 1.2 : 1.5, noAnim: true, static: true })).join("")}</div>`) };
+        U.rv = { say: t("rival.takes", { n: cs.length }), sub: cs.map((c) => esc(cardName(c))).join(", "), pop: pop(t("rival.popTakes", { n: cs.length }), `<div class="rvcards">${cs.map((c) => ingCard(c, { u: popU(cs.length), noAnim: true, static: true })).join("")}</div>`) };
         render(); SFX.gather(); await sleep(1700);
         KF.botDo(m); U.taking = null;
         const names = cs.map((c) => cardName(c)).join(", ");
@@ -1085,13 +1088,13 @@
         KF.botDo(m); rvLine("blind", t("rival.lineBlind", { n: m.n })); g.lastBot = stripTags(t("rival.lineBlind", { n: m.n }));
       } else if (m.type === "claim") {
         const pt = g.village[m.k]; U.sel = m.k;
-        U.rv = { say: t("rival.claims", { name: esc(whoOf(pt)), oni: ic("oni") }), sub: t("rival.claimsSub") };
+        U.rv = { say: t("rival.claims", { name: esc(whoOf(pt)), oni: ic("oni") }), sub: t("rival.claimsSub"), pop: pop(t("rival.popClaims", { name: esc(whoOf(pt, true)) }), `<div class="rvcards">${ptPortrait(pt, "rvpt")}<span class="rvoni">${art("oni")}</span></div>`) };
         render(); await sleep(500); SFX.curse(); stampBoard("oni", true);
         KF.botDo(m); render(); await sleep(1300);
         rvLine("curse", t("rival.lineClaim", { name: esc(whoOf(pt)) })); g.lastBot = stripTags(t("rival.lineClaim", { name: whoOf(pt) }));
       } else if (m.type === "swap") {
         const gave = b.hand[m.hi], got = g.market[m.mi];
-        U.rv = { say: t("rival.trades"), sub: t("rival.tradesSub", { gave: esc(cardName(gave)), got: esc(cardName(got)) }), pop: pop(t("rival.popTrades"), `<div class="rvcards">${ingCard(gave, { u: 1.2, noAnim: true, static: true })}<b class="sw">⇄</b>${ingCard(got, { u: 1.2, noAnim: true, static: true })}</div>`) };
+        U.rv = { say: t("rival.trades"), sub: t("rival.tradesSub", { gave: esc(cardName(gave)), got: esc(cardName(got)) }), pop: pop(t("rival.popTrades"), `<div class="rvcards">${ingCard(gave, { u: popU(2.4), noAnim: true, static: true })}<b class="sw">⇄</b>${ingCard(got, { u: popU(2.4), noAnim: true, static: true })}</div>`) };
         render(); SFX.gather(); await sleep(1400);
         KF.botDo(m); rvLine("gather", t("rival.lineTrade", { gave: esc(cardName(gave)), got: esc(cardName(got)) }));
       } else if (m.type === "plant") {
@@ -1108,8 +1111,25 @@
     if (r === "over") return showOver();
     render();
     SFX.yourTurn();
+    const lines0 = U.botLines.length;
     const lines = U.botLines.length ? U.botLines.map((l) => `<li><i>${ic("log." + l.k) || "·"}</i>${l.text}</li>`).join("") : `<li><i>…</i>${t("rival.passed")}</li>`;
-    announce(`<div class="rvhead">${portrait(1, "rvface")}<div><div class="who">${t("rival.whatItDid")}</div>${guildOf(1) ? `<small class="rvg">${crest(1, "rvcr")}${esc(guildName(guildOf(1)))}</small>` : ""}</div></div><ul class="rvlist">${lines}</ul><h3 class="yt">${t("status.yourTurn")}</h3>`, 2600 + U.botLines.length * 600, null);
+    announce(`<div class="rvhead">${portrait(1, "rvface")}<div><div class="who">${t("rival.whatItDid")}</div>${guildOf(1) ? `<small class="rvg">${crest(1, "rvcr")}${esc(guildName(guildOf(1)))}</small>` : ""}</div></div><ul class="rvlist">${lines}</ul>${rivalRecap()}<h3 class="yt">${t("status.yourTurn")}</h3>`, 5200 + lines0 * 700, null);
+  }
+  // after their turn: what they now hold, so you don't have to open their table
+  function rivalRecap() {
+    const b = bot(), g = G(), mini = (cs) => cs.map((c) => ingCard(c, { u: 0.42, noAnim: true, static: true })).join("");
+    const row = (label, body) => `<div class="rr"><span class="cap">${label}</span><div class="rc">${body}</div></div>`;
+    const hand = openHands() ? mini(b.hand) || `<span class="none">${t("table.none")}</span>` : `<span class="none">${t("table.hidden", { n: b.hand.length })}</span>`;
+    const ward = (b.ward || []).filter((w) => KF.wardLeft(w) && !w.spent);
+    const tools = RU().toolIds.filter((id) => b.tools[id]).map((id) => `<span class="rt">${art(toolArt(id))}${esc(toolName(id))}</span>`).join("");
+    const claims = g.village.filter((pt) => pt.claim && pt.claim.p === 1).map((pt) => `<span class="rt">${ptPortrait(pt, "rtp")}${esc(whoOf(pt, true))}</span>`).join("");
+    return `<div class="recap">
+      ${row(t("table.hand"), hand)}
+      ${row(t("table.garden"), mini(b.garden) || `<span class="none">${t("table.none")}</span>`)}
+      ${RU().ward.enabled ? row(t("table.ward"), ward.length ? mini(ward.map(KF.wardCard)) : `<span class="none">${t("table.none")}</span>`) : ""}
+      ${row(t("table.tools"), tools || `<span class="none">${t("table.none")}</span>`)}
+      ${row(t("table.oni"), `<span class="ro">${Array.from({ length: b.oni }, () => art("oni")).join("") || `<span class="none">${t("table.none")}</span>`}</span>`)}
+      ${claims ? row(t("table.claims"), claims) : ""}</div>`;
   }
   function showOver() {
     U.busy = false; U.rv = null; U.bo = null; render();
