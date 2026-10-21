@@ -354,9 +354,11 @@
   }
 
   // ---------- top bars ----------
+  // a player's name on the dark header in their guild's element colour, lifted a little so dark colours stay readable
+  function nameColor(pi) { const g = guildOf(pi); if (!g || !g.element) return null; const e = EL(g.element); return e.on ? e.color : mix(e.color, "#FFFFFF", 0.3); }
   function fameBars() {
     const g = G(), E = RU().endFame;
-    const row = (p, cls, label, pi) => `<div class="row${g.cur === pi && !g.over ? " cur" : ""}"><span class="who ${cls}">${crest(pi)}${esc(label)}</span><div class="bar ${cls}" style="grid-template-columns:repeat(${E},minmax(0,1fr))">${Array.from({ length: E }, (_, i) => `<i class="${i < p.fame ? "on" : ""}${(i + 1) % 5 === 0 ? " five" : ""}"></i>`).join("")}</div><span class="num" data-fame="${pi}">${p.fame}</span></div>`;
+    const row = (p, cls, label, pi) => `<div class="row${g.cur === pi && !g.over ? " cur" : ""}"><span class="who ${cls}"${nameColor(pi) ? ` style="color:${nameColor(pi)}"` : ""}>${crest(pi)}${esc(label)}</span><div class="bar ${cls}" style="grid-template-columns:repeat(${E},minmax(0,1fr))">${Array.from({ length: E }, (_, i) => `<i class="${i < p.fame ? "on" : ""}${(i + 1) % 5 === 0 ? " five" : ""}"></i>`).join("")}</div><span class="num" data-fame="${pi}">${p.fame}</span></div>`;
     return `<button class="fame" data-a="rival" aria-label="${attr(t("top.fameAria", { you: me().fame, rival: bot().fame }))}">${row(me(), "y", t("who.you"), 0)}${row(bot(), "r", rivalLabel(), 1)}</button>`;
   }
   const goal = () => `<div class="goal mong" role="img" aria-label="${attr(t("top.goal", { n: RU().endFame }))}">${monIc()}<span>${RU().endFame}</span></div>`;
