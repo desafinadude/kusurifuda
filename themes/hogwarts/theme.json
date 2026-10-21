@@ -1,0 +1,586 @@
+{
+  "_about": "A fan theme for playing at home: Hogwarts houses as the four elements, potion ingredients, Hospital Wing patients and house imps. It extends Kusurifuda and swaps the art, signs and words.",
+  "id": "hogwarts",
+  "name": "Hogwarts",
+  "extends": "../kusurifuda/theme.json",
+  "sprites": "../kusurifuda/sprites.svg",
+  "sound": "academy",
+  "fonts": {
+    "display": {
+      "family": "Cinzel",
+      "fallback": "\"Trajan Pro\",Georgia,serif",
+      "faces": {
+        "400 900": "../moonwort/fonts/cinzel.woff2"
+      }
+    },
+    "body": {
+      "family": "EB Garamond",
+      "fallback": "Garamond,Georgia,serif",
+      "faces": {
+        "400 800": "../moonwort/fonts/garamond.woff2"
+      }
+    }
+  },
+  "assets": {
+    "ing.F.1": "cards/ing-F-1.webp",
+    "ing.F.2": "cards/ing-F-2.webp",
+    "ing.F.3": "cards/ing-F-3.webp",
+    "ing.W.1": "cards/ing-W-1.webp",
+    "ing.W.2": "cards/ing-W-2.webp",
+    "ing.W.3": "cards/ing-W-3.webp",
+    "ing.A.1": "cards/ing-A-1.webp",
+    "ing.A.2": "cards/ing-A-2.webp",
+    "ing.A.3": "cards/ing-A-3.webp",
+    "ing.E.1": "cards/ing-E-1.webp",
+    "ing.E.2": "cards/ing-E-2.webp",
+    "ing.E.3": "cards/ing-E-3.webp",
+    "ing.AF.1": "cards/ing-AF-1.webp",
+    "ing.AF.2": "cards/ing-AF-2.webp",
+    "ing.AW.1": "cards/ing-AW-1.webp",
+    "ing.AW.2": "cards/ing-AW-2.webp",
+    "ing.FE.1": "cards/ing-FE-1.webp",
+    "ing.FE.2": "cards/ing-FE-2.webp",
+    "ing.EW.1": "cards/ing-EW-1.webp",
+    "ing.EW.2": "cards/ing-EW-2.webp",
+    "ing.V": "cards/ing-V.webp",
+    "char.herbalist": "people/char-herbalist.webp",
+    "char.merchant": "people/char-merchant.webp",
+    "char.miko": "people/char-miko.webp",
+    "char.kunoichi": "people/char-kunoichi.webp",
+    "guild.gryffindor": "people/guild-gryffindor.webp",
+    "guild.ravenclaw": "people/guild-ravenclaw.webp",
+    "guild.hufflepuff": "people/guild-hufflepuff.webp",
+    "guild.slytherin": "people/guild-slytherin.webp",
+    "patient.0": "people/patient-0.webp",
+    "patient.1": "people/patient-1.webp",
+    "patient.2": "people/patient-2.webp",
+    "patient.3": "people/patient-3.webp",
+    "patient.4": "people/patient-4.webp",
+    "patient.5": "people/patient-5.webp",
+    "patient.6": "people/patient-6.webp",
+    "patient.7": "people/patient-7.webp",
+    "patient.8": "people/patient-8.webp",
+    "patient.9": "people/patient-9.webp",
+    "patient.10": "people/patient-10.webp",
+    "patient.11": "people/patient-11.webp",
+    "patient.12": "people/patient-12.webp",
+    "patient.13": "people/patient-13.webp",
+    "patient.14": "people/patient-14.webp",
+    "patient.15": "people/patient-15.webp",
+    "patient.16": "people/patient-16.webp",
+    "patient.17": "people/patient-17.webp",
+    "patient.18": "people/patient-18.webp",
+    "patient.19": "people/patient-19.webp",
+    "patient.20": "people/patient-20.webp",
+    "patient.21": "people/patient-21.webp",
+    "patient.22": "people/patient-22.webp",
+    "patient.23": "people/patient-23.webp",
+    "patient.24": "people/patient-24.webp",
+    "patient.25": "people/patient-25.webp",
+    "patient.26": "people/patient-26.webp",
+    "patient.27": "people/patient-27.webp",
+    "patient.28": "people/patient-28.webp",
+    "patient.29": "people/patient-29.webp",
+    "patient.30": "people/patient-30.webp",
+    "patient.31": "people/patient-31.webp",
+    "oni.F": "assets/oni-F.webp",
+    "oni.A": "assets/oni-A.webp",
+    "oni.E": "assets/oni-E.webp",
+    "oni.W": "assets/oni-W.webp",
+    "tool.ladle": "assets/tool-ladle.webp",
+    "icon.tl.ladle": "assets/tool-ladle.webp",
+    "tool.mortar": "assets/tool-mortar.webp",
+    "icon.tl.mortar": "assets/tool-mortar.webp",
+    "tool.charm": "assets/tool-charm.webp",
+    "icon.tl.charm": "assets/tool-charm.webp",
+    "tool.basket": "assets/tool-basket.webp",
+    "icon.tl.basket": "assets/tool-basket.webp",
+    "oni": "assets/oni.webp",
+    "sakura": "assets/sakura.webp",
+    "cure": "assets/cure.webp",
+    "seal": "assets/cured.webp",
+    "emblem": "assets/cured.webp",
+    "icon.oni": "assets/oni.webp",
+    "icon.sakura": "assets/sakura.webp",
+    "icon.cure": "assets/cure.webp",
+    "icon.cured": "assets/cured.webp",
+    "icon.brand": "",
+    "icon.rival": "",
+    "icon.endTurn": "",
+    "icon.market": "",
+    "icon.village": "",
+    "icon.garden": "",
+    "icon.hand": "",
+    "icon.fame": "",
+    "icon.tools": "",
+    "icon.rules": "",
+    "icon.win": "",
+    "icon.lose": "",
+    "icon.tie": "",
+    "icon.log.buy": "",
+    "icon.log.cure": "",
+    "icon.log.gather": "",
+    "icon.log.blind": "",
+    "icon.log.curse": "",
+    "icon.log.plant": "",
+    "icon.el.W": "",
+    "icon.el.F": "",
+    "icon.el.E": "",
+    "icon.el.A": "",
+    "icon.el.V": ""
+  },
+  "elements": {
+    "W": {
+      "glyph": "←",
+      "color": "#2E6B4A",
+      "ink": "#2E6B4A",
+      "art": "art.W"
+    },
+    "F": {
+      "glyph": "→",
+      "color": "#9E2A2B",
+      "ink": "#9E2A2B",
+      "art": "art.F"
+    },
+    "E": {
+      "glyph": "↓",
+      "color": "#D9A92A",
+      "ink": "#8A6A12",
+      "art": "art.E",
+      "on": "#1C1A17"
+    },
+    "A": {
+      "glyph": "↑",
+      "color": "#2E4E8C",
+      "ink": "#2E4E8C",
+      "art": "art.A"
+    },
+    "V": {
+      "glyph": "✶",
+      "color": "#6B4C9A",
+      "ink": "#6B4C9A",
+      "art": "art.V"
+    }
+  },
+  "characters": [
+    {
+      "id": "herbalist",
+      "ability": "green",
+      "art": "char.herbalist"
+    },
+    {
+      "id": "merchant",
+      "ability": "trade",
+      "art": "char.merchant"
+    },
+    {
+      "id": "miko",
+      "ability": "blessed",
+      "art": "char.miko"
+    },
+    {
+      "id": "kunoichi",
+      "ability": "trickster",
+      "art": "char.kunoichi"
+    }
+  ],
+  "guilds": [
+    {
+      "id": "gryffindor",
+      "art": "guild.gryffindor",
+      "color": "#9E2A2B",
+      "element": "F"
+    },
+    {
+      "id": "ravenclaw",
+      "art": "guild.ravenclaw",
+      "color": "#2E4E8C",
+      "element": "A"
+    },
+    {
+      "id": "hufflepuff",
+      "art": "guild.hufflepuff",
+      "color": "#8A6A12",
+      "element": "E"
+    },
+    {
+      "id": "slytherin",
+      "art": "guild.slytherin",
+      "color": "#2E6B4A",
+      "element": "W"
+    }
+  ],
+  "glyphs": {
+    "brand": "",
+    "cure": "",
+    "oni": "",
+    "sakura": "",
+    "rival": "",
+    "cured": "",
+    "endTurn": "",
+    "market": "",
+    "village": "",
+    "garden": "",
+    "hand": "",
+    "fame": "",
+    "tools": "",
+    "rules": "",
+    "win": "",
+    "lose": "",
+    "tie": "",
+    "log.buy": "",
+    "log.cure": "",
+    "log.gather": "",
+    "log.blind": "",
+    "log.curse": "",
+    "log.plant": ""
+  },
+  "map": {
+    "sakura": "#F3E6B5",
+    "cure": "#E4D6F2"
+  },
+  "text": {
+    "en": {
+      "terms": {
+        "mon": "pts",
+        "Mon": "Points"
+      },
+      "app": {
+        "name": "Hogwarts",
+        "title": "Hogwarts"
+      },
+      "title": {
+        "tagline": "Potions, patients and a little mischief"
+      },
+      "abilities": {
+        "trickster": {
+          "text": "Two extra imps, and one more card to start."
+        }
+      },
+      "label": {
+        "village": "Hospital Wing",
+        "villageEmpty": "The Hospital Wing is empty"
+      },
+      "status": {
+        "hitsOni": "That path hits an imp {oni}",
+        "sakura": "Snitch",
+        "needElWhy": "Unicorn Hair counts as any house"
+      },
+      "stash": {
+        "oniLeft": "Imps · {n} left"
+      },
+      "reward": {
+        "sakura": "Snitch caught · +{n} {{mon}}"
+      },
+      "setup": {
+        "guild": "House",
+        "guildSub": "Your house crest and colour"
+      },
+      "rules": {
+        "goal": {
+          "p": "Rival healers race to {end} {{mon}}. Every patient is a small map: cure them by playing potion ingredients that move your marker from the start ◯ to the cure {cure}."
+        },
+        "fame": {
+          "p": "A cured patient is worth its number in {{mon}}. Catching a Snitch {sakura} adds {sak}."
+        },
+        "curse": {
+          "p": "Once per turn, after your action, you may send one of your {oni} imps to a patient to claim them. Your rival can't cure a patient you've claimed. Cure them on your next turn and you get {sak} extra {{mon}}, like a Snitch. If your next turn ends and they're still uncured, the imp goes home and your rival gets the {sak} {{mon}} instead."
+        },
+        "needEl": "A cure needs at least one ingredient of the patient's house (the big sign in a card's corner). Unicorn Hair {kitsune} counts as any house. A two-house card counts as either.",
+        "guild": {
+          "h": "Houses",
+          "p": "Your house has its own ingredients. Once per brew you may play one garden card of your house twice, so plant those."
+        },
+        "brew": {
+          "p": "Pick a patient (tap it, or swipe the map), then tap a card to preview its move. Play it, or cancel and try another. Tap a numbered chip to go back to that card. Each house moves in a straight line its own way: {dirs}, exactly as many squares as its card shows. A card with two houses moves diagonally between their ways. Unicorn Hair {kitsune} moves one square any way, diagonals too. Straight moves can't pass through an imp {oniG}; diagonals slip past. Nothing may land on an imp or leave the map. Finish <b>exactly</b> on {cure}, using at least {min} hand card. Hand cards are spent; garden cards stay."
+        },
+        "patients": {
+          "p": "Every patient belongs to a house (the badge on their portrait). Once cured they join your <b>ward</b>, and each ward patient helps you <b>once</b>: in any brew it can <b>leap</b> 2 squares one way and 1 to the side, over anything between, or be used as a known cure."
+        },
+        "end": {
+          "p": "Garden holds {garden}; planting into a full garden discards one. Hand limit {hand} at the end of your turn. When someone reaches {end}, the round finishes so both play equally; it also ends once the Hospital Wing is empty. Most {{mon}} wins; ties go to most cures."
+        }
+      },
+      "log": {
+        "sakura": "+{n} for the Snitch."
+      },
+      "rival": {
+        "noOni": "No imps",
+        "oni": "Imps",
+        "sakura": "+{n} Snitch",
+        "echo": "played twice (house)"
+      },
+      "toast": {
+        "goal": "Cure patients to reach {n} {{mon}}."
+      },
+      "guildAbility": {
+        "name": "House craft"
+      },
+      "opts": {
+        "curseSub": "It sends imps to patients it wants.",
+        "oni": "Imps on the maps"
+      },
+      "table": {
+        "guild": "House",
+        "oni": "Imps"
+      },
+      "errors": {
+        "needElement": "This patient needs an ingredient of their house"
+      },
+      "content": {
+        "elements": {
+          "W": "Slytherin",
+          "F": "Gryffindor",
+          "E": "Hufflepuff",
+          "A": "Ravenclaw",
+          "V": "Unicorn"
+        },
+        "ingredients": {
+          "W": [
+            "Gillyweed",
+            "Lionfish Spine",
+            "Mermaid Scale"
+          ],
+          "F": [
+            "Ashwinder Egg",
+            "Salamander Scale",
+            "Phoenix Feather"
+          ],
+          "E": [
+            "Bubotuber",
+            "Mandrake Root",
+            "Bezoar"
+          ],
+          "A": [
+            "Fairy Wing",
+            "Jobberknoll Feather",
+            "Hippogriff Feather"
+          ],
+          "AF": [
+            "Billywig Sting",
+            "Dragon Scale"
+          ],
+          "AW": [
+            "Moondew",
+            "Pearl Dust"
+          ],
+          "FE": [
+            "Dragon Dung",
+            "Fire Crab Shell"
+          ],
+          "EW": [
+            "Shrivelfig",
+            "Horned Slug"
+          ],
+          "V": "Unicorn Hair"
+        },
+        "patients": [
+          {
+            "full": "A First-Year",
+            "short": "First-Year"
+          },
+          {
+            "full": "The Groundskeeper",
+            "short": "Groundskeeper"
+          },
+          {
+            "full": "A Quidditch Keeper",
+            "short": "Keeper"
+          },
+          {
+            "full": "The Potions Master",
+            "short": "Potions Master"
+          },
+          {
+            "full": "A House-Elf",
+            "short": "House-Elf"
+          },
+          {
+            "full": "A Hippogriff",
+            "short": "Hippogriff"
+          },
+          {
+            "full": "A Cornish Pixie",
+            "short": "Pixie"
+          },
+          {
+            "full": "The Caretaker",
+            "short": "Caretaker"
+          },
+          {
+            "full": "The Librarian",
+            "short": "Librarian"
+          },
+          {
+            "full": "A Lake Mermaid",
+            "short": "Mermaid"
+          },
+          {
+            "full": "A Centaur",
+            "short": "Centaur"
+          },
+          {
+            "full": "A Niffler",
+            "short": "Niffler"
+          },
+          {
+            "full": "A Ravenclaw Bookworm",
+            "short": "Bookworm"
+          },
+          {
+            "full": "A Hufflepuff Gardener",
+            "short": "Gardener"
+          },
+          {
+            "full": "A Slytherin Seeker",
+            "short": "Seeker"
+          },
+          {
+            "full": "A Gryffindor Beater",
+            "short": "Beater"
+          },
+          {
+            "full": "The Headmaster",
+            "short": "Headmaster"
+          },
+          {
+            "full": "The Herbology Professor",
+            "short": "Herbologist"
+          },
+          {
+            "full": "The Divination Professor",
+            "short": "Seer"
+          },
+          {
+            "full": "A Friendly Ghost",
+            "short": "Ghost"
+          },
+          {
+            "full": "A Mountain Troll",
+            "short": "Troll"
+          },
+          {
+            "full": "A Baby Dragon",
+            "short": "Baby Dragon"
+          },
+          {
+            "full": "A Phoenix",
+            "short": "Phoenix"
+          },
+          {
+            "full": "An Owl Courier",
+            "short": "Owl"
+          },
+          {
+            "full": "The Sweet Shop Keeper",
+            "short": "Sweet Shop"
+          },
+          {
+            "full": "A Giant Squid",
+            "short": "Giant Squid"
+          },
+          {
+            "full": "A Garden Gnome",
+            "short": "Gnome"
+          },
+          {
+            "full": "A Mandrake",
+            "short": "Mandrake"
+          },
+          {
+            "full": "A Unicorn Foal",
+            "short": "Unicorn Foal"
+          },
+          {
+            "full": "The Flying Instructor",
+            "short": "Flying Teacher"
+          },
+          {
+            "full": "A Pet Toad",
+            "short": "Toad"
+          },
+          {
+            "full": "The Wandmaker",
+            "short": "Wandmaker"
+          }
+        ],
+        "ailments": [
+          "Bubble hiccups",
+          "Broom sickness",
+          "Exam nerves",
+          "A croaking cough",
+          "Shrinking",
+          "Green hair",
+          "Spell-backfire sneezes",
+          "Talking in rhymes",
+          "Floating feet",
+          "Nightmares",
+          "Homesickness",
+          "Dragon pox",
+          "Cauldron burns",
+          "Jelly legs",
+          "Forgetfulness",
+          "A swollen nose"
+        ],
+        "tools": {
+          "ladle": {
+            "name": "Stirring Rod",
+            "text": "Once per brew, turn one card to go another way: a quarter turn either way, or a half turn.",
+            "short": "Turn one card any way"
+          },
+          "mortar": {
+            "name": "Mortar & Pestle",
+            "text": "Once per brew, grind one card to go one square further or one square shorter.",
+            "short": "One card a square longer or shorter"
+          },
+          "charm": {
+            "name": "Time-Turner",
+            "text": "Once per brew, take one extra step to any square next to you.",
+            "short": "One free step, any way"
+          },
+          "basket": {
+            "name": "Bottomless Satchel",
+            "text": "When you gather or draw blind, take 4 cards instead of 2.",
+            "short": "Gather 4 instead of 2"
+          }
+        },
+        "characters": {
+          "herbalist": {
+            "name": "Hazel",
+            "title": "the Herbologist"
+          },
+          "merchant": {
+            "name": "Barnaby",
+            "title": "the Trader"
+          },
+          "miko": {
+            "name": "Wren",
+            "title": "the Seer"
+          },
+          "kunoichi": {
+            "name": "Pip",
+            "title": "the Prankster"
+          }
+        },
+        "guilds": {
+          "gryffindor": {
+            "name": "Gryffindor",
+            "motto": "Brave at heart"
+          },
+          "ravenclaw": {
+            "name": "Ravenclaw",
+            "motto": "Clever and curious"
+          },
+          "hufflepuff": {
+            "name": "Hufflepuff",
+            "motto": "Loyal and true"
+          },
+          "slytherin": {
+            "name": "Slytherin",
+            "motto": "Ambition finds a way"
+          }
+        }
+      }
+    }
+  }
+}

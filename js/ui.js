@@ -1418,7 +1418,8 @@
         host.innerHTML = txt;
         host.querySelectorAll("symbol[id]").forEach((sy) => {
           const name = Object.keys(ASSET).find((k) => "s-" + k.replace(/[^A-Za-z0-9_-]/g, "-") === sy.id);
-          if (name) SPR[name] = { id: sy.id, vb: sy.getAttribute("viewBox") };
+          // only for assets that are SVGs: a theme that borrows a sheet but swaps in its own pictures keeps them
+          if (name && /\.svg($|[?#])/.test(ASSET[name] || "")) SPR[name] = { id: sy.id, vb: sy.getAttribute("viewBox") };
         });
       } catch (e) { /* fall back to individual files */ }
     }
