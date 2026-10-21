@@ -829,3 +829,8 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 ::-webkit-scrollbar-thumb:hover{background:var(--sb-hover);background-clip:padding-box}
 ::-webkit-scrollbar-corner{background:transparent}
 ::-webkit-scrollbar-button{display:none;width:0;height:0}
+/* picture stamps: a guild oni for a claim, the red seal for a cure */
+.bstamp.pic{border:0;background:none;box-shadow:none;width:40%;margin:-20% 0 0 -20%}
+.bstamp.pic .ai{width:100%;height:100%;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+.stamp.por .cst.pic{background:none;border:0;width:34px;height:34px;right:-10px;bottom:-10px}
+.stamp.por .cst.pic .ai{width:100%;height:100%}

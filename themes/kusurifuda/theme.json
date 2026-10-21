@@ -52,13 +52,13 @@
     "ing.EW.1": "cards/ing-EW-1.webp",
     "ing.EW.2": "cards/ing-EW-2.webp",
     "ing.V": "cards/ing-V.webp",
-    "oni": "assets/oni.svg",
-    "sakura": "assets/sakura.svg",
+    "oni": "assets/oni.webp",
+    "sakura": "assets/sakura.webp",
     "emblem": "assets/emblem.webp",
-    "tool.ladle": "assets/ladle.svg",
-    "tool.mortar": "assets/mortar.svg",
-    "tool.charm": "assets/charm.svg",
-    "tool.basket": "assets/basket.svg",
+    "tool.ladle": "assets/tool-ladle.webp",
+    "tool.mortar": "assets/tool-mortar.webp",
+    "tool.charm": "assets/tool-charm.webp",
+    "tool.basket": "assets/tool-basket.webp",
     "icon.sakura": "icons/sakura.svg",
     "icon.turn.1": "icons/turn-1.svg",
     "icon.turn.2": "icons/turn-2.svg",
@@ -133,7 +133,13 @@
     "patient.28": "people/patient-28.webp",
     "patient.29": "people/patient-29.webp",
     "patient.30": "people/patient-30.webp",
-    "patient.31": "people/patient-31.webp"
+    "patient.31": "people/patient-31.webp",
+    "oni.F": "assets/oni-F.webp",
+    "oni.A": "assets/oni-A.webp",
+    "oni.E": "assets/oni-E.webp",
+    "oni.W": "assets/oni-W.webp",
+    "cure": "assets/cure.webp",
+    "seal": "assets/cured.webp"
   },
   "elements": {
     "W": {
@@ -340,7 +346,7 @@
   "map": {
     "cell": "#EEDFBE",
     "cell-alt": "#E3D0A5",
-    "oni": "#2B211C",
+    "oni": "#8A7258",
     "cure": "#D6AC4E",
     "sakura": "#F2D2CC",
     "trail": "#EFC79E",
