@@ -607,7 +607,8 @@
     "_about": "Optional: one line under each theme in the theme picker.",
     "kusurifuda": "An Edo apothecary: black lacquer, washi and kanji, with koto and taiko.",
     "aizome": "The same apothecary dyed in indigo.",
-    "moonwort": "A candle-lit potions classroom: alchemical signs, jinxes and stars, with celesta and chapel bells."
+    "moonwort": "A candle-lit potions classroom: alchemical signs, jinxes and stars, with celesta and chapel bells.",
+    "hogwarts": "A fan theme for home: the four houses, potion ingredients and the Hospital Wing."
   },
   "themes": {
     "title": "Theme",
