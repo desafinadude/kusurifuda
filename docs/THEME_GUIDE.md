@@ -1,6 +1,6 @@
 # Making a Kusurifuda theme — instructions for an agent
 
-You are adding a new look to **Kusurifuda · Map Edition**, a static, offline PWA card game. A
+You are adding a new look to **Kusurifuda**, a static, offline PWA card game. A
 theme changes colours, fonts, art, icons, card faces, textures, sounds, some wording and the
 characters players choose from. **A theme never changes the rules or the code.** Everything
 you make lives in one folder, `themes/<id>/`, plus three small registrations.

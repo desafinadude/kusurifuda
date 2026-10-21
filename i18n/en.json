@@ -1,14 +1,15 @@
 {
   "terms": {
-    "_about": "Words a theme may rename everywhere at once. Use {{mon}} in any string.",
+    "_about": "Words a theme may rename everywhere at once. Use {{mon}} in any string. {{rival}} and {{Rival}} become the opponent's character name during a game; these are the words used when they have none.",
     "mon": "mon",
-    "Mon": "Mon"
+    "Mon": "Mon",
+    "rival": "your rival",
+    "Rival": "Your rival"
   },
   "_about": "Every word in the game. To translate: copy this file (e.g. ja.json), translate the values, keep the keys and the {placeholders}, and add it to config.json. Entries with one/other are plurals; add the forms your language needs (zero, two, few, many). Inline <b> is allowed.",
   "app": {
-    "title": "Kusurifuda · Map Edition",
-    "name": "Kusurifuda",
-    "edition": "Map Edition"
+    "title": "Kusurifuda",
+    "name": "Kusurifuda"
   },
   "common": {
     "cancel": "Cancel",
@@ -330,14 +331,14 @@
     "right": "Right"
   },
   "top": {
-    "fameAria": "{{Mon}}: you {you}, rival {rival}. Show your rival's table",
+    "fameAria": "{{Mon}}: you {you}, {{rival}} {rival}. Show {{rival}}'s table",
     "goal": "First to {n} {{mon}}",
     "roundYou": "Round {n} · your turn",
-    "roundRival": "Round {n} · rival's turn",
+    "roundRival": "Round {n} · {{rival}}'s turn",
     "yourMarker": "Your marker",
-    "rivalMarker": "Rival's marker",
+    "rivalMarker": "{{Rival}}'s marker",
     "you": "You {n}",
-    "rival": "Rival {n}"
+    "rival": "{{Rival}} {n}"
   },
   "label": {
     "village": "Village",
@@ -376,7 +377,7 @@
     "tagUsed": "Used",
     "tagNext": "Next",
     "tagTake": "Take",
-    "tagRival": "Rival",
+    "tagRival": "{{Rival}}",
     "tagDiscard": "Discard",
     "tagSpent": "Spent",
     "tagAgain": "Again"
@@ -388,17 +389,17 @@
     "becomes": "Cured, joins your ward as {move}",
     "moveAria": "{el} {move}",
     "claimedByYou": "Claimed by you: cure them on your next turn",
-    "claimedByRival": "Claimed by your rival: you can't cure them yet"
+    "claimedByRival": "Claimed by {{rival}}: you can't cure them yet"
   },
   "hints": {
     "you": "You can cure this patient now",
-    "rival": "Your rival can cure this patient now"
+    "rival": "{{Rival}} can cure this patient now"
   },
   "board": {
     "nobody": "Nobody left to cure",
     "mapOf": "{name}'s map",
     "mapAria": "{name}'s map. Reach {cure} from the centre.",
-    "rivalTurn": "Rival's turn",
+    "rivalTurn": "{{Rival}}'s turn",
     "worth": "worth {n} {{mon}}",
     "swipe": "Swipe left or right for the next patient",
     "known": "Known cure · +{n}",
@@ -449,8 +450,8 @@
     "needElWhy": "Kitsune Tail counts as any element",
     "knownHint": "Or use your known cure: +{n} {{mon}}",
     "freeClaim": "claim a patient",
-    "claimedByRival": "Your rival has claimed this patient",
-    "claimedByRivalSub": "You can cure them once your rival's next turn is over"
+    "claimedByRival": "{{Rival}} has claimed this patient",
+    "claimedByRivalSub": "You can cure them once {{rival}}'s next turn is over"
   },
   "brew": {
     "backTo": "Go back to card {n}",
@@ -485,20 +486,20 @@
     "brew": "Brew",
     "brewSub": "Cure {name}",
     "endTurn": "End turn",
-    "endTurnSub": "Then your rival plays",
+    "endTurnSub": "Then {{rival}} plays",
     "drawBlind": "Draw {n} blind",
     "takeN": "Take {n} ({have}/{n})",
     "takeFromMarket": "Take {n} from market",
     "known": "Known cure",
     "knownSub": "+{n} {{mon}} · uses {name}",
     "claim": "Claim",
-    "claimSub": "Cure them next turn: +{n} · miss: rival +{n}"
+    "claimSub": "Cure them next turn: +{n} · miss: {{rival}} +{n}"
   },
   "tools": {
     "cost": "{n} {{mon}}",
     "need": "Need {n} {{mon}}",
     "yours": "Yours",
-    "rivalOwns": "Rival owns",
+    "rivalOwns": "{{Rival}} owns",
     "tapToBuy": "Tap to buy",
     "onePerTurn": "One buy per turn",
     "paidWithFame": "Paid with {{mon}}",
@@ -553,7 +554,7 @@
     "title": "Menu",
     "howToPlay": "How to play",
     "log": "Game log",
-    "rivalTable": "Rival's table",
+    "rivalTable": "{{Rival}}'s table",
     "install": "Install the app",
     "installSub": "Plays offline",
     "theme": "Theme",
@@ -663,53 +664,53 @@
   "log": {
     "round": "R{n}",
     "newYou": "New game. You go first.",
-    "newRival": "New game. Your rival goes first.",
+    "newRival": "New game. {{Rival}} goes first.",
     "sakura": "+{n} for the sakura.",
     "buy": {
       "you": "You buy the {tool} for {n} {{mon}}.",
-      "rival": "Rival buys the {tool} for {n} {{mon}}."
+      "rival": "{{Rival}} buys the {tool} for {n} {{mon}}."
     },
     "cure": {
       "you": "You cure {name} ({ailment}): +{n} {{mon}}.",
-      "rival": "Rival cures {name} ({ailment}): +{n} {{mon}}."
+      "rival": "{{Rival}} cures {name} ({ailment}): +{n} {{mon}}."
     },
     "gather": {
       "you": "You take {cards}.",
-      "rival": "Rival takes {cards}."
+      "rival": "{{Rival}} takes {cards}."
     },
     "blind": {
       "you": "You draw {n} blind.",
-      "rival": "Rival draws {n} blind."
+      "rival": "{{Rival}} draws {n} blind."
     },
     "plant": {
       "you": "You plant {card}.",
-      "rival": "Rival plants {card}."
+      "rival": "{{Rival}} plants {card}."
     },
     "known": {
       "you": "You cure {name} ({ailment}) with a known remedy: +{n} {{mon}}.",
-      "rival": "Rival cures {name} ({ailment}) with a known remedy: +{n} {{mon}}."
+      "rival": "{{Rival}} cures {name} ({ailment}) with a known remedy: +{n} {{mon}}."
     },
     "claim": {
       "you": "You claim {name}.",
-      "rival": "Rival claims {name}."
+      "rival": "{{Rival}} claims {name}."
     },
     "lapse": {
-      "you": "Your claim on {name} lapsed: rival +{n}.",
-      "rival": "Rival's claim on {name} lapsed: you +{n}."
+      "you": "Your claim on {name} lapsed: {{rival}} +{n}.",
+      "rival": "{{Rival}}'s claim on {name} lapsed: you +{n}."
     },
     "kept": "(claim kept +{n})",
     "swap": {
       "you": "You trade {gave} for {got}.",
-      "rival": "Rival trades {gave} for {got}."
+      "rival": "{{Rival}} trades {gave} for {got}."
     }
   },
   "rival": {
-    "turn": "Rival's turn",
+    "turn": "{{Rival}}'s turn",
     "thinking": "Thinking",
-    "speedUp": "Speed up the rival's turn",
+    "speedUp": "Speed up {{rival}}'s turn",
     "fast": "Fast ▸▸",
     "skip": "Skip ▸",
-    "showTable": "Show your rival's table",
+    "showTable": "Show {{rival}}'s table",
     "hand": "Hand",
     "handN": "Hand {n}",
     "garden": "Garden",
@@ -730,7 +731,7 @@
     "lineBuy": "Bought the {tool} for {n} {{mon}}",
     "brewsFor": "Brews for {name}",
     "worth": "{ailment} · worth {n}",
-    "fromGarden": "from its garden",
+    "fromGarden": "from their garden",
     "cures": "Cures {name}",
     "gains": "+{n} {{mon}}",
     "sakura": "+{n} sakura",
@@ -754,13 +755,13 @@
       "one": "Drew {n} card blind",
       "other": "Drew {n} cards blind"
     },
-    "plants": "Plants a card in its garden",
+    "plants": "Plants a card in their garden",
     "plantsSub": "{card} · never used up",
     "popPlants": "plants a card",
-    "linePlant": "Planted {card} in its garden",
+    "linePlant": "Planted {card} in their garden",
     "passed": "Passed",
-    "whatItDid": "What your rival did",
-    "fromWard": "from its ward",
+    "whatItDid": "What {{rival}} did",
+    "fromWard": "from their ward",
     "echo": "played twice (guild)",
     "knows": "Knows the cure for {ailment}",
     "knowsSub": "Remembers it from {name}",
@@ -768,9 +769,9 @@
     "ward": "Ward",
     "wardN": "Ward {n}",
     "claims": "Claims {name} {oni}",
-    "claimsSub": "You can't cure them until its next turn is over",
-    "lineClaim": "Claimed {name}: hands off until after its next turn",
-    "lineLapse": "Its claim on {name} lapsed: you get +{n} {{mon}}",
+    "claimsSub": "You can't cure them until {{rival}}'s next turn is over",
+    "lineClaim": "Claimed {name}: hands off until after their next turn",
+    "lineLapse": "Their claim on {name} lapsed: you get +{n} {{mon}}",
     "trades": "Trades at the market",
     "tradesSub": "{gave} for {got}",
     "popTrades": "trades a card",
@@ -778,19 +779,19 @@
   },
   "over": {
     "you": "You win!",
-    "rival": "Your rival wins this time",
+    "rival": "{{Rival}} wins this time",
     "tie": "It's a tie",
     "cures": {
       "one": "{who} · {n} cure",
       "other": "{who} · {n} cures"
     },
-    "tools": "Tools: you {you} · rival {rival}",
+    "tools": "Tools: you {you} · {{rival}} {rival}",
     "again": "Play again"
   },
   "toast": {
     "newGame": "New game",
     "youFirst": "You go first",
-    "rivalFirst": "Your rival goes first",
+    "rivalFirst": "{{Rival}} goes first",
     "goal": "Cure villagers to reach {n} {{mon}}.",
     "youTake": {
       "one": "You take {n} card",
@@ -804,9 +805,9 @@
     "paid": "Paid {n} {{mon}}.",
     "buttonUnderMap": "Its button sits under the map while you brew.",
     "youClaim": "You claim {name}",
-    "youClaimSub": "Cure them on your next turn for +{n} {{mon}}. If you don't, your rival gets it.",
+    "youClaimSub": "Cure them on your next turn for +{n} {{mon}}. If you don't, {{rival}} gets it.",
     "lapse": "Your claim on {name} lapsed",
-    "lapseSub": "Your rival gets +{n} {{mon}}"
+    "lapseSub": "{{Rival}} gets +{n} {{mon}}"
   },
   "msg": {
     "waitTurn": "Wait for your turn.",

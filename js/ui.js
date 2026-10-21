@@ -1,4 +1,4 @@
-/* Kusurifuda · Map Edition — UI.
+/* Kusurifuda — UI.
    Everything you see comes from four files loaded at start:
      config.json          which theme and language
      rules.json           the numbers (handed to the engine)
@@ -33,7 +33,7 @@
     if (v === undefined) { if (window.KF_DEBUG) console.warn("missing text", key); return key; }
     if (v && typeof v === "object" && !Array.isArray(v)) { const n = vars && (vars.n != null ? vars.n : vars.count); v = v[PLURAL ? PLURAL.select(n == null ? 0 : n) : "other"] ?? v.other ?? ""; }
     // {{term}}: a word the theme can rename everywhere (terms.mon = "mon", "gold"...); {var}: filled from vars
-    return String(v).replace(/\{\{(\w+)\}\}/g, (m, k) => { const w = lookup("terms." + k); return typeof w === "string" ? w : k; }).replace(/\{(\w+)\}/g, (m, k) => (vars && vars[k] != null ? vars[k] : m));
+    return String(v).replace(/\{\{(\w+)\}\}/g, (m, k) => { if (/^rival$/i.test(k) && rivalNm()) return rivalNm(); const w = lookup("terms." + k); return typeof w === "string" ? w : k; }).replace(/\{(\w+)\}/g, (m, k) => (vars && vars[k] != null ? vars[k] : m));
   }
   const list = (k) => { const v = lookup(k); return Array.isArray(v) ? v : []; };
   const pick = (k, i) => { const l = list(k); return l.length ? l[((i % l.length) + l.length) % l.length] : ""; };
@@ -74,6 +74,9 @@
   // the theme's character for a player's ability (a theme switch mid-game keeps the ability, changes the face)
   function charOf(pi) { const p = G() && G().P[pi]; if (!p || !p.ability) return null; return CHARS().find((c) => c.ability === p.ability) || { id: null, ability: p.ability }; }
   const charName = (c) => (c && c.id && lookup("content.characters." + c.id + ".name")) || (c ? abilityName(c.ability) : "");
+  // the opponent by their character's name during a game ({{rival}} in the text), else the plain word
+  const rivalNm = () => { const c = G() && charOf(1); return c && c.id ? charName(c) : ""; };
+  const rivalLabel = () => esc(rivalNm()) || t("who.rival");
   const charTitle = (c) => (c && c.id && lookup("content.characters." + c.id + ".title")) || "";
   const abilityName = (a) => lookup("abilities." + a + ".name") || a;
   const abilityText = (a) => (lookup("abilities." + a + ".text") ? t("abilities." + a + ".text") : "");
@@ -351,7 +354,7 @@
   function fameBars() {
     const g = G(), E = RU().endFame;
     const row = (p, cls, label, pi) => `<div class="row${g.cur === pi && !g.over ? " cur" : ""}"><span class="who ${cls}">${crest(pi)}${esc(label)}</span><div class="bar ${cls}" style="grid-template-columns:repeat(${E},minmax(0,1fr))">${Array.from({ length: E }, (_, i) => `<i class="${i < p.fame ? "on" : ""}${(i + 1) % 5 === 0 ? " five" : ""}"></i>`).join("")}</div><span class="num" data-fame="${pi}">${p.fame}</span></div>`;
-    return `<button class="fame" data-a="rival" aria-label="${attr(t("top.fameAria", { you: me().fame, rival: bot().fame }))}">${row(me(), "y", t("who.you"), 0)}${row(bot(), "r", t("who.rival"), 1)}</button>`;
+    return `<button class="fame" data-a="rival" aria-label="${attr(t("top.fameAria", { you: me().fame, rival: bot().fame }))}">${row(me(), "y", t("who.you"), 0)}${row(bot(), "r", rivalLabel(), 1)}</button>`;
   }
   const goal = () => `<div class="goal mong" role="img" aria-label="${attr(t("top.goal", { n: RU().endFame }))}">${monIc()}<span>${RU().endFame}</span></div>`;
   const menuBtn = () => `<button class="iconbtn" data-a="menu" aria-label="${attr(t("menu.title"))}">${ICON.menu()}</button>`;
@@ -569,7 +572,7 @@
     const owned = RU().toolIds.filter((k) => me().tools[k]).map(toolName).join(" · ");
     return `<div class="scr land lacquer">
       <header class="top">${menuBtn()}${gl("brand") || ASSET["icon.brand"] ? `<span class="brandk">${ic("brand")}</span>` : ""}${fameBars()}
-        <button class="rivbtn" data-a="rival" aria-label="${attr(t("rival.showTable"))}"><b>${t("who.rival")}</b><span>${t("rival.handN", { n: b.hand.length })}</span><span>${t("rival.gardenN", { n: b.garden.length })}</span>${RU().toolIds.filter((k) => b.tools[k]).map((k) => art(toolArt(k))).join("")}<span class="oniN">${art("oni")}${b.oni}</span></button>
+        <button class="rivbtn" data-a="rival" aria-label="${attr(t("rival.showTable"))}"><b>${rivalLabel()}</b><span>${t("rival.handN", { n: b.hand.length })}</span><span>${t("rival.gardenN", { n: b.garden.length })}</span>${RU().toolIds.filter((k) => b.tools[k]).map((k) => art(toolArt(k))).join("")}<span class="oniN">${art("oni")}${b.oni}</span></button>
         ${goal()}</header>
       <div class="mid">
         <section class="vcol"><div class="lbl"><span>${withGl(t("label.village"), "village")}</span><span>${t("label.deck", { n: g.pats.length })}</span></div>
@@ -607,7 +610,7 @@
     const rivHand = openHands() ? `<span class="g">${t("rival.hand")} ${b.hand.map((c) => `<span class="mc" style="background:${EL(c.el).color}" title="${attr(cardName(c))}">${pathSVG(c, c.steps, 18)}</span>`).join("")}</span>` : `<span>${t("rival.handN", { n: b.hand.length })}</span>`;
     return `<div class="scr tabl lacquer">
       <header class="top">${menuBtn()}<div class="brand"><div class="b1">${gl("brand") || ASSET["icon.brand"] ? `<span>${ic("brand")}</span>` : ""}<span>${t("app.name")}</span></div><small>${turnLabel()}</small></div>${fameBars()}${goal()}</header>
-      <button class="rivstrip${g.cur === 1 ? " live" : ""}" data-a="rival" aria-label="${attr(t("rival.showTable"))}">${portrait(1)}<b>${t("who.rival")}</b>${charOf(1) ? `<span class="rch">${esc(charName(charOf(1)))} · ${esc(abilityName(charOf(1).ability))}</span>` : ""}${rivHand}<span class="g">${t("rival.garden")} ${b.garden.map((c) => `<span class="ga" style="background:${EL(c.el).color}">${art(EL(c.el).art, "", { slice: true })}</span>`).join("") || "—"}</span>
+      <button class="rivstrip${g.cur === 1 ? " live" : ""}" data-a="rival" aria-label="${attr(t("rival.showTable"))}">${portrait(1)}<b>${rivalLabel()}</b>${charOf(1) ? `<span class="rch">${esc(abilityName(charOf(1).ability))}</span>` : ""}${rivHand}<span class="g">${t("rival.garden")} ${b.garden.map((c) => `<span class="ga" style="background:${EL(c.el).color}">${art(EL(c.el).art, "", { slice: true })}</span>`).join("") || "—"}</span>
         ${RU().toolIds.filter((id) => b.tools[id]).map((id) => `<span class="g">${art(toolArt(id))}${esc(toolName(id))}</span>`).join("")}
         <span class="g">${Array.from({ length: b.oni }, () => art("oni")).join("") || t("rival.noOni")}</span>
         <span class="last">${g.cur === 1 && U.rv ? esc(stripTags(U.rv.say)) : esc(g.lastBot || "")}</span></button>
@@ -656,7 +659,7 @@
     const c = CHARS().find((x) => x.id === (PREFS.who || {}).char);
     const inst = isStandalone() ? "" : `<button class="tlink" data-a="installq">${t("menu.install")}</button>`;
     return `<div class="scr title ${U.layout} lacquer"><div class="tcol">
-      <div class="thead"><div class="emb">${art("emblem")}</div><div>${brandMark()}<h1>${t("app.name")}</h1><small>${t("app.edition")}</small></div></div>
+      <div class="thead"><div class="emb">${art("emblem")}</div><div>${brandMark()}<h1>${t("app.name")}</h1></div></div>
       <div class="tbtns">
         ${cont ? `<button class="mb primary" data-a="continue"><b>${t("title.continue")}</b><small>${where}</small></button>` : ""}
         <button class="mb${cont ? "" : " primary"}" data-a="quick"><b>${t("title.quick")}</b><small>${t("title.quickSub")}</small></button>
@@ -865,7 +868,7 @@
       const inst = isStandalone() ? "" : `<button class="btn" data-a="installq">${t("menu.install")}<small>${t("menu.installSub")}</small></button>`;
       const themes = Object.keys(CFG.themes || {}), langs = Object.keys(CFG.languages || {});
       const sel = (a, cur, opts) => `<div class="seg wrap" role="group">${opts.map(([v, l]) => `<button data-a="${a}" data-i="${attr(v)}" aria-pressed="${v === cur}">${esc(l)}</button>`).join("")}</div>`;
-      return `<div class="sh"><div><h2>${gl("brand") || ASSET["icon.brand"] ? ic("brand") + " " : ""}${t("app.name")}</h2><div class="sub">${G().quest && QUEST ? `${t("quest.toast", { n: G().quest.n + 1, place: esc(stopName(G().quest.n)) })} · ` : `${t("app.edition")} · `}${turnLabel()}</div></div></div>
+      return `<div class="sh"><div><h2>${gl("brand") || ASSET["icon.brand"] ? ic("brand") + " " : ""}${t("app.name")}</h2><div class="sub">${G().quest && QUEST ? `${t("quest.toast", { n: G().quest.n + 1, place: esc(stopName(G().quest.n)) })} · ` : ""}${turnLabel()}</div></div></div>
         <div class="menu"><button class="btn" data-a="rules">${t("menu.howToPlay")}<small>${ic("rules")}</small></button><button class="btn" data-a="log">${t("menu.log")}</button><button class="btn" data-a="rival">${t("menu.rivalTable")}</button><button class="btn" data-a="mytable">${t("table.you")}</button><button class="btn" data-a="title" ${U.busy ? "disabled" : ""}>${t("menu.main")}<small>${t("menu.mainSub")}</small></button>${themes.length > 1 && CFG.themePicker !== false ? `<button class="btn" data-a="themes">${t("menu.theme")}<small>${esc(themeName(CUR_THEME))}</small></button>` : ""}${inst}</div>
         <div class="sect"><div class="hd"><b>${t("settings.title")}</b></div>
           ${toggleRow("sound", "", SFX.isOn(), t("settings.sound"), t("settings.soundSub"))}
@@ -965,7 +968,7 @@
         : `<div class="btns"><button class="btn" data-a="questmap" data-i="${q}">${t("quest.map")}</button><button class="btn primary" data-a="qgo" data-i="${q}">${t("quest.retry")}</button></div>`;
       const names = (p) => RU().toolIds.filter((id) => p.tools[id]).map(toolName).join(", ") || t("rival.none");
       return `<div class="sh end" style="flex-direction:column"><div class="big">${ic(w === "tie" ? "tie" : w === "you" ? "win" : "lose")}</div><h2>${t("over." + w)}</h2></div>
-        <div class="end sc"><div><b>${a.fame}</b>${t("over.cures", { who: t("who.you"), n: a.cures })}</div><div><b>${b.fame}</b>${t("over.cures", { who: t("who.rival"), n: b.cures })}</div></div>
+        <div class="end sc"><div><b>${a.fame}</b>${t("over.cures", { who: t("who.you"), n: a.cures })}</div><div><b>${b.fame}</b>${t("over.cures", { who: rivalLabel(), n: b.cures })}</div></div>
         <p class="muted" style="text-align:center">${t("over.tools", { you: esc(names(a)), rival: esc(names(b)) })}</p>
         ${isStandalone() ? "" : `<button class="btn" data-a="installq" style="flex:none;min-height:44px">${t("install.offer")}</button>`}
         ${q != null ? `<p class="qres">${t(w === "you" ? "quest.won" : "quest.lost", { place: esc(stopName(q)) })}</p>${qbtns}` : `<div class="btns"><button class="btn" data-a="title">${t("menu.main")}</button><button class="btn" data-a="log">${t("act.log")}</button><button class="btn primary" data-a="quickgo">${t("over.again")}</button></div>`}`;
@@ -1106,7 +1109,7 @@
     render();
     SFX.yourTurn();
     const lines = U.botLines.length ? U.botLines.map((l) => `<li><i>${ic("log." + l.k) || "·"}</i>${l.text}</li>`).join("") : `<li><i>…</i>${t("rival.passed")}</li>`;
-    announce(`<div class="who">${t("rival.whatItDid")}</div><ul class="rvlist">${lines}</ul><h3 class="yt">${t("status.yourTurn")}</h3>`, 2600 + U.botLines.length * 600, null);
+    announce(`<div class="rvhead">${portrait(1, "rvface")}<div><div class="who">${t("rival.whatItDid")}</div>${guildOf(1) ? `<small class="rvg">${crest(1, "rvcr")}${esc(guildName(guildOf(1)))}</small>` : ""}</div></div><ul class="rvlist">${lines}</ul><h3 class="yt">${t("status.yourTurn")}</h3>`, 2600 + U.botLines.length * 600, null);
   }
   function showOver() {
     U.busy = false; U.rv = null; U.bo = null; render();

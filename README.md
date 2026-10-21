@@ -1,4 +1,4 @@
-# Kusurifuda 薬札 · Map Edition (PWA)
+# Kusurifuda 薬札 (PWA)
 
 Two-player card game against a bot, built to the "Kusurifuda · Map Edition UI" canvas
 (phone portrait, phone landscape, tablet). Static files only: host the folder over HTTPS

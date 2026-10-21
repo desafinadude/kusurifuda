@@ -1,6 +1,6 @@
 {
   "id": "./",
-  "name": "Kusurifuda · Map Edition",
+  "name": "Kusurifuda",
   "short_name": "Kusurifuda",
   "description": "Cure villagers by walking ingredient paths across their maps. A two-player card game against a bot, playable offline.",
   "start_url": "./",

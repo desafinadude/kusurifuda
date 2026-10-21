@@ -1,4 +1,4 @@
-/* Kusurifuda · Map Edition — rules engine.
+/* Kusurifuda — rules engine.
    Pure game logic, no DOM and no text: every number comes from rules.json,
    and cards, patients and the log only hold ids that the UI translates.
    Exposes window.KF. */
