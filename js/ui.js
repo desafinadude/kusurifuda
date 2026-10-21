@@ -21,7 +21,7 @@
   let CFG = null, T = null, STR = {}, LANG = "en", PLURAL = null;
   const ASSET = {}, SPR = {}, PCOL = {};   // asset name -> url ; asset name -> {id, vb} when it is in the sprite sheet
   const PKEY = "kusurifuda.prefs";
-  let PREFS = { hints: false };
+  let PREFS = { hints: false, steam: true };
   try { PREFS = Object.assign(PREFS, JSON.parse(localStorage.getItem(PKEY) || "{}")); } catch (e) {}
   const savePrefs = () => { try { localStorage.setItem(PKEY, JSON.stringify(PREFS)); } catch (e) {} };
 
@@ -253,7 +253,7 @@
       if (o.prev.fail) g += `<path d="M${e[0] + CX - 0.25} ${e[1] + CY - 0.25}l.5 .5m0 -.5l-.5 .5" stroke="${MC("route")}" stroke-width=".11" stroke-linecap="round"/>`;
       else g += `<circle cx="${e[0] + CX}" cy="${e[1] + CY}" r=".4" fill="none" stroke="${MC("route")}" stroke-width=".06" stroke-dasharray=".12 .08"/>`;
     }
-    if (o.pos) g += `<g transform="translate(${ctr(o.pos).replace(",", " ")})"><circle r=".27" fill="${MC(o.rival ? "marker-rival" : "marker")}" stroke="${MC("marker-ring")}" stroke-width=".07"/><circle r=".09" fill="${MC("marker-ring")}"/></g>`;
+    if (o.pos) g += `<g class="mkr" transform="translate(${ctr(o.pos).replace(",", " ")})"><circle r=".27" fill="${MC(o.rival ? "marker-rival" : "marker")}" stroke="${MC("marker-ring")}" stroke-width=".07"/><circle r=".09" fill="${MC("marker-ring")}"/></g>`;
     const size = o.px ? `width="${o.px}" height="${o.px}"` : "";
     return `<svg class="map" ${size} viewBox="-.05 -.05 ${N + 0.1} ${N + 0.1}" ${o.label ? `role="img" aria-label="${attr(o.label)}"` : 'aria-hidden="true"'}>${g}</svg>`;
   }
@@ -749,6 +749,22 @@
     b.appendChild(d); setTimeout(() => d.remove(), 1600);
     if (key === "cured") brewFX(b, rival);
   }
+  // ---------- atmosphere ----------
+  // faint steam drifting up over the whole table; never clickable, off in settings or with reduced motion
+  function steamLayer() {
+    const r = (a, z) => (a + Math.random() * (z - a)).toFixed(1);
+    return `<div id="steam" aria-hidden="true">${Array.from({ length: 9 }, (_, i) => `<i style="--x:${r(i * 11 - 4, i * 11 + 8)}%;--w:${r(34, 58)}vmin;--d:${r(18, 28)}s;--dl:-${r(0, 28)}s;--sw:${r(-8, 8)}vmin;--o:${r(0.22, 0.36)}"></i>`).join("")}</div>`;
+  }
+  const setSteam = () => { const el = $("#steam"); if (el) el.hidden = !PREFS.steam || reduced(); };
+  // a little burst of sparks where the marker lands as an ingredient goes in, in that ingredient's colour
+  function sparkAt(el) {
+    const m = $(".board .mkr"); if (!m || reduced() || !PREFS.steam) return;
+    const r = m.getBoundingClientRect(), fx = document.createElement("div"), rnd = (a, z) => a + Math.random() * (z - a);
+    fx.className = "sparkfx"; fx.style.left = r.left + r.width / 2 + "px"; fx.style.top = r.top + r.height / 2 + "px";
+    if (el) fx.style.setProperty("--tint", `var(--${el})`);
+    fx.innerHTML = `<b></b>` + Array.from({ length: 18 }, () => { const a = rnd(0, Math.PI * 2), d = rnd(22, 52); return `<i style="--dx:${(Math.cos(a) * d).toFixed(0)}px;--dy:${(Math.sin(a) * d - 12).toFixed(0)}px;--t:${rnd(0.45, 0.8).toFixed(2)}s;--s:${rnd(3.5, 6.5).toFixed(1)}px"></i>`; }).join("");
+    document.body.appendChild(fx); setTimeout(() => fx.remove(), 900);
+  }
   // a cure goes off like a chemistry bench: a flash, a burst of sparks, bubbles and a puff of smoke
   function brewFX(b, rival) {
     if (reduced()) return;
@@ -873,6 +889,7 @@
         <div class="sect"><div class="hd"><b>${t("settings.title")}</b></div>
           ${toggleRow("sound", "", SFX.isOn(), t("settings.sound"), t("settings.soundSub"))}
           ${toggleRow("hints", "", PREFS.hints, t("settings.hints"), openHands() ? t("settings.hintsSubOpen") : t("settings.hintsSub"))}
+          ${toggleRow("steam", "", PREFS.steam, t("settings.steam"), t("settings.steamSub"))}
           ${langs.length > 1 ? `<span class="cap">${t("settings.language")}</span>${sel("lang", LANG, langs.map((k) => [k, CFG.languages[k].name || k]))}` : ""}
         </div>
         <div class="btns"><button class="btn" data-a="close">${t("common.close")}</button></div>`;
@@ -1188,6 +1205,7 @@
     U.anim = true; U.bo = { pt, trail: before, pos: rs.rp.pos };
     render(); SFX.play();
     await walk(pt, before, s.trail, { stepBase });
+    const played = cardAt(U.route[U.route.length - 1].g, U.route[U.route.length - 1].i); sparkAt(played && played.el !== "V" ? played.el : "V");
     U.bo = null; U.anim = false;
     if (routeState().ready) SFX.sakura();
     render();
@@ -1256,6 +1274,7 @@
       case "qclose": if (!U.screen && g.over) openSheet({ type: "over", modal: true, quiet: true }); else closeSheet(); return;
       case "qrestart": PREFS.questDone = 0; savePrefs(); s.sel = 0; SFX.toggle(); renderSheet(); return;
       case "hints": PREFS.hints = !PREFS.hints; savePrefs(); SFX.toggle(); render(); renderSheet(); return;
+      case "steam": PREFS.steam = !PREFS.steam; savePrefs(); SFX.toggle(); setSteam(); renderSheet(); return;
       case "sound": SFX.set(!SFX.isOn()); if (U.sheet) renderSheet(); render(); return;
       case "theme": if (i === (CUR_THEME)) return; PREFS.theme = i; savePrefs(); loadTheme(i).then(() => { applyPlayerColor(); render(); renderSheet(); SFX.toggle(); }); return;
       case "lang": PREFS.lang = i; savePrefs(); loadLang(i).then(() => { render(); renderSheet(); }); return;
@@ -1535,7 +1554,8 @@
       ${dots}${label(0, -7, "end")}${label(stops.length - 1, 8, "start")}</svg>`;
   }
   async function boot() {
-    $("#stage").innerHTML = '<div id="scr"></div><div id="shl"></div><div id="tsl"></div>';
+    $("#stage").innerHTML = '<div id="scr"></div><div id="shl"></div><div id="tsl"></div>' + steamLayer();
+    setSteam();
     try { await loadAll(); }
     catch (e) { $("#scr").innerHTML = `<div class="loadfail"><b>Kusurifuda could not load its files.</b><small>${esc(e.message)}</small></div>`; console.error(e); return; }
     const stage = $("#stage");
