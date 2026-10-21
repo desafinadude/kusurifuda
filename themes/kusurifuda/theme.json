@@ -219,7 +219,7 @@
     {
       "id": "moon",
       "art": "guild.moon",
-      "color": "#9A4E8A",
+      "color": "#3E6E8C",
       "element": "A"
     },
     {
@@ -234,14 +234,6 @@
       "color": "#2F5D8A",
       "element": "W"
     }
-  ],
-  "playerColors": [
-    "#B23A24",
-    "#9A6512",
-    "#7A5626",
-    "#2F5D8A",
-    "#9A4E8A",
-    "#1E7A7A"
   ],
   "glyphs": {
     "_about": "Decorative kanji. They are part of the look, not the language, so they live here. Set any to \"\" to hide it.",

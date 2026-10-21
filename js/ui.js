@@ -83,13 +83,16 @@
   function guildOf(pi) { const p = G() && G().P[pi], gs = GUILDS(); if (!p || p.guild == null || !gs.length) return null; return gs[p.guild % gs.length]; }
   const guildName = (g) => (g && lookup("content.guilds." + g.id + ".name")) || "";
   const crest = (pi, cls = "crest") => { const g = guildOf(pi); return g && g.art ? art(g.art, cls) : ""; };
+  // a guild's colour is its element's: the colour itself, or its deeper ink when the colour is too pale for white text (air)
+  const guildColor = (g) => { if (!g) return null; if (!g.element) return g.color || null; const e = EL(g.element); return e.on ? e.ink || e.color : e.color; };
   const portrait = (pi, cls = "por") => { const c = charOf(pi); return c && c.art ? art(c.art, cls) : ""; };
   // hex colour arithmetic for the player's colour
   const hx = (h) => { const m = /^#?([0-9a-f]{6})$/i.exec(h || ""); return m ? [0, 2, 4].map((i) => parseInt(m[1].substr(i, 2), 16)) : null; };
   const mix = (a, b, t) => { const A = hx(a), B = hx(b); if (!A || !B) return a; return "#" + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, "0")).join(""); };
   function applyPlayerColor() {
     Object.keys(PCOL).forEach((k) => delete PCOL[k]);
-    const c = U.screen ? (PREFS.who || {}).color : G() && G().P[0].color, st = document.getElementById("player-style") || Object.assign(document.head.appendChild(document.createElement("style")), { id: "player-style" });
+    const gs = GUILDS(), me0 = G() && G().P[0];
+    const c = U.screen ? guildColor(gs[(PREFS.who || {}).guild]) : me0 && (me0.guild != null && gs.length ? guildColor(gs[me0.guild % gs.length]) : me0.color), st = document.getElementById("player-style") || Object.assign(document.head.appendChild(document.createElement("style")), { id: "player-style" });
     if (!c || !hx(c)) { st.textContent = ""; HC.clear(); return; }
     const C = T.colors || {}, white = "#FFFFFF", black = "#000000";
     const v = { shu: c, "shu-hi": mix(c, white, 0.12), "shu-line": mix(c, white, 0.4), you: mix(c, white, 0.45), "shu-deep": mix(c, black, 0.25), "shu-dim": mix(c, C.lacquer || black, 0.5), "shu-shadow": mix(c, black, 0.55) };
@@ -635,14 +638,12 @@
 
   // who you play: character, guild and colour (part of the quick-game sheet)
   function whoPicker(w) {
-    const chars = CHARS(), guilds = GUILDS(), cols = T.playerColors || [];
-      const ch = chars.map((c) => `<button class="chr${w.char === c.id ? " on" : ""}" data-a="pickc" data-i="${attr(c.id)}" aria-pressed="${w.char === c.id}" style="--pc:${attr(w.color || "var(--shu)")}">${art(c.art, "por")}<span class="tx"><b>${esc(charName(c))}</b><small>${esc(charTitle(c))}</small><i>${esc(abilityName(c.ability))}</i><span>${esc(abilityText(c.ability))}</span></span></button>`).join("");
+    const chars = CHARS(), guilds = GUILDS(), pc = guildColor(guilds[w.guild]);
+      const ch = chars.map((c) => `<button class="chr${w.char === c.id ? " on" : ""}" data-a="pickc" data-i="${attr(c.id)}" aria-pressed="${w.char === c.id}" style="--pc:${attr(pc || "var(--shu)")}">${art(c.art, "por")}<span class="tx"><b>${esc(charName(c))}</b><small>${esc(charTitle(c))}</small><i>${esc(abilityName(c.ability))}</i><span>${esc(abilityText(c.ability))}</span></span></button>`).join("");
       const gs = guilds.map((g, i) => `<button class="gld${w.guild === i ? " on" : ""}" data-a="pickg" data-i="${i}" aria-pressed="${w.guild === i}">${art(g.art, "crest")}<b>${esc(guildName(g))}</b><small>${esc(lookup("content.guilds." + g.id + ".motto") || "")}</small>${g.element && RU().guilds.echo ? `<span class="gel" style="background:${EL(g.element).color};color:${onEl(g.element)}">${elIc(g.element)} ${esc(elName(g.element))}</span>` : ""}</button>`).join("");
       const gpick = guilds[w.guild], craft = gpick && gpick.element && RU().guilds.echo ? `<p class="muted gcraft"><b>${t("guildAbility.name")}</b> · ${t("guildAbility.text", { el: elName(gpick.element) })}</p>` : "";
-      const cs = cols.map((c, i) => `<button class="sw${(w.color || "").toLowerCase() === c.toLowerCase() ? " on" : ""}" data-a="pickk" data-i="${attr(c)}" aria-pressed="${(w.color || "").toLowerCase() === c.toLowerCase()}" aria-label="${attr(t("setup.colourN", { n: i + 1 }))}" style="background:${attr(c)}"></button>`).join("");
     return `${chars.length ? `<span class="cap">${t("setup.character")}</span><div class="chrs">${ch}</div>` : ""}
-        ${guilds.length ? `<span class="cap">${t("setup.guild")} <small>${t("setup.guildSub")}</small></span><div class="glds">${gs}</div>${craft}` : ""}
-        ${cols.length ? `<span class="cap">${t("setup.colour")}</span><div class="sws">${cs}</div>` : ""}`;
+        ${guilds.length ? `<span class="cap">${t("setup.guild")} <small>${t("setup.guildSub")}</small></span><div class="glds">${gs}</div>${craft}` : ""}`;
   }
 
   // ---------- splash and title menu ----------
@@ -1264,8 +1265,7 @@
       case "opt": { const o = quickOpts(), k = tg.dataset.k; o[k] = k === "oni" ? i : +i; PREFS.opts = o; savePrefs(); SFX.toggle(); renderSheet(); return; }
       case "optt": { const o = quickOpts(), k = tg.dataset.k; o[k] = !o[k]; PREFS.opts = o; savePrefs(); SFX.toggle(); renderSheet(); return; }
       case "pickc": U.sheet.who.char = i; SFX.tap("V"); renderSheet(); return;
-      case "pickg": { const gi = +i, w = U.sheet.who; w.guild = gi; const g = GUILDS()[gi]; if (g && g.color) w.color = g.color; SFX.tap("E"); renderSheet(); return; }
-      case "pickk": U.sheet.who.color = i; SFX.tap("W"); renderSheet(); return;
+      case "pickg": { U.sheet.who.guild = +i; SFX.tap("E"); renderSheet(); return; }
       case "quest": openSheet({ type: "quest", sel: Math.min(questDone(), QUEST.stops.length - 1) }); return;
       case "questmap": openSheet({ type: "quest", sel: +i }); return;
       case "qsel": s.sel = +i; SFX.tap("E"); renderSheet(); return;
@@ -1483,14 +1483,13 @@
     const myG = w.guild != null && w.guild < gs.length ? w.guild : gs.length ? rnd(gs.length) : null;
     const gOther = gs.map((_, i) => i).filter((i) => i !== myG);
     const rg = gOther.length ? gOther[rnd(gOther.length)] : null;
-    return [{ ability: mine ? mine.ability : null, guild: myG, gel: myG != null && gs[myG] ? gs[myG].element || null : null, color: w.color || (myG != null && gs[myG].color) || null },
+    return [{ ability: mine ? mine.ability : null, guild: myG, gel: myG != null && gs[myG] ? gs[myG].element || null : null, color: myG != null ? guildColor(gs[myG]) : null },
             { ability: theirs ? theirs.ability : null, guild: rg, gel: rg != null && gs[rg] ? gs[rg].element || null : null, color: null }];
   }
   function openQuick() {
     const chars = CHARS(), gs = GUILDS(), w = Object.assign({}, PREFS.who || {});
     if (!chars.find((c) => c.id === w.char)) w.char = chars.length ? chars[0].id : null;
     if (w.guild == null || w.guild >= gs.length) w.guild = gs.length ? 0 : null;
-    if (!w.color) w.color = (gs[w.guild] && gs[w.guild].color) || (T.playerColors || [])[0] || null;
     openSheet({ type: "quick", who: w });
   }
   // quiet: set the table up behind the first-run setup sheet, without the "you go first" toast or the rival moving
