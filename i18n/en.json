@@ -775,7 +775,9 @@
     "trades": "Trades at the market",
     "tradesSub": "{gave} for {got}",
     "popTrades": "trades a card",
-    "lineTrade": "Traded {gave} for {got}"
+    "lineTrade": "Traded {gave} for {got}",
+    "popKnows": "knows the cure for {name}",
+    "popClaims": "claims {name}"
   },
   "over": {
     "you": "You win!",
@@ -1055,7 +1057,8 @@
     "ward": "Ward",
     "tools": "Tools",
     "oni": "Oni",
-    "none": "None yet"
+    "none": "None yet",
+    "claims": "Claims"
   },
   "trade": {
     "btn": "Trade",
