@@ -576,7 +576,9 @@
     "open": "Open hands",
     "openSub": "Both hands are face up, so you can see what your rival is after.",
     "target": "{{Mon}} to win",
-    "targetSub": "First to this many wins"
+    "targetSub": "First to this many wins",
+    "steam": "Steam and sparks",
+    "steamSub": "Faint steam drifting over the table, and sparks as ingredients go in."
   },
   "sheets": {
     "reward": "Patient cured",
