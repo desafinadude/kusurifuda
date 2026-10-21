@@ -758,7 +758,7 @@
   const setSteam = () => { const el = $("#steam"); if (el) el.hidden = !PREFS.steam || reduced(); };
   // a little burst of sparks where the marker lands as an ingredient goes in, in that ingredient's colour
   function sparkAt(el) {
-    const m = $(".board .mkr"); if (!m || reduced()) return;
+    const m = $(".board .mkr"); if (!m || reduced() || !PREFS.steam) return;
     const r = m.getBoundingClientRect(), fx = document.createElement("div"), rnd = (a, z) => a + Math.random() * (z - a);
     fx.className = "sparkfx"; fx.style.left = r.left + r.width / 2 + "px"; fx.style.top = r.top + r.height / 2 + "px";
     if (el) fx.style.setProperty("--tint", `var(--${el})`);
