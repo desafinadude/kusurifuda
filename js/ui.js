@@ -20,7 +20,8 @@
   // ---------- configuration (filled in by boot) ----------
   let CFG = null, T = null, STR = {}, LANG = "en", PLURAL = null;
   const ASSET = {}, SPR = {}, PCOL = {};   // asset name -> url ; asset name -> {id, vb} when it is in the sprite sheet
-  const PKEY = "kusurifuda.prefs";
+  // the beta (served under /beta/) keeps its own settings and quest progress
+  const PKEY = (/\/beta\//.test(location.pathname) ? "kusurifuda-beta" : "kusurifuda") + ".prefs";
   let PREFS = { hints: false, steam: true };
   try { PREFS = Object.assign(PREFS, JSON.parse(localStorage.getItem(PKEY) || "{}")); } catch (e) {}
   const savePrefs = () => { try { localStorage.setItem(PKEY, JSON.stringify(PREFS)); } catch (e) {} };
