@@ -535,7 +535,8 @@
     "buy": "Buy",
     "onYourTurn": "Buy on your turn.",
     "boughtThisTurn": "You've bought a tool this turn.",
-    "how": "One tool per turn. Pay with {{mon}}: your marker moves back. You have {n}."
+    "how": "One tool per turn. Pay with {{mon}}: your marker moves back. You have {n}.",
+    "closed": "No tool shop here"
   },
   "stash": {
     "oniLeft": "Oni · {n} left",
@@ -961,7 +962,7 @@
     "_about": "Quest mode: the journey from Aomori to Edo. One name and line per stop in quest.json, in the same order.",
     "title": "Journey to Edo",
     "menu": "Journey to Edo",
-    "menuNew": "Twenty stops from Aomori",
+    "menuNew": "Ten stops from Aomori to Edo",
     "menuAt": "{n} of {total} stops behind you",
     "stop": "Stop {n} of {total}",
     "cleared": "Cleared",
@@ -988,93 +989,74 @@
       "noTools": "Your rival buys no tools",
       "noCurse": "Your rival never claims patients",
       "headStart": "Your rival starts with {n} {{mon}}",
-      "fewOni": "Few oni on the maps",
-      "manyOni": "Oni everywhere",
-      "near": "Cures lie close to the centre",
-      "hidden": "Hands are hidden"
+      "hidden": "Hands are hidden",
+      "noShop": "No tool shop",
+      "noClaims": "No claims",
+      "tiers1": "Only gentle patients",
+      "tiers2": "Gentle and middling patients",
+      "greedy": "Your rival is quick to claim patients",
+      "rivalChest": {
+        "one": "Your rival carries a boost of their own",
+        "other": "Your rival carries {n} boosts of their own"
+      }
     },
     "stops": [
       {
         "name": "Aomori",
-        "line": "The ferry from Ezo lands you among the herring sheds."
-      },
-      {
-        "name": "Noheji",
-        "line": "A post town on the bay, where the road turns south."
-      },
-      {
-        "name": "Gonohe",
-        "line": "Horse country. The stable hands all have colds."
+        "line": "The ferry from Ezo lands you among the herring sheds. Fishermen with chills and coughs queue at your little stall."
       },
       {
         "name": "Sannohe",
-        "line": "The old castle town of the Nanbu lords."
-      },
-      {
-        "name": "Ichinohe",
-        "line": "The last of the northern horse towns."
-      },
-      {
-        "name": "Numakunai",
-        "line": "A quiet stop before the long walk to Morioka."
+        "line": "The road climbs into the mountains. The cases get harder: longer routes, and symptoms to treat on the way."
       },
       {
         "name": "Morioka",
-        "line": "Ironworks and three rivers."
+        "line": "A castle town with a busy market, where the toolmakers sell to any healer with coin."
       },
       {
         "name": "Hanamaki",
-        "line": "Hot springs, and a queue of aching backs."
-      },
-      {
-        "name": "Mizusawa",
-        "line": "A samurai town of tidy gardens."
+        "line": "Hot springs, and a waiting bench full of bathers. The longer they wait, the more they need, and the more they pay."
       },
       {
         "name": "Ichinoseki",
-        "line": "The gate to the south of Michinoku."
+        "line": "A shrine town of odd cases and rival healers who claim the patients they want."
       },
       {
         "name": "Sendai",
-        "line": "The great castle town of the Date. Halfway."
-      },
-      {
-        "name": "Shiroishi",
-        "line": "Snow on the passes and paper mills in the valley."
+        "line": "The great merchant city of the north. Grateful patients here bring gifts."
       },
       {
         "name": "Fukushima",
-        "line": "Silk merchants and their nervous customers."
-      },
-      {
-        "name": "Nihonmatsu",
-        "line": "Chrysanthemums, pines and a crowded village."
-      },
-      {
-        "name": "Sukagawa",
-        "line": "Ponds of koi and a very old peony garden."
+        "line": "An outbreak! Every patient is contagious. Whoever lets them go home uncured, everyone pays."
       },
       {
         "name": "Shirakawa",
-        "line": "The Shirakawa barrier, the old edge of the north."
-      },
-      {
-        "name": "Ōtawara",
-        "line": "Past the barrier, people keep their cards close."
+        "line": "The great barrier gate. A noble traveller asks you, privately, for a cure in stages."
       },
       {
         "name": "Utsunomiya",
-        "line": "Where the Nikkō road joins. Pilgrims everywhere."
-      },
-      {
-        "name": "Koga",
-        "line": "One river crossing from the capital."
+        "line": "The river crossing: the ferry won't wait, the bench is short, and your rival keeps their cards close."
       },
       {
         "name": "Edo",
-        "line": "Nihonbashi, where every road begins. Cure the capital."
+        "line": "The Shōgun's court. Cure the Shōgun himself, and beat the best healer in the land."
       }
-    ]
+    ],
+    "boss": "Boss",
+    "new": "New here:",
+    "intro": {
+      "basics": "Gentle patients, close to the centre. Learn to brew.",
+      "symptoms": "Harder patients, some with symptom marks the route must pass through.",
+      "tools": "The tool shop opens.",
+      "bench": "The waiting bench: patients who wait need more ingredients but pay more, and the last one goes home each round.",
+      "claims": "Claims: lay an oni to keep a patient for yourself.",
+      "quirks": "Quirks: frail, nervous, stubborn and contagious patients.",
+      "gifts": "Gifts: some patients thank you with mon, cards, an oni or a cheaper tool.",
+      "outbreak": "Boss: every patient is contagious. If one goes home uncured, both healers lose 2.",
+      "royal": "Your royal patient: a private cure in two stages, paid in full at the end.",
+      "river": "A short bench of three spots, and hidden hands.",
+      "shogun": "Final boss: the Shōgun is your royal patient, and your rival starts ahead."
+    }
   },
   "title": {
     "tagline": "A game of cures and curses",
@@ -1218,5 +1200,60 @@
     "stageDone": "Stage {n} of {of}",
     "stageSub": "Pays {n} {{mon}} once every stage is done",
     "short": "Royal {n}/{of}"
+  },
+  "chest": {
+    "title": "Medicine chest",
+    "sub": "Up to three things, yours for the rest of the journey",
+    "choose": "Choose a reward",
+    "chooseSub": "For your medicine chest",
+    "pickFirst": "Choose a reward first",
+    "seedling": {
+      "name": "Seedling",
+      "text": "Start each game with one more card planted."
+    },
+    "satchel": {
+      "name": "Big satchel",
+      "text": "Hold one more card in your hand."
+    },
+    "trowel": {
+      "name": "Trowel",
+      "text": "Your garden holds one more card."
+    },
+    "purse": {
+      "name": "Purse of mon",
+      "text": "Start each game with 2 {{mon}}."
+    },
+    "charm": {
+      "name": "Spare oni",
+      "text": "One more oni for claims."
+    },
+    "almanac": {
+      "name": "Almanac",
+      "text": "Sakura and kept claims pay 1 more."
+    },
+    "apprentice": {
+      "name": "Apprentice",
+      "text": "Gather one more card."
+    },
+    "ladle": {
+      "name": "Your own Ladle",
+      "text": "Start each game with the Ladle."
+    },
+    "mortar": {
+      "name": "Your own Mortar",
+      "text": "Start each game with the Mortar."
+    },
+    "kitsune": {
+      "name": "Your own Kitsune Charm",
+      "text": "Start each game with the Kitsune Charm."
+    },
+    "basket": {
+      "name": "Your own Basket",
+      "text": "Start each game with the Basket."
+    },
+    "full": "Your chest holds {n}",
+    "fullSub": "Leave one behind",
+    "keepAll": "Leave the new one",
+    "keepAllSub": "Keep what you carry; {name} stays here"
   }
 }

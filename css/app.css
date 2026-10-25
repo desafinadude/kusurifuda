@@ -880,3 +880,14 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .tabl .vlist:has(.royal) .pc.vr .ppor.big{width:30px;height:30px}
 .tabl .vlist:has(.royal) .pc.vr b{-webkit-line-clamp:1;font-size:13px}
 .tabl .vlist:has(.royal) .pc.vr small{font-size:10.5px}
+/* the quest: what's new at a stop, bosses, and the medicine chest */
+.qnew{margin:4px 0;font-size:12.5px;line-height:1.35}
+.qnew b{color:var(--shu-deep)}
+.qboss{color:var(--shu);letter-spacing:.08em}
+.chests{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.chest{display:flex;flex-direction:column;gap:3px;text-align:left;padding:10px 12px;border-radius:12px;border:1.5px solid color-mix(in srgb,var(--frame) 60%,transparent);background:rgba(255,255,255,.3);color:var(--ink);font:inherit;cursor:pointer}
+.chest b{font-family:var(--serif);font-size:14px}
+.chest small{font-size:11.5px;color:var(--brown);line-height:1.3}
+.chest.on{border-color:var(--gold);box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 50%,transparent);background:color-mix(in srgb,var(--gold) 14%,transparent)}
+.chests.own .chest{cursor:default;padding:7px 10px}
+.chestsel{margin-top:4px}

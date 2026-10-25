@@ -584,7 +584,7 @@
     const g = G(), b = bot();
     return RU().toolIds.map((id) => {
       const mine = me().tools[id], riv = b.tools[id], can = myTurn() && !g.turn.bought && KF.canBuy(0, id);
-      const st = mine ? t("tools.yours") : riv ? t("tools.rivalOwns") : can ? t("tools.tapToBuy") : g.turn.bought ? t("tools.onePerTurn") : t("tools.need", { n: KF.cost(id) });
+      const st = mine ? t("tools.yours") : riv ? t("tools.rivalOwns") : RU().toolShop === false ? t("tools.closed") : can ? t("tools.tapToBuy") : g.turn.bought ? t("tools.onePerTurn") : t("tools.need", { n: KF.cost(id) });
       return `<button class="tbig ${mine ? "mine" : riv ? "rival" : "buy"}" data-a="buy" data-i="${id}" ${can ? "" : "disabled"} aria-label="${attr(`${toolName(id)}: ${toolText(id, true)}. ${st}`)}"><span class="ti">${art(toolArt(id))}</span><span class="tb"><span class="th"><b>${esc(toolName(id))}</b>${mine ? "" : monVal(KF.cost(id))}</span><small>${toolText(id, true)}</small><span class="st">${mine ? ICON.check(11) + " " : ""}${st}</span></span></button>`;
     }).join("");
   }
@@ -923,6 +923,7 @@
         let st;
         if (p.tools[id]) st = `<span class="mine">${t("tools.yours")}</span>`;
         else if (b.tools[id]) st = `<span class="rv">${t("tools.rivalOwns")}</span>`;
+        else if (RU().toolShop === false) st = `<span class="rv">${t("tools.closed")}</span>`;
         else { const can = myTurn() && !g.turn.bought && KF.canBuy(0, id); st = `<button class="btn primary" data-a="buy" data-i="${id}" ${can ? "" : "disabled"}>${t("tools.buy")}</button>`; }
         return `<div class="trow"><span class="ti paper">${art(toolArt(id))}</span><span class="tb"><b>${toolIc(id)} ${esc(toolName(id))}</b><span class="c">${t("tools.cost", { n: KF.cost(id) })}</span><small>${toolText(id)}</small></span><span class="st">${st}</span></div>`;
       }).join("");
@@ -1029,19 +1030,27 @@
       return `<div class="sh"><div><h2>${t("quest.title")}</h2><div class="sub">${all ? t("quest.done") : t("quest.menuAt", { n: done, total: stops.length })}</div></div></div>
         ${all ? `<p class="muted">${t("quest.doneSub")}</p>` : ""}
         <div class="qwrap">${questMap(i)}
-          <div class="qinfo"><span class="cap">${t("quest.stop", { n: i + 1, total: stops.length })}${i < done ? ` · ${ICON.check(11)} ${t("quest.cleared")}` : ""}</span>
+          <div class="qinfo"><span class="cap">${t("quest.stop", { n: i + 1, total: stops.length })}${st.boss ? ` · <b class="qboss">${t("quest.boss")}</b>` : ""}${i < done ? ` · ${ICON.check(11)} ${t("quest.cleared")}` : ""}</span>
             <h3>${esc(stopName(i))}</h3><p class="muted">${esc(stopText(i).line || "")}</p>
+            ${(st.intro || []).map((k) => `<p class="qnew"><b>${t("quest.new")}</b> ${t("quest.intro." + k)}</p>`).join("")}
             <ul class="qtags">${questTags(st).map((x) => `<li>${x}</li>`).join("")}</ul>
             <div class="qnav"><button class="btn" data-a="qstep" data-i="-1" aria-label="${attr(t("quest.prev"))}" ${i > 0 ? "" : "disabled"}>‹</button><button class="btn" data-a="qstep" data-i="1" aria-label="${attr(t("quest.next"))}" ${i < Math.min(done, stops.length - 1) ? "" : "disabled"}>›</button></div>
           </div></div>
+        ${(PREFS.chest || []).length ? `<div class="sect"><div class="hd"><b>${t("chest.title")}</b><span>${t("chest.sub")}</span></div><div class="chests own">${PREFS.chest.map((id) => `<span class="chest on"><b>${t("chest." + id + ".name")}</b><small>${t("chest." + id + ".text")}</small></span>`).join("")}</div></div>` : ""}
         ${mid ? `<p class="muted">${t("quest.abandon")}</p>` : ""}
         <div class="btns">${all ? `<button class="btn" data-a="qrestart">${t("quest.restart")}</button>` : `<button class="btn" data-a="qclose">${t("common.close")}</button>`}<button class="btn primary" data-a="qgo" data-i="${i}">${i < done ? t("quest.playAgain") : t("quest.setOut")}</button></div>`;
     },
     over() {
       const g = G(), [a, b] = g.P, w = g.winner;
       const q = g.quest && QUEST ? g.quest.n : null, nxt = q != null && q + 1 < QUEST.stops.length ? q + 1 : null;
+      // a first win at a stop earns a reward for the medicine chest; travel on once it's chosen
+      const offer = q != null && w === "you" && g.quest.reward !== false ? (g.quest.offer || (g.quest.offer = chestOffer(q))) : [];
+      // a full chest: the new reward waits until you choose what to leave behind
+      const full = offer.length && g.quest.picked && !g.quest.kept, picking = offer.length && (!g.quest.picked || full);
+      const dropRow = full ? `<div class="sect chestsel"><div class="hd"><b>${t("chest.full", { n: chestSlots() })}</b><span>${t("chest.fullSub")}</span></div><div class="chests">${(PREFS.chest || []).map((id) => `<button class="chest" data-a="qdrop" data-i="${id}"><b>${t("chest." + id + ".name")}</b><small>${t("chest." + id + ".text")}</small></button>`).join("")}<button class="chest" data-a="qdrop" data-i=""><b>${t("chest.keepAll")}</b><small>${t("chest.keepAllSub", { name: t("chest." + g.quest.picked + ".name") })}</small></button></div></div>` : "";
+      const chest = offer.length ? `<div class="sect chestsel"><div class="hd"><b>${t("chest.choose")}</b><span>${t("chest.chooseSub")}</span></div><div class="chests">${offer.map((id) => chestItem(id, g.quest.picked === id)).join("")}</div></div>${dropRow}` : "";
       const qbtns = q == null ? "" : w === "you"
-        ? `<div class="btns"><button class="btn" data-a="questmap" data-i="${nxt != null ? nxt : q}">${t("quest.map")}</button>${nxt != null ? `<button class="btn primary" data-a="qgo" data-i="${nxt}">${t("quest.onTo", { place: esc(stopName(nxt)) })}</button>` : ""}</div>`
+        ? `${chest}<div class="btns"><button class="btn" data-a="questmap" data-i="${nxt != null ? nxt : q}">${t("quest.map")}</button>${nxt != null ? `<button class="btn primary" data-a="qgo" data-i="${nxt}" ${picking ? "disabled" : ""}>${picking ? t("chest.pickFirst") : t("quest.onTo", { place: esc(stopName(nxt)) })}</button>` : ""}</div>`
         : `<div class="btns"><button class="btn" data-a="questmap" data-i="${q}">${t("quest.map")}</button><button class="btn primary" data-a="qgo" data-i="${q}">${t("quest.retry")}</button></div>`;
       const names = (p) => RU().toolIds.filter((id) => p.tools[id]).map(toolName).join(", ") || t("rival.none");
       return `<div class="sh end" style="flex-direction:column"><div class="big">${ic(w === "tie" ? "tie" : w === "you" ? "win" : "lose")}</div><h2>${t("over." + w)}</h2></div>
@@ -1227,7 +1236,7 @@
   function showOver() {
     U.busy = false; U.rv = null; U.bo = null; render();
     const w = G().winner; if (w === "you") SFX.win(); else if (w === "rival") SFX.lose(); else SFX.cure();
-    const q = G().quest; if (q && w === "you" && !q.won) { q.won = true; PREFS.questDone = Math.max(PREFS.questDone || 0, q.n + 1); savePrefs(); KF.save(); }
+    const q = G().quest; if (q && w === "you" && !q.won) { q.won = true; if (q.n < (PREFS.questDone || 0)) q.reward = false; PREFS.questDone = Math.max(PREFS.questDone || 0, q.n + 1); savePrefs(); KF.save(); }
     openSheet({ type: "over", modal: true, quiet: true });
   }
   function endMyTurn() {
@@ -1355,7 +1364,9 @@
       case "qstep": s.sel = Math.max(0, Math.min(Math.min(questDone(), QUEST.stops.length - 1), s.sel + +i)); SFX.tap("E"); renderSheet(); return;
       case "qgo": startQuest(+i); return;
       case "qclose": if (!U.screen && g.over) openSheet({ type: "over", modal: true, quiet: true }); else closeSheet(); return;
-      case "qrestart": PREFS.questDone = 0; savePrefs(); s.sel = 0; SFX.toggle(); renderSheet(); return;
+      case "qrestart": PREFS.questDone = 0; PREFS.chest = []; savePrefs(); s.sel = 0; SFX.toggle(); renderSheet(); return;
+      case "qchest": { const q = g && g.quest; if (!q || q.picked) return; q.picked = i; if ((PREFS.chest || []).length < chestSlots()) { q.kept = true; PREFS.chest = [...(PREFS.chest || []), i]; savePrefs(); } KF.save(); SFX.fame(); renderSheet(); return; }
+      case "qdrop": { const q = g && g.quest; if (!q || !q.picked || q.kept) return; q.kept = true; if (i) PREFS.chest = [...(PREFS.chest || []).filter((x) => x !== i), q.picked]; savePrefs(); KF.save(); SFX.toggle(); renderSheet(); return; }
       case "hints": PREFS.hints = !PREFS.hints; savePrefs(); SFX.toggle(); render(); renderSheet(); return;
       case "steam": PREFS.steam = !PREFS.steam; savePrefs(); SFX.toggle(); setSteam(); renderSheet(); return;
       case "sound": SFX.set(!SFX.isOn()); if (U.sheet) renderSheet(); render(); return;
@@ -1596,20 +1607,39 @@
   function startQuest(i) {
     const st = QUEST && QUEST.stops[i]; if (!st) return;
     const players = pickPlayers(); players[1].style = Object.assign({}, st.rival || {});
+    const ch = chestBoosts(); players[0].mods = ch.mods; players[0].tools = ch.tools;
+    if (st.rival && st.rival.mods) players[1].mods = Object.assign({}, st.rival.mods);
     U.screen = null; closeSheet(); startNew(false, { settings: JSON.parse(JSON.stringify(st.rules || {})), players, quest: { n: i }, headStart: (st.rival && st.rival.headStart) || 0 });
   }
   // what is different at a stop, in words, from its rules and how the rival plays
   function questTags(st) {
     const r = merge(BASE_RULES, st.rules || {}), rv = st.rival || {}, p = r.patients || {};
     const out = [t("quest.tags.goal", { n: r.endFame }), t("quest.tags.depth" + Math.max(2, Math.min(5, rv.depth || 5)))];
-    if (rv.tools === false) out.push(t("quest.tags.noTools"));
-    if (rv.curse === false) out.push(t("quest.tags.noCurse"));
+    if (r.toolShop === false) out.push(t("quest.tags.noShop"));
+    if (r.claims === false) out.push(t("quest.tags.noClaims"));
+    if (p.tiers && p.tiers.length < 3) out.push(t("quest.tags.tiers" + Math.max(...p.tiers)));
+    if (rv.greedy) out.push(t("quest.tags.greedy"));
     if (rv.headStart) out.push(t("quest.tags.headStart", { n: rv.headStart }));
-    if (p.oniMax <= 2) out.push(t("quest.tags.fewOni")); else if (p.oniMin >= 2) out.push(t("quest.tags.manyOni"));
-    if (p.maxDistance <= 4) out.push(t("quest.tags.near"));
+    if (rv.mods) out.push(t("quest.tags.rivalChest", { n: Object.values(rv.mods).reduce((x, v) => x + v, 0) }));
     if (!r.openHands) out.push(t("quest.tags.hidden"));
     return out;
   }
+  // ---------- the medicine chest: one reward per stop won, kept for the whole journey ----------
+  const chestSlots = () => (QUEST && QUEST.chest && QUEST.chest._slots) || 3;
+  const chestIds = () => (QUEST && QUEST.chest ? Object.keys(QUEST.chest).filter((k) => !k.startsWith("_")) : []);
+  function chestBoosts() {
+    const mods = {}, tools = [];
+    (PREFS.chest || []).forEach((id) => { const c = QUEST && QUEST.chest && QUEST.chest[id]; if (!c) return; Object.entries(c.mods || {}).forEach(([k, v]) => { mods[k] = (mods[k] || 0) + v; }); if (c.tool) tools.push(c.tool); });
+    return { mods, tools };
+  }
+  // three rewards you don't have yet, the same every time you look (seeded by the stop)
+  function chestOffer(n) {
+    const own = new Set(PREFS.chest || []), pool = chestIds().filter((id) => !own.has(id) && !id.startsWith("_"));
+    let x = (n + 1) * 2654435761 >>> 0; const rnd = () => { x ^= x << 13; x >>>= 0; x ^= x >> 17; x ^= x << 5; x >>>= 0; return x / 4294967296; };
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+    return pool.slice(0, 3);
+  }
+  const chestItem = (id, on) => `<button class="chest${on ? " on" : ""}" data-a="qchest" data-i="${id}" aria-pressed="${!!on}"><b>${t("chest." + id + ".name")}</b><small>${t("chest." + id + ".text")}</small></button>`;
   // the map's land: only the viewBox and the land/border path data are taken from the file
   async function readQuestMap(url) {
     const r = await fetch(url); if (!r.ok) throw new Error(`${url}: ${r.status}`);

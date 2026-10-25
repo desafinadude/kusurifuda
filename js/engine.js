@@ -36,7 +36,9 @@
     out.bench = Object.assign({ enabled: false, spots: [] }, out.bench);
     out.royal = Object.assign({ enabled: false, min: 3 }, out.royal);
     out.gifts = Object.assign({ enabled: false, mon: 2, draw: 2 }, out.gifts);
-    out.quirks = Object.assign({ enabled: false, contagious: 2 }, out.quirks);
+    out.quirks = Object.assign({ enabled: false, contagious: 2, force: null }, out.quirks);
+    if (out.toolShop == null) out.toolShop = true;
+    if (out.claims == null) out.claims = true;
     out.ward = Object.assign({ enabled: false, uses: 1 }, out.ward);
     out.knownCure = Object.assign({ enabled: false, payout: 0.5 }, out.knownCure);
     out.guilds = Object.assign({ echo: false }, out.guilds);
@@ -51,7 +53,7 @@
   const MODS = ["gardenMax", "handLimit", "startHand", "oniPerPlayer", "gather", "sakuraBonus", "toolCost", "startFame", "startGarden", "swap"];
   const ZERO_BASE = ["toolCost", "startFame", "startGarden", "swap"]; // abilities that add to nothing in the base rules
   function abilityOf(pi) { const p = G && G.P && G.P[pi]; const a = p && p.ability && RU().abilities && RU().abilities[p.ability]; return a || null; }
-  function limit(pi, key, a) { const ab = a !== undefined ? a : abilityOf(pi); return (ZERO_BASE.includes(key) ? 0 : RU()[key]) + ((ab && ab[key]) || 0); }
+  function limit(pi, key, a) { const ab = a !== undefined ? a : abilityOf(pi), p = G && G.P && G.P[pi], m = (p && p.mods && p.mods[key]) || 0; return (ZERO_BASE.includes(key) ? 0 : RU()[key]) + ((ab && ab[key]) || 0) + m; }
 
   // ---------- helpers ----------
   const rnd = () => Math.random();
@@ -149,7 +151,7 @@
   // Cure them in time for a sakura bonus; let the claim lapse and the other player gets it instead
   const barred = (pi, pt) => !!(pt && pt.claim && pt.claim.p !== pi);
   const claimBonus = (pi) => limit(pi, "sakuraBonus");
-  function canClaim(pi, k) { const p = G.P[pi], pt = G.village[k]; return !!pt && !pt.claim && p.oni > 0 && G.cur === pi && !G.turn.claimed && (pi !== 0 || G.turn.acted); }
+  function canClaim(pi, k) { if (RU().claims === false) return false; const p = G.P[pi], pt = G.village[k]; return !!pt && !pt.claim && p.oni > 0 && G.cur === pi && !G.turn.claimed && (pi !== 0 || G.turn.acted); }
   function claim(pi, k) {
     if (!canClaim(pi, k)) return false;
     const pt = G.village[k]; pt.claim = { p: pi, exp: G.tn + 2 }; G.P[pi].oni--; G.turn.claimed = true;
@@ -193,7 +195,7 @@
   }
   // ---------- patient demands: symptoms, the bench, quirks ----------
   const symAll = (pt) => (pt.sym && pt.sym.length ? (1 << pt.sym.length) - 1 : 0);
-  const quirk = (pt) => (RU().quirks.enabled && pt.quirk) || null;
+  const quirk = (pt) => (RU().quirks.enabled && (pt.royal ? null : RU().quirks.force || pt.quirk)) || null;
   // ingredients a patient needs: from their spot on the bench (or a royal's stage minimum)
   function needCards(pt) {
     const r = RU(); if (pt.royal) return r.royal.min;
@@ -275,13 +277,15 @@
   // who: { ability, guild, color, style } chosen at the start (all optional); style = how a bot plays the seat: { depth, tools, curse }
   function mkP(who) {
     const w = who || {}, ab = (w.ability && RU().abilities && RU().abilities[w.ability]) || null;
-    return { hand: [], garden: [], ward: [], fame: limit(0, "startFame", ab), oni: limit(0, "oniPerPlayer", ab), tools: {}, cures: 0, ability: ab ? w.ability : null, guild: w.guild != null ? w.guild : null, gel: w.gel || null, color: w.color || null, style: w.style || null };
+    // mods: boosts carried in from outside the game (the quest's medicine chest); tools: tools owned from the start
+    const m = w.mods || {}, tools = {}; (w.tools || []).forEach((t) => { if (RU().toolDefs[t]) tools[t] = true; });
+    return { hand: [], garden: [], ward: [], fame: limit(0, "startFame", ab) + (m.startFame || 0), oni: limit(0, "oniPerPlayer", ab) + (m.oniPerPlayer || 0), tools, cures: 0, ability: ab ? w.ability : null, guild: w.guild != null ? w.guild : null, gel: w.gel || null, color: w.color || null, style: w.style || null, mods: Object.keys(m).length ? m : null };
   }
   function draw() { if (!G.deck.length) { G.deck = shuffle(G.discard); G.discard = []; } return G.deck.pop() || null; }
   const snap = (c) => ({ el: c.el, el2: c.el2, n: c.n, steps: c.steps });
   function log(k, p, a) { G.log.unshift({ k, p, a: a || {}, r: G.round }); if (G.log.length > 200) G.log.length = 200; }
 
-  function canBuy(pi, t) { const p = G.P[pi]; return !!RU().toolDefs[t] && !p.tools[t] && toolsLeft(t) > 0 && p.fame >= cost(t, pi); }
+  function canBuy(pi, t) { if (RU().toolShop === false) return false; const p = G.P[pi]; return !!RU().toolDefs[t] && !p.tools[t] && toolsLeft(t) > 0 && p.fame >= cost(t, pi); }
   function buyTool(pi, t) {
     if (!canBuy(pi, t)) return false;
     const p = G.P[pi]; const c = cost(t, pi); p.fame -= c; p.tools[t] = true; if (p.toolOff) p.toolOff--; if (pi === 0) G.turn.bought = true;
@@ -302,12 +306,14 @@
     Object.assign(G, { deck: [], discard: [], market: [], village: [], pats: [], log: [], over: false, trigger: false, round: 1, phase: "main", pending: null, winner: null });
     G.P = [mkP(players[0]), mkP(players[1])];
     G.deck = makeDeck();
-    if (DECK && G.rules.patients.designed !== false) G.pats = shuffle(DECK.map((d) => Object.assign({ mv: "knight", art: d.who }, JSON.parse(JSON.stringify(d)), { id: G.uid++, claim: null, rot: 0 })));
+    const tiers = G.rules.patients.tiers;
+    if (DECK && G.rules.patients.designed !== false) G.pats = shuffle(DECK.filter((d) => !tiers || tiers.includes(d.tier)).map((d) => Object.assign({ mv: "knight", art: d.who }, JSON.parse(JSON.stringify(d)), { id: G.uid++, claim: null, rot: 0 })));
     else for (let i = 0; i < G.rules.patients.count; i++) G.pats.push(makePatient(names));
     for (let i = 0; i < G.rules.marketSize; i++) G.market.push(draw());
     for (let i = 0; i < G.rules.villageSize; i++) G.village.push(G.pats.shift());
     if (G.rules.royal.enabled && ROYALS && ROYALS.length) {
-      const rs = shuffle(ROYALS.slice());
+      const rs = shuffle(ROYALS.slice()), mineR = G.rules.royal.you;
+      if (mineR != null) { const i = rs.findIndex((r) => r.who === mineR); if (i > 0) rs.unshift(rs.splice(i, 1)[0]); }
       G.P.forEach((p, pi) => {
         const ro = JSON.parse(JSON.stringify(rs[pi % rs.length])); ro.stage = 0;
         ro.stages.forEach((st, i) => Object.assign(st, { royal: true, id: G.uid++, claim: null, rot: 0, who: ro.who, art: ro.art != null ? ro.art : ro.who, ail: ro.ail, el: st.el || ro.el, mv: "knight", n: i }));
@@ -527,7 +533,7 @@
               if (r.openHands && solve(pt, o.garden, o.hand, 4, o.tools, undefined, { ward: o.ward, echo: echoEl(o) }).best) v += 3;
               v += rnd() * 0.5; if (!pick || v > pick.v) pick = { k, v };
             });
-            if (pick && pick.v >= 4 + (3 - p.oni)) return { type: "claim", k: pick.k };
+            if (pick && pick.v >= 4 + (3 - p.oni) - (st.greedy || 0)) return { type: "claim", k: pick.k };
           }
           G.botStage = "plant"; continue;
         }

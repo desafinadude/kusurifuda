@@ -15,6 +15,6 @@
   "rules": "rules.json",
   "patients": "patients.json",
   "quest": "quest.json",
-  "questOn": false,
+  "questOn": true,
   "themePicker": true
 }
