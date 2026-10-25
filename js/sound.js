@@ -7,7 +7,7 @@
    "sound" setting. Exposes window.SFX. */
 (function () {
   "use strict";
-  const KEY = "kusurifuda.sound";
+  const KEY = (/\/beta\//.test(location.pathname) ? "kusurifuda-beta" : "kusurifuda") + ".sound";
   let on = true; try { on = localStorage.getItem(KEY) !== "off"; } catch (e) {}
   let ctx = null, master = null, wet = null, noiseBuf = null;
 

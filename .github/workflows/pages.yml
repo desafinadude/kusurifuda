@@ -1,4 +1,5 @@
-# Publishes the game to GitHub Pages on every push to master.
+# Publishes the game to GitHub Pages on every push to master, with the 'beta' branch (if there is one)
+# at /beta/. Pushes to beta re-run this from master (see beta.yml): only master may deploy to Pages.
 # The site is the folder as it is; nothing is built here (build/build.py is for local use).
 name: Deploy to GitHub Pages
 
@@ -24,12 +25,24 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      # the beta: whatever is on the 'beta' branch, published at /beta/ beside the live game
+      - name: Fetch the beta
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: beta
+          path: _beta
       - name: Collect the site
         run: |
           mkdir _site
-          rsync -a --exclude '.git*' --exclude '.github' --exclude '_site' \
+          rsync -a --exclude '.git*' --exclude '.github' --exclude '_site' --exclude '_beta' \
             --exclude 'build' --exclude 'docs' \
             --exclude '*.md' --exclude 'netlify.toml' --exclude '_headers' ./ _site/
+          if [ -f _beta/index.html ]; then
+            rsync -a --exclude '.git*' --exclude '.github' \
+              --exclude 'build' --exclude 'docs' \
+              --exclude '*.md' --exclude 'netlify.toml' --exclude '_headers' _beta/ _site/beta/
+          fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

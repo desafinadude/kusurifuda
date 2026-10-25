@@ -1,7 +1,10 @@
 /* Kusurifuda service worker — precaches the whole game so it plays offline.
    Version is a hash of the app files, so any change ships a fresh cache. */
 const VERSION = "__VERSION__";
-const CACHE = "kusurifuda-" + VERSION;
+// the live game and the beta (/beta/) share an origin, so their caches are named apart and never cleared by each other
+const BETA = /\/beta\/$/.test(self.registration.scope);
+const PFX = BETA ? "kusurifuda-beta-" : "kusurifuda-";
+const CACHE = PFX + VERSION;
 const PRECACHE = __PRECACHE__;
 
 self.addEventListener("install", (e) => {
@@ -12,7 +15,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith("kusurifuda-") && k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith(PFX) && k !== CACHE && (BETA || !k.startsWith("kusurifuda-beta-"))).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
@@ -20,6 +23,8 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   const req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
+  // the live game's worker leaves the beta's pages and files to the beta's own worker
+  if (!BETA && req.url.startsWith(self.registration.scope + "beta/")) return;
   if (req.mode === "navigate") {
     // app shell: cached index, refreshed in the background when online
     e.respondWith(caches.match("./", { ignoreSearch: true }).then((hit) => hit || fetch(req)).catch(() => caches.match("./")));

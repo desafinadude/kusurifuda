@@ -1,0 +1,19 @@
+# A push to the 'beta' branch re-publishes the site from master, which picks the beta up into /beta/.
+# (Only master may deploy to GitHub Pages, so the beta can't publish itself.)
+name: Publish the beta
+
+on:
+  push:
+    branches: [beta]
+
+permissions:
+  actions: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Re-run the Pages deploy from master
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref master
