@@ -477,7 +477,8 @@
   function botStep() { const m = botNext(); if (m.type === "end") return m; return Object.assign(m, botDo(m)); }
 
   // ---------- save / load ----------
-  const KEY = "kusurifuda.save.v2";
+  // the beta (served under /beta/) keeps its own save, so it never overwrites the live game's
+  const KEY = (/\/beta\//.test(location.pathname) ? "kusurifuda-beta" : "kusurifuda") + ".save.v2";
   function save() { try { localStorage.setItem(KEY, JSON.stringify(G)); } catch (e) { /* storage unavailable */ } }
   function load() {
     try { const s = localStorage.getItem(KEY); if (!s) return null; const g = JSON.parse(s); if (!g || g.v !== 2 || !g.P || !g.rules || !g.rules.deck || !g.rules.deck.straight) return null;
