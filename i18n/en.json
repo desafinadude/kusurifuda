@@ -197,6 +197,22 @@
       {
         "full": "A Wandering Poet",
         "short": "Wandering Poet"
+      },
+      {
+        "full": "The Grand Champion",
+        "short": "Grand Champion"
+      },
+      {
+        "full": "A Temple Carpenter",
+        "short": "Carpenter"
+      },
+      {
+        "full": "The Lighthouse Keeper",
+        "short": "Lighthouse Keeper"
+      },
+      {
+        "full": "A Festival Dancer",
+        "short": "Dancer"
       }
     ],
     "ailments": [
@@ -451,7 +467,20 @@
     "knownHint": "Or use your known cure: +{n} {{mon}}",
     "freeClaim": "claim a patient",
     "claimedByRival": "{{Rival}} has claimed this patient",
-    "claimedByRivalSub": "You can cure them once {{rival}}'s next turn is over"
+    "claimedByRivalSub": "You can cure them once {{rival}}'s next turn is over",
+    "needCards": "Needs {n} ingredients",
+    "needCardsWhy": "The longer patients wait, the more ingredients a cure takes (hand and garden cards count)",
+    "needSymptoms": {
+      "one": "Pass through {n} more symptom",
+      "other": "Pass through {n} more symptoms"
+    },
+    "needSymptomsWhy": "The route must pass through every symptom mark before the cure",
+    "symptoms": "symptoms {got}/{n}",
+    "quirk": {
+      "frail": "Too frail for leaps",
+      "nervous": "Hand cards only",
+      "stubborn": "Needs two of their element"
+    }
   },
   "brew": {
     "backTo": "Go back to card {n}",
@@ -522,7 +551,9 @@
     "known": "A known cure, remembered from {name}",
     "joins": "{name} joins your ward",
     "joinsSub": "{move}: {text}",
-    "kept": "Claim kept · +{n} {{mon}}"
+    "kept": "Claim kept · +{n} {{mon}}",
+    "bench": "Waited on the bench · +{n} {{mon}}",
+    "giftFrom": "From {name}"
   },
   "plant": {
     "title": "Plant a card",
@@ -662,6 +693,22 @@
     "guild": {
       "h": "Guilds",
       "p": "Your guild has an element. Once per brew you may play one garden card of that element twice, so plant those."
+    },
+    "bench": {
+      "h": "The waiting bench",
+      "p": "Patients wait on a bench of four spots. Fresh arrivals need only {b3} ingredients; the longer they wait, the more a cure takes and the more it pays, up to {b0} ingredients and +{x0} on <b>last chance</b>. When someone is cured, the others move up. At the end of each round the last-chance patient goes home uncured."
+    },
+    "symptoms": {
+      "h": "Symptoms",
+      "p": "Harder patients show symptom marks on their map. The route must pass through every one before it ends on the cure. Straight moves pass through squares; diagonal moves and leaps only count where they land."
+    },
+    "quirks": {
+      "h": "Quirks and gifts",
+      "p": "Some patients have a quirk: <b>frail</b> (no diagonals or leaps), <b>nervous</b> (hand cards only), <b>stubborn</b> (two of their element) or <b>contagious</b> (if they go home uncured, both lose {cont}). Some give a gift when cured: {{mon}}, a card for your garden, an oni back, cards from the deck, or a cheaper tool. Every cured patient still joins your ward."
+    },
+    "royal": {
+      "h": "Your royal patient",
+      "p": "Each healer has a private royal patient with {stages} stages. Cure them in order, each with at least {rmin} ingredients, as your turn's action. A royal pays {rpay} {{mon}}, but only once every stage is done, and doesn't join your ward."
     }
   },
   "log": {
@@ -705,6 +752,14 @@
     "swap": {
       "you": "You trade {gave} for {got}.",
       "rival": "{{Rival}} trades {gave} for {got}."
+    },
+    "royal": {
+      "you": "You finish stage {n} of {of} for {name}.",
+      "rival": "{{Rival}} finishes stage {n} of {of} for {name}."
+    },
+    "royalDone": {
+      "you": "You cure your royal, {name}: +{pay} {{mon}}.",
+      "rival": "{{Rival}} cures their royal, {name}: +{pay} {{mon}}."
     }
   },
   "rival": {
@@ -780,7 +835,12 @@
     "popTrades": "trades a card",
     "lineTrade": "Traded {gave} for {got}",
     "popKnows": "knows the cure for {name}",
-    "popClaims": "claims {name}"
+    "popClaims": "claims {name}",
+    "brewsRoyal": "Brews for their royal: {name}",
+    "royalStage": "{name}: stage {n} of {of} done",
+    "royalDone": "{name} is cured!",
+    "lineRoyal": "Royal {name}: stage {n} of {of}",
+    "lineRoyalDone": "Cured their royal, {name}: +{pay} {{mon}}"
   },
   "over": {
     "you": "You win!",
@@ -828,7 +888,12 @@
     "blocked": "The path is blocked.",
     "needHand": "Use at least one card from your hand.",
     "notOnCure": "The route doesn't end on the cure.",
-    "needElement": "This patient needs an ingredient of its element"
+    "needElement": "This patient needs an ingredient of its element",
+    "needCards": "This patient needs more ingredients",
+    "needSymptoms": "The route must pass through every symptom",
+    "frail": "This patient is too frail for diagonal moves or leaps",
+    "nervous": "Nervous: hand cards only",
+    "stubborn": "This patient needs two ingredients of their element"
   },
   "install": {
     "offer": "Install Kusurifuda on this device",
@@ -1061,7 +1126,8 @@
     "tools": "Tools",
     "oni": "Oni",
     "none": "None yet",
-    "claims": "Claims"
+    "claims": "Claims",
+    "royal": "Royal patient"
   },
   "trade": {
     "btn": "Trade",
@@ -1077,5 +1143,80 @@
     "toast": "You trade for",
     "noHand": "No cards in hand to trade",
     "left": "Trade · {n} left"
+  },
+  "quirks": {
+    "frail": {
+      "name": "Frail",
+      "text": "No diagonal moves or ward leaps."
+    },
+    "nervous": {
+      "name": "Nervous",
+      "text": "Only cards from your hand: no garden cards."
+    },
+    "stubborn": {
+      "name": "Stubborn",
+      "text": "The brew needs two ingredients of their element."
+    },
+    "contagious": {
+      "name": "Contagious",
+      "text": "If they go home uncured, both healers lose {n} {{mon}}."
+    }
+  },
+  "gifts": {
+    "mon": {
+      "short": "+{n}",
+      "text": "Gift: {n} extra {{mon}} when cured.",
+      "got": "Gift: +{n} {{mon}}"
+    },
+    "plant": {
+      "short": "Plant",
+      "text": "Gift: the market's furthest-reaching card goes into your garden.",
+      "got": "Gift: a market card for your garden"
+    },
+    "oni": {
+      "short": "+1 oni",
+      "text": "Gift: one of your oni comes back.",
+      "got": "Gift: an oni back"
+    },
+    "draw": {
+      "short": "Draw {n}",
+      "text": "Gift: draw {n} cards from the deck.",
+      "got": "Gift: {n} cards from the deck"
+    },
+    "tool": {
+      "short": "Tool −1",
+      "text": "Gift: your next tool costs 1 {{mon}} less.",
+      "got": "Gift: your next tool costs 1 less"
+    }
+  },
+  "bench": {
+    "spot0": "Last chance",
+    "spot1": "Waiting",
+    "spot2": "Waiting",
+    "spot3": "Just arrived",
+    "needs": {
+      "one": "needs {n} card",
+      "other": "needs {n} cards"
+    },
+    "tip": "A cure here needs at least {n} ingredients and pays {b} extra.",
+    "left": "{name} waited too long and went home",
+    "leftContagious": "{name} went home uncured: both healers lose {n} {{mon}}"
+  },
+  "symptoms": {
+    "count": {
+      "one": "{n} symptom",
+      "other": "{n} symptoms"
+    },
+    "tip": "The route must pass through every symptom mark on the map before the cure."
+  },
+  "royal": {
+    "tag": "Royal · stage {n} of {of}",
+    "progress": "{n} of {of} done",
+    "pays": "pays {n}",
+    "stageTitle": "{name}: stage {n} of {of} done",
+    "doneTitle": "{name} is cured!",
+    "stageDone": "Stage {n} of {of}",
+    "stageSub": "Pays {n} {{mon}} once every stage is done",
+    "short": "Royal {n}/{of}"
   }
 }

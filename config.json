@@ -1,5 +1,5 @@
 {
-  "_about": "Which theme and language to use. Players can switch in Menu › Settings when more than one is listed. quest: the Journey to Edo file; questOn: false hides the quest everywhere (its files stay as they are). themePicker: false hides the theme switch. Aizome and Moonwort still live in themes/ but aren't listed.",
+  "_about": "Which theme and language to use. Players can switch in Menu › Settings when more than one is listed. quest: the Journey to Edo file; questOn: false hides the quest everywhere (its files stay as they are). themePicker: false hides the theme switch. Aizome and Moonwort still live in themes/ but aren't listed. patients: the designed patient deck and royals (made by build/deck.js).",
   "theme": "kusurifuda",
   "themes": {
     "kusurifuda": "themes/kusurifuda/theme.json",
@@ -13,6 +13,7 @@
     }
   },
   "rules": "rules.json",
+  "patients": "patients.json",
   "quest": "quest.json",
   "questOn": false,
   "themePicker": true

@@ -1,6 +1,6 @@
 {
   "_about": "Game rules. Every number the engine uses lives here. Change, reload, start a new game (a saved game keeps the rules it started with).",
-  "endFame": 25,
+  "endFame": 30,
   "handLimit": 7,
   "gardenMax": 3,
   "startHand": 5,
@@ -47,7 +47,9 @@
     "_ailmentKinds": "How many different ailments are in play each game (fewer = more repeats for known cures). null = all.",
     "ailmentKinds": 8,
     "_requireElement": "A cure needs at least one ingredient of the patient's element (Kitsune Tail counts as any).",
-    "requireElement": true
+    "requireElement": true,
+    "designed": true,
+    "_designed": "Use the designed deck in patients.json (true) or make random patients (false)."
   },
   "ward": {
     "_about": "Cured patients join your ward; each can leap like a knight (2 squares one way and 1 to the side, any way, over anything between). uses: times each can be played (null = once every brew, like a garden card).",
@@ -122,5 +124,43 @@
   "bot": {
     "_about": "The rival stops buying tools once it is this close to winning.",
     "stopBuyingWithin": 10
+  },
+  "bench": {
+    "_about": "The waiting bench: patients wait in these spots, first = 'last chance', last = 'just arrived'. min: ingredient cards a cure needs (hand and garden; tools and ward leaps don't count); bonus: extra mon. When a patient is cured everyone moves up; at the end of each round the last-chance patient goes home and a new one arrives.",
+    "enabled": true,
+    "spots": [
+      {
+        "bonus": 3,
+        "min": 4
+      },
+      {
+        "bonus": 2,
+        "min": 3
+      },
+      {
+        "bonus": 1,
+        "min": 3
+      },
+      {
+        "bonus": 0,
+        "min": 2
+      }
+    ]
+  },
+  "quirks": {
+    "_about": "Some patients have a quirk. frail: no diagonal or leaping moves; nervous: hand cards only; stubborn: two ingredients of their element; contagious: if they go home uncured, both players lose this much mon.",
+    "enabled": true,
+    "contagious": 2
+  },
+  "gifts": {
+    "_about": "Some patients give a gift when cured: mon (this much extra), plant (the market's furthest-reaching card into your garden), oni (one back), draw (this many cards from the deck), tool (your next tool costs 1 less).",
+    "enabled": true,
+    "mon": 2,
+    "draw": 2
+  },
+  "royal": {
+    "_about": "Each healer has a private royal patient (patients.json): cure its stages in order, each needing at least min ingredient cards. It pays only once every stage is done, and doesn't join the ward.",
+    "enabled": true,
+    "min": 3
   }
 }

@@ -131,7 +131,7 @@
 
   // ---------- the ward: cured patients played as moves ----------
   // every ward patient leaps like a knight: 2 squares one way and 1 to the side, any way, landing only
-  const wardCard = (w) => ({ id: "w" + w.id, el: w.el, ward: true, mv: "knight", who: w.who, steps: null, knight: true });
+  const wardCard = (w) => ({ id: "w" + w.id, el: w.el, ward: true, mv: "knight", who: w.who, art: w.art, steps: null, knight: true });
   const wardLeft = (w) => w.uses == null || w.uses < 0 || w.uses > 0;
   const EL4 = ["W", "F", "E", "A"], WILD = 16;
   const elBit = (el) => (el === "V" ? WILD : 1 << Math.max(0, EL4.indexOf(el)));
@@ -269,7 +269,7 @@
     return p.ward.findIndex((w) => w.ail === pt.ail && wardLeft(w) && !w.spent);
   }
   const knownPay = (pt) => Math.max(1, Math.floor(pt.val * RU().knownCure.payout));
-  function wardEntry(pt) { const u = RU().ward.uses; return { id: pt.id, who: pt.who, ail: pt.ail, el: pt.el, mv: pt.mv, val: pt.val, uses: u == null ? -1 : u }; }
+  function wardEntry(pt) { const u = RU().ward.uses; return { id: pt.id, who: pt.who, art: pt.art, ail: pt.ail, el: pt.el, mv: pt.mv, val: pt.val, uses: u == null ? -1 : u }; }
 
   // ---------- game ----------
   // who: { ability, guild, color, style } chosen at the start (all optional); style = how a bot plays the seat: { depth, tools, curse }
@@ -302,13 +302,17 @@
     Object.assign(G, { deck: [], discard: [], market: [], village: [], pats: [], log: [], over: false, trigger: false, round: 1, phase: "main", pending: null, winner: null });
     G.P = [mkP(players[0]), mkP(players[1])];
     G.deck = makeDeck();
-    if (DECK) G.pats = shuffle(DECK.map((d) => Object.assign(JSON.parse(JSON.stringify(d)), { id: G.uid++, claim: null, rot: 0 })));
+    if (DECK && G.rules.patients.designed !== false) G.pats = shuffle(DECK.map((d) => Object.assign({ mv: "knight", art: d.who }, JSON.parse(JSON.stringify(d)), { id: G.uid++, claim: null, rot: 0 })));
     else for (let i = 0; i < G.rules.patients.count; i++) G.pats.push(makePatient(names));
     for (let i = 0; i < G.rules.marketSize; i++) G.market.push(draw());
     for (let i = 0; i < G.rules.villageSize; i++) G.village.push(G.pats.shift());
     if (G.rules.royal.enabled && ROYALS && ROYALS.length) {
       const rs = shuffle(ROYALS.slice());
-      G.P.forEach((p, pi) => { const ro = JSON.parse(JSON.stringify(rs[pi % rs.length])); ro.stage = 0; ro.stages.forEach((st) => { st.royal = true; st.id = G.uid++; st.claim = null; }); p.royal = ro; });
+      G.P.forEach((p, pi) => {
+        const ro = JSON.parse(JSON.stringify(rs[pi % rs.length])); ro.stage = 0;
+        ro.stages.forEach((st, i) => Object.assign(st, { royal: true, id: G.uid++, claim: null, rot: 0, who: ro.who, art: ro.art != null ? ro.art : ro.who, ail: ro.ail, el: st.el || ro.el, mv: "knight", n: i }));
+        p.royal = ro;
+      });
     }
     G.P.forEach((p, pi) => { for (let i = 0; i < limit(pi, "startHand"); i++) p.hand.push(draw()); for (let i = 0; i < limit(pi, "startGarden"); i++) p.garden.push(draw()); });
     G.botPlan = shuffle(G.rules.toolIds.slice());
@@ -442,7 +446,7 @@
 
   // end the current player's turn. Returns "over" | "next"
   function endTurn() {
-    const pi = G.cur;
+    const pi = G.cur; G.left = null;
     G.lapsed = lapseClaims(pi);
     if (G.P.some((p) => p.fame >= RU().endFame)) G.trigger = true;
     const last = pi !== G.first;
