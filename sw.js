@@ -1,6 +1,6 @@
 /* Kusurifuda service worker — precaches the whole game so it plays offline.
    Version is a hash of the app files, so any change ships a fresh cache. */
-const VERSION = "4d0f2941f2";
+const VERSION = "0d1bd7bf62";
 // the live game and the beta (/beta/) share an origin, so their caches are named apart and never cleared by each other
 const BETA = /\/beta\/$/.test(self.registration.scope);
 const PFX = BETA ? "kusurifuda-beta-" : "kusurifuda-";
@@ -134,11 +134,19 @@ const PRECACHE = [
  "themes/kusurifuda/assets/oni.svg",
  "themes/kusurifuda/assets/oni.webp",
  "themes/kusurifuda/assets/paper.webp",
+ "themes/kusurifuda/assets/quirk-contagious.webp",
+ "themes/kusurifuda/assets/quirk-frail.webp",
+ "themes/kusurifuda/assets/quirk-nervous.webp",
+ "themes/kusurifuda/assets/quirk-stubborn.webp",
+ "themes/kusurifuda/assets/royal.webp",
  "themes/kusurifuda/assets/sakura.svg",
  "themes/kusurifuda/assets/sakura.webp",
+ "themes/kusurifuda/assets/symptom.webp",
  "themes/kusurifuda/assets/table.svg",
+ "themes/kusurifuda/assets/tool-abacus.webp",
  "themes/kusurifuda/assets/tool-basket.webp",
  "themes/kusurifuda/assets/tool-charm.webp",
+ "themes/kusurifuda/assets/tool-kettle.webp",
  "themes/kusurifuda/assets/tool-ladle.webp",
  "themes/kusurifuda/assets/tool-mortar.webp",
  "themes/kusurifuda/assets/water.svg",
@@ -241,6 +249,10 @@ const PRECACHE = [
  "themes/kusurifuda/people/patient-3.webp",
  "themes/kusurifuda/people/patient-30.webp",
  "themes/kusurifuda/people/patient-31.webp",
+ "themes/kusurifuda/people/patient-32.webp",
+ "themes/kusurifuda/people/patient-33.webp",
+ "themes/kusurifuda/people/patient-34.webp",
+ "themes/kusurifuda/people/patient-35.webp",
  "themes/kusurifuda/people/patient-4.webp",
  "themes/kusurifuda/people/patient-5.webp",
  "themes/kusurifuda/people/patient-6.webp",
@@ -249,6 +261,16 @@ const PRECACHE = [
  "themes/kusurifuda/people/patient-9.webp",
  "themes/kusurifuda/sprites.svg",
  "themes/kusurifuda/theme.json",
+ "themes/kusurifuda/towns/aomori.webp",
+ "themes/kusurifuda/towns/edo.webp",
+ "themes/kusurifuda/towns/fukushima.webp",
+ "themes/kusurifuda/towns/hanamaki.webp",
+ "themes/kusurifuda/towns/ichinoseki.webp",
+ "themes/kusurifuda/towns/morioka.webp",
+ "themes/kusurifuda/towns/sannohe.webp",
+ "themes/kusurifuda/towns/sendai.webp",
+ "themes/kusurifuda/towns/shirakawa.webp",
+ "themes/kusurifuda/towns/utsunomiya.webp",
  "themes/moonwort/assets/basket.svg",
  "themes/moonwort/assets/boardbg.svg",
  "themes/moonwort/assets/charm.svg",

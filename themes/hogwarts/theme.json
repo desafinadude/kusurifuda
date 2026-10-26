@@ -127,7 +127,11 @@
     "icon.el.F": "",
     "icon.el.E": "",
     "icon.el.A": "",
-    "icon.el.V": ""
+    "icon.el.V": "",
+    "patient.32": "people/patient-9.webp",
+    "patient.33": "people/patient-12.webp",
+    "patient.34": "people/patient-24.webp",
+    "patient.35": "people/patient-11.webp"
   },
   "elements": {
     "W": {

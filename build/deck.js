@@ -38,10 +38,10 @@ const CARDS = [
   { who: 20, tier: 3, el: "A", q: "stubborn", g: "draw", ail: 9 },   // Court Astrologer, forgetfulness
   { who: 29, tier: 3, el: "W", q: "nervous", g: "plant", ail: 3 },   // Calligrapher, heartache
   { who: 30, tier: 3, el: "E", q: "frail", g: "mon", ail: 15 },      // Bell Ringer, sore throat
-  { who: 32, art: 9, tier: 3, el: "E", q: "stubborn", g: "mon", ail: 7 },     // Grand Champion (placeholder: Sumo)
-  { who: 33, art: 12, tier: 3, el: "F", q: "frail", g: "tool", ail: 10 },     // Temple Carpenter (placeholder: Swordsmith)
-  { who: 34, art: 24, tier: 3, el: "W", q: "contagious", g: "oni", ail: 4 },  // Lighthouse Keeper (placeholder: Harbourmaster)
-  { who: 35, art: 11, tier: 3, el: "F", q: "nervous", g: "draw", ail: 0 },    // Festival Dancer (placeholder: Street Juggler)
+  { who: 32, tier: 3, el: "E", q: "stubborn", g: "mon", ail: 7 },     // Grand Champion
+  { who: 33, tier: 3, el: "F", q: "frail", g: "tool", ail: 10 },     // Temple Carpenter
+  { who: 34, tier: 3, el: "W", q: "contagious", g: "oni", ail: 4 },  // Lighthouse Keeper
+  { who: 35, tier: 3, el: "F", q: "nervous", g: "draw", ail: 0 },    // Festival Dancer
 ];
 // royals: each healer's private patient, two stages, paid at the end (2x the stages' worth)
 const ROYALS = [
