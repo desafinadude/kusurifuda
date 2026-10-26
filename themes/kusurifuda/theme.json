@@ -191,6 +191,14 @@
     "basket": {
       "glyph": "籠",
       "art": "tool.basket"
+    },
+    "kettle": {
+      "glyph": "釜",
+      "art": "tool.kettle"
+    },
+    "abacus": {
+      "glyph": "算",
+      "art": "tool.abacus"
     }
   },
   "characters": [

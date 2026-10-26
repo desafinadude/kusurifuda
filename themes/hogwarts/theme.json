@@ -567,6 +567,16 @@
             "name": "Bottomless Satchel",
             "text": "When you gather or draw blind, take 4 cards instead of 2.",
             "short": "Gather 4 instead of 2"
+          },
+          "kettle": {
+            "name": "Cauldron Ladle",
+            "text": "Once per brew, play one card from your garden a second time.",
+            "short": "One garden card twice"
+          },
+          "abacus": {
+            "name": "Gringotts Ledger",
+            "text": "Every patient you cure with 3 or more ingredients from your hand and garden pays 2 extra {{mon}}.",
+            "short": "+2 for a cure of 3+ ingredients"
           }
         },
         "characters": {

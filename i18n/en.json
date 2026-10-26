@@ -253,6 +253,16 @@
         "name": "Basket",
         "text": "When you gather or draw blind, take 4 cards instead of 2.",
         "short": "Gather 4 instead of 2"
+      },
+      "kettle": {
+        "name": "Kettle",
+        "text": "Once per brew, play one card from your garden a second time.",
+        "short": "One garden card twice"
+      },
+      "abacus": {
+        "name": "Abacus",
+        "text": "Every patient you cure with 3 or more ingredients from your hand and garden pays 2 extra {{mon}}.",
+        "short": "+2 for a cure of 3+ ingredients"
       }
     },
     "characters": {
@@ -328,7 +338,11 @@
     "gather": "When you gather, take {amount} cards.",
     "gatherShort": "Gather {amount}",
     "stretch": "Once per brew, play one card {by} square.",
-    "stretchShort": "One card {by} square"
+    "stretchShort": "One card {by} square",
+    "fee": "Each cure with {min} or more ingredients pays {amount} extra.",
+    "feeShort": "Extra for big brews",
+    "echo": "Once per brew, play one garden card a second time.",
+    "echoShort": "One garden card twice"
   },
   "turns": {
     "1": "a quarter turn clockwise",
@@ -554,7 +568,8 @@
     "joinsSub": "{move}: {text}",
     "kept": "Claim kept · +{n} {{mon}}",
     "bench": "Waited on the bench · +{n} {{mon}}",
-    "giftFrom": "From {name}"
+    "giftFrom": "From {name}",
+    "fee": "+{n} for a big brew (abacus)"
   },
   "plant": {
     "title": "Plant a card",
@@ -627,7 +642,9 @@
     "setup": "Choose your character",
     "quest": "Journey to Edo",
     "quick": "Quick game",
-    "trade": "Trade at the market"
+    "trade": "Trade at the market",
+    "trait": "About this patient",
+    "arrive": "Arriving"
   },
   "themeNames": {
     "_about": "Optional: names for the themes in config.json. A theme without one shows the name in its theme.json.",
@@ -959,7 +976,7 @@
     "text": "Once per brew, play one {el} garden card twice."
   },
   "quest": {
-    "_about": "Quest mode: the journey from Aomori to Edo. One name and line per stop in quest.json, in the same order.",
+    "_about": "Quest mode: the journey from Aomori to Edo. One name, line (for the journey map) and story (for arriving) per stop in quest.json, in the same order.",
     "title": "Journey to Edo",
     "menu": "Journey to Edo",
     "menuNew": "Ten stops from Aomori to Edo",
@@ -1003,43 +1020,53 @@
     "stops": [
       {
         "name": "Aomori",
-        "line": "The ferry from Ezo lands you among the herring sheds. Fishermen with chills and coughs queue at your little stall."
+        "line": "The ferry from Ezo lands you among the herring sheds. Fishermen with chills and coughs queue at your little stall.",
+        "story": "The ferry from Ezo lands you on the windy northern tip of Honshū, among herring sheds and drying nets. Edo is ten stops down the Ōshū road, and every journey starts with one small stall."
       },
       {
         "name": "Sannohe",
-        "line": "The road climbs into the mountains. The cases get harder: longer routes, and symptoms to treat on the way."
+        "line": "The road climbs into the mountains. The cases get harder: longer routes, and symptoms to treat on the way.",
+        "story": "A quiet hill town under the ruins of an old castle, where the road starts to climb and the snow comes early. Woodcutters and charcoal burners bring you the season's aches."
       },
       {
         "name": "Morioka",
-        "line": "A castle town with a busy market, where the toolmakers sell to any healer with coin."
+        "line": "A castle town with a busy market, where the toolmakers sell to any healer with coin.",
+        "story": "A castle town of iron kettles and stone bridges, where three rivers meet. The smiths here will sell their tools to any healer with coin."
       },
       {
         "name": "Hanamaki",
-        "line": "Hot springs, and a waiting bench full of bathers. The longer they wait, the more they need, and the more they pay."
+        "line": "Hot springs, and a waiting bench full of bathers. The longer they wait, the more they need, and the more they pay.",
+        "story": "Steam rises from the hot springs, and the bathhouse bench is full of soaking, grumbling patients. They're in no hurry, but every round they wait makes them harder to please."
       },
       {
         "name": "Ichinoseki",
-        "line": "A shrine town of odd cases and rival healers who claim the patients they want."
+        "line": "A shrine town of odd cases and rival healers who claim the patients they want.",
+        "story": "Below the gorge, the tea houses send dumplings across the river on ropes. Here you meet healers who mark their patients with an oni and stand guard over them."
       },
       {
         "name": "Sendai",
-        "line": "The great merchant city of the north. Grateful patients here bring gifts."
+        "line": "The great merchant city of the north. Grateful patients here bring gifts.",
+        "story": "The great castle city of the north, rich with merchants and summer lanterns. Well-off patients pay their thanks in gifts."
       },
       {
         "name": "Fukushima",
-        "line": "An outbreak! Every patient is contagious. Whoever lets them go home uncured, everyone pays."
+        "line": "An outbreak! Every patient is contagious. Whoever lets them go home uncured, everyone pays.",
+        "story": "A fever has swept through the silk town. Every patient is contagious, and if one is sent home uncured, both healers pay."
       },
       {
         "name": "Shirakawa",
-        "line": "The great barrier gate. A noble traveller asks you, privately, for a cure in stages."
+        "line": "The great barrier gate. A noble traveller asks you, privately, for a cure in stages.",
+        "story": "The old barrier gate between north and south, where every traveller shows their papers. A noble guest asks you, quietly, for a cure in two stages."
       },
       {
         "name": "Utsunomiya",
-        "line": "The river crossing: the ferry won't wait, the bench is short, and your rival keeps their cards close."
+        "line": "The river crossing: the ferry won't wait, the bench is short, and your rival keeps their cards close.",
+        "story": "The roads from Nikkō and the north meet here at the river. The ferry won't wait, the bench is short, and your rival keeps their cards hidden."
       },
       {
         "name": "Edo",
-        "line": "The Shōgun's court. Cure the Shōgun himself, and beat the best healer in the land."
+        "line": "The Shōgun's court. Cure the Shōgun himself, and beat the best healer in the land.",
+        "story": "The end of the road: the Shōgun's city, a million people and the best healers in the land. Your royal patient is the Shōgun himself."
       }
     ],
     "boss": "Boss",
@@ -1056,6 +1083,12 @@
       "royal": "Your royal patient: a private cure in two stages, paid in full at the end.",
       "river": "A short bench of three spots, and hidden hands.",
       "shogun": "Final boss: the Shōgun is your royal patient, and your rival starts ahead."
+    },
+    "arrive": {
+      "new": "New in {place}",
+      "expect": "What to expect",
+      "begin": "Begin",
+      "mapAria": "The road from {from} to {place}"
     }
   },
   "title": {
@@ -1129,19 +1162,23 @@
   "quirks": {
     "frail": {
       "name": "Frail",
-      "text": "No diagonal moves or ward leaps."
+      "text": "No diagonal moves or ward leaps.",
+      "how": "Leaps from your ward and diagonal cards are greyed out while you treat them."
     },
     "nervous": {
       "name": "Nervous",
-      "text": "Only cards from your hand: no garden cards."
+      "text": "Only cards from your hand: no garden cards.",
+      "how": "Your garden is greyed out while you treat them. Hand cards, ward leaps and tools all still work."
     },
     "stubborn": {
       "name": "Stubborn",
-      "text": "The brew needs two ingredients of their element."
+      "text": "The brew needs two ingredients of their element.",
+      "how": "Plan for at least two ingredients of their element. A kitsune tail counts as one."
     },
     "contagious": {
       "name": "Contagious",
-      "text": "If they go home uncured, both healers lose {n} {{mon}}."
+      "text": "If they go home uncured, both healers lose {n} {{mon}}.",
+      "how": "They wait on the bench like anyone else, but if they reach the end of it uncured you both lose {n} {{mon}}. It can pay to cure them first."
     }
   },
   "gifts": {
@@ -1169,7 +1206,9 @@
       "short": "Tool −1",
       "text": "Gift: your next tool costs 1 {{mon}} less.",
       "got": "Gift: your next tool costs 1 less"
-    }
+    },
+    "title": "A gift when cured",
+    "how": "The gift comes on top of the fee, and the patient still joins your ward."
   },
   "bench": {
     "spot0": "Last chance",
@@ -1182,14 +1221,20 @@
     },
     "tip": "A cure here needs at least {n} ingredients and pays {b} extra.",
     "left": "{name} waited too long and went home",
-    "leftContagious": "{name} went home uncured: both healers lose {n} {{mon}}"
+    "leftContagious": "{name} went home uncured: both healers lose {n} {{mon}}",
+    "how": "Each round, patients move one spot along the bench. The longer they wait, the more ingredients a cure takes and the more it pays. After the last-chance spot, they go home."
   },
   "symptoms": {
     "count": {
       "one": "{n} symptom",
       "other": "{n} symptoms"
     },
-    "tip": "The route must pass through every symptom mark on the map before the cure."
+    "tip": "The route must pass through every symptom mark on the map before the cure.",
+    "title": "Symptoms",
+    "how": {
+      "one": "This patient has {n}. Its dashed ring fills in once your route has passed through it.",
+      "other": "This patient has {n}. Each dashed ring fills in once your route has passed through it."
+    }
   },
   "royal": {
     "tag": "Royal · stage {n} of {of}",
@@ -1199,7 +1244,8 @@
     "doneTitle": "{name} is cured!",
     "stageDone": "Stage {n} of {of}",
     "stageSub": "Pays {n} {{mon}} once every stage is done",
-    "short": "Royal {n}/{of}"
+    "short": "Royal {n}/{of}",
+    "how": "Your private patient: only you can treat them. Cure each stage in turn as your action. The {pay} {{mon}} are paid when the last stage is done."
   },
   "chest": {
     "title": "Medicine chest",
@@ -1254,6 +1300,14 @@
     "full": "Your chest holds {n}",
     "fullSub": "Leave one behind",
     "keepAll": "Leave the new one",
-    "keepAllSub": "Keep what you carry; {name} stays here"
+    "keepAllSub": "Keep what you carry; {name} stays here",
+    "kettle": {
+      "name": "Your own Kettle",
+      "text": "Start each game with the Kettle."
+    },
+    "abacus": {
+      "name": "Your own Abacus",
+      "text": "Start each game with the Abacus."
+    }
   }
 }

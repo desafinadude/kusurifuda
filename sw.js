@@ -1,6 +1,6 @@
 /* Kusurifuda service worker — precaches the whole game so it plays offline.
    Version is a hash of the app files, so any change ships a fresh cache. */
-const VERSION = "d0615c1a01";
+const VERSION = "9c38a28e7e";
 // the live game and the beta (/beta/) share an origin, so their caches are named apart and never cleared by each other
 const BETA = /\/beta\/$/.test(self.registration.scope);
 const PFX = BETA ? "kusurifuda-beta-" : "kusurifuda-";

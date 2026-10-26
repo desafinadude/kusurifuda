@@ -66,6 +66,12 @@
   "basket": {
    "tool": "basket"
   },
+  "kettle": {
+   "tool": "kettle"
+  },
+  "abacus": {
+   "tool": "abacus"
+  },
   "_slots": 3
  },
  "stops": [

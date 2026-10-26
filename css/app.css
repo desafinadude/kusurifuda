@@ -521,8 +521,14 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 :is(.port,.tabl) .board .cmp.w{left:-11px;top:calc(50% - 11px)}
 :is(.port,.tabl) .strip:not(.rvs){flex-direction:row;align-items:center;min-height:50px;gap:6px}
 :is(.port,.tabl) .strip:not(.rvs) .srow{flex:0 1 auto;min-width:0}
-:is(.port,.tabl) .strip:not(.rvs) .srow:has(.stxt.bad),:is(.port,.tabl) .strip:not(.rvs) .srow:has(.known),:is(.port,.tabl) .strip:not(.rvs) .srow:has(.claim){flex:1}
+.tabl .strip:not(.rvs) .srow:has(.stxt.bad),:is(.port,.tabl) .strip:not(.rvs) .srow:has(.known),:is(.port,.tabl) .strip:not(.rvs) .srow:has(.claim){flex:1}
 .port .strip:not(.rvs) .stxt:not(.bad){position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* on a phone a warning floats over the board's foot as a bubble, so it never squeezes the brew row */
+.port .strip:not(.rvs) .stxt.bad{position:absolute;left:4px;right:4px;bottom:calc(100% + 8px);z-index:6;flex:none;padding:7px 12px;border-radius:12px;background:var(--parch);border:1.5px solid var(--shu-deep);box-shadow:0 6px 16px rgba(0,0,0,.28);text-align:center;font-size:12.5px;pointer-events:none;animation:bubin .22s cubic-bezier(.2,.8,.3,1)}
+.port .strip:not(.rvs) .stxt.bad small{font-size:11px}
+.port .strip:not(.rvs) .stxt.bad::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;margin-left:-6px;background:var(--parch);border:solid var(--shu-deep);border-width:0 1.5px 1.5px 0;transform:rotate(45deg)}
+@keyframes bubin{from{opacity:0;transform:translateY(6px) scale(.96)}}
+.tabl .stxt.bad{min-width:150px}
 :is(.port,.tabl) .strip:not(.rvs) .ctrls{flex:1;min-width:0}
 :is(.port,.tabl) .strip:not(.rvs) .ctrls .cr{flex:1;justify-content:flex-end}
 :is(.port,.tabl) .strip:not(.rvs) .cbtn.go{flex:1;justify-content:center;height:42px}
@@ -891,3 +897,86 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .chest.on{border-color:var(--gold);box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 50%,transparent);background:color-mix(in srgb,var(--gold) 14%,transparent)}
 .chests.own .chest{cursor:default;padding:7px 10px}
 .chestsel{margin-top:4px}
+
+/* ---------- what a patient won't take, and who's off limits ---------- */
+.ic.banned{filter:grayscale(.85) brightness(.82);opacity:.55}
+.ic.banned .tag{background:var(--brown);color:var(--parch-hi)}
+.pc.barred{filter:grayscale(.8);opacity:.62}
+.pc.barred .tuck{filter:none}
+.boardp.barred .bsvg,.boardp.barred .cmp{filter:grayscale(.9);opacity:.45}
+.barstamp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-4deg);z-index:4;width:min(78%,300px);padding:12px 14px 10px;border-radius:12px;background:var(--parch);border:2px solid var(--rival-hi,var(--shu));box-shadow:0 8px 24px rgba(0,0,0,.35);text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none}
+.barstamp .bo{width:34px;height:34px;display:block}
+.barstamp .bo>*{width:100%;height:100%}
+.barstamp b{font-size:14px;line-height:1.2}
+.barstamp small{font-size:11.5px;color:var(--brown);line-height:1.25}
+
+/* ---------- frail: a worn, tea-stained, creased card ---------- */
+.q-frail{filter:sepia(.28) saturate(.85)}
+.q-frail::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;mix-blend-mode:multiply;
+  background:
+    radial-gradient(ellipse 38% 30% at 74% 78%,rgba(122,86,38,.34),rgba(122,86,38,.16) 55%,transparent 72%),
+    radial-gradient(ellipse 20% 15% at 16% 26%,rgba(122,86,38,.22),transparent 70%),
+    radial-gradient(circle at 62% 14%,rgba(90,60,25,.18) 0 2px,transparent 3px),
+    linear-gradient(118deg,transparent 46.8%,rgba(70,45,20,.22) 49.4%,rgba(255,255,255,.5) 50.4%,transparent 53%),
+    linear-gradient(26deg,transparent 62.5%,rgba(70,45,20,.15) 64%,rgba(255,255,255,.35) 64.8%,transparent 66.6%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .3 0 0 0 0 .15 0 0 0 .9 -.32'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.q-frail::before{content:"";position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;z-index:3;pointer-events:none;border-bottom-right-radius:6px;background:linear-gradient(-45deg,var(--ink) 50%,color-mix(in srgb,var(--parch) 74%,var(--brown)) 50%);box-shadow:-1px -1px 2px rgba(0,0,0,.22)}
+.boardp.q-frail{filter:none}
+.boardp.q-frail::after{opacity:.55}
+.boardp.q-frail::before{width:24px;height:24px;border-bottom-right-radius:10px}
+
+/* ---------- nervous: a little shiver now and then ---------- */
+@keyframes shiver{0%,86%,100%{rotate:0deg;translate:0 0}88%{rotate:-2.2deg;translate:-1px 0}90%{rotate:2deg;translate:1px 0}92%{rotate:-1.6deg;translate:-1px 0}94%{rotate:1.2deg;translate:1px 0}96%{rotate:-.6deg;translate:0 0}}
+.pc.q-nervous:not(.enter){animation:shiver 6.5s ease-in-out infinite}
+.pc.q-nervous:nth-child(2n):not(.enter){animation-duration:7.7s;animation-delay:-2.4s}
+.boardp.q-nervous .bhead>.pav,.boardp.q-nervous .bhead>.ppor{animation:shiver 6.5s ease-in-out infinite;transform-origin:50% 90%}
+
+/* ---------- patient pills: tap for a reminder ---------- */
+button.trait{border:0;cursor:pointer;font:inherit;font-family:var(--sans);font-size:9.5px;font-weight:700;line-height:1;transition:transform .12s,box-shadow .12s}
+button.trait::after{content:"?";display:inline-flex;align-items:center;justify-content:center;width:10px;height:10px;margin-left:1px;border-radius:50%;font-size:7.5px;background:color-mix(in srgb,currentColor 16%,transparent);opacity:.8}
+button.trait:active{transform:scale(.95)}
+button.trait:focus-visible{outline:2px solid var(--shu-hi);outline-offset:1px}
+.tabl button.trait,.land button.trait{font-size:11px;padding:4px 8px}
+.trait .qi{display:inline-flex;width:12px;height:12px}
+.trait .qi>*{width:100%;height:100%}
+.sheet .stamp.tri{transform:none;width:64px;height:64px;padding:8px;box-shadow:none;border:2px solid var(--ink);border-radius:14px;color:var(--ink);background:color-mix(in srgb,var(--brown) 10%,var(--parch))}
+.sheet .stamp.tri>svg,.sheet .stamp.tri>img,.sheet .stamp.tri .qi,.sheet .stamp.tri .qi>*{width:100%;height:100%}
+.sheet .stamp.tri .qbig{font-family:var(--serif);font-size:32px;font-weight:800;line-height:1}
+.sheet .stamp.tri .gico.big{display:flex;width:100%;height:100%;align-items:center;justify-content:center}
+.sheet .stamp.tri .gico.big>*{width:36px;height:36px}
+.sheet .stamp.tri .gico.big .cbk.sm{width:28px;height:40px;border-radius:5px;box-shadow:inset 0 0 0 2.5px var(--shu)}
+.sheet .trt{font-size:15px;line-height:1.4;margin:4px 0 2px;font-weight:600}
+
+/* ---------- arriving in a town ---------- */
+.arr{display:flex;flex-direction:column;gap:8px}
+.arrhero{position:relative;height:clamp(150px,30vh,240px);margin:-4px -4px 2px;border-radius:12px;overflow:hidden;border:2px solid var(--ink);background:color-mix(in srgb,var(--brown) 8%,var(--parch))}
+.arrhero>.ai{position:absolute;inset:0;width:100%;height:100%}
+.arrhero .arrmap{position:absolute;inset:0}
+.arrhero.pic .arrmap{inset:auto 8px 8px auto;width:38%;height:46%;border-radius:8px;overflow:hidden;border:1.5px solid var(--ink);background:var(--parch);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.qmap.focus{width:100%;height:100%;max-height:none}
+.qmap.focus .ql.from{fill:color-mix(in srgb,var(--ink) 60%,transparent)}
+.qmap .qd.here{fill:var(--shu);stroke:var(--parch-hi);stroke-width:2.4;animation:herepulse 1.6s ease-in-out 1.2s infinite}
+.qmap .leg{fill:none;stroke:var(--shu);stroke-width:3;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;vector-effect:non-scaling-stroke;animation:legwalk 1.3s ease-in-out .25s forwards}
+@keyframes legwalk{to{stroke-dashoffset:0}}
+@keyframes herepulse{50%{stroke-width:4.5}}
+@media (prefers-reduced-motion:reduce){.qmap .leg{stroke-dashoffset:0}}
+.arrcap{position:absolute;left:8px;top:8px;padding:4px 9px;border-radius:999px;background:var(--parch);border:1.5px solid var(--ink);font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.arrcap b{color:var(--shu-deep)}
+.arrname{margin:0;font-family:var(--serif);font-weight:800;font-size:30px;line-height:1.05}
+.arrstory{margin:0;font-size:14px;line-height:1.45}
+.arrnew{padding:9px 12px;border-radius:10px;border:1.5px solid var(--shu);background:color-mix(in srgb,var(--shu) 8%,var(--parch))}
+.arrnew.boss{border-width:2.5px;background:color-mix(in srgb,var(--shu) 15%,var(--parch))}
+.arrnew b{display:block;color:var(--shu-deep);font-size:12px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.arrnew ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.arrnew li{font-size:13.5px;line-height:1.35;font-weight:600}
+.arrtags{flex-direction:row;flex-wrap:wrap}
+.arrtags li{font-size:12px;padding:4px 8px}
+/* a tool without its picture yet: its glyph on the tile */
+.tglyph{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;font-family:var(--serif);font-weight:800;font-size:1.6em;line-height:1;color:inherit}
+.ti .tglyph,.tbig .tglyph{color:var(--ink)}
+:is(.tpill,.rt,.g) .tglyph{width:auto;height:auto;font-size:1.05em;margin-right:2px}
+.sbtn .tglyph{font-size:18px}
+/* six tools: the tablet's tool column scrolls instead of running under the buttons */
+.tabl .tray:has(.tgrid2){overflow-y:auto;overscroll-behavior:contain}
+.tabl .tray .tgrid2:has(> .tbig:nth-child(5)) .tbig{min-height:60px;padding:6px 10px}
+.tabl .tray .tgrid2:has(> .tbig:nth-child(5)) .tbig .ti{width:46px;height:46px}

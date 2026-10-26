@@ -66,7 +66,7 @@
     "echo": true
   },
   "tools": {
-    "_about": "Paid with fame. effect: turn (play a card rotated by one of 'turns' quarter turns), stretch (play a card 'by' squares longer or shorter), step (one free step any way), gather (take 'amount' cards when gathering or drawing blind). Each works once per brew. copies: how many of each exist; null = players - 1.",
+    "_about": "Paid with fame. effect: turn (play a card rotated by one of 'turns' quarter turns), stretch (play a card 'by' squares longer or shorter), step (one free step any way), gather (take 'amount' cards when gathering or drawing blind), echo (once per brew, play one garden card a second time), fee ('amount' extra mon for every patient cured with at least 'min' ingredients from hand and garden). Each move tool works once per brew. copies: how many of each exist; null = players - 1.",
     "copies": null,
     "list": {
       "ladle": {
@@ -94,6 +94,16 @@
         "cost": 2,
         "effect": "gather",
         "amount": 4
+      },
+      "kettle": {
+        "cost": 2,
+        "effect": "echo"
+      },
+      "abacus": {
+        "cost": 2,
+        "effect": "fee",
+        "min": 3,
+        "amount": 2
       }
     }
   },

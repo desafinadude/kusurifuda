@@ -20,6 +20,7 @@
     out.toolIds = ids; out.toolDefs = tools;
     // tools that change how one card moves (flagged on that step): turn it, or stretch it a square longer or shorter
     out.turnTools = ids.filter((id) => tools[id].effect === "turn" || tools[id].effect === "stretch");
+    out.feeTools = ids.filter((id) => tools[id].effect === "fee");
     out.stepTools = ids.filter((id) => tools[id].effect === "step");
     out.gatherTools = ids.filter((id) => tools[id].effect === "gather");
     out.copies = (r.tools && r.tools.copies != null) ? r.tools.copies : 1; // players - 1 with 2 players
@@ -144,7 +145,9 @@
   const needEl = (pt) => (RU().patients.requireElement && pt.el ? pt.el : null);
   const elMet = (pt, em) => { const n = needEl(pt); return !n || !!(em & (elBit(n) | WILD)); };
   const ECHO = 1 << 20;
-  const echoEl = (p) => (RU().guilds.echo && p && p.gel ? p.gel : null);
+  // a garden card that may be played twice in one brew: the echo guild's element, or any card with the kettle ("*")
+  const echoEl = (p) => (p && RU().toolIds.some((t) => RU().toolDefs[t].effect === "echo" && p.tools && p.tools[t]) ? "*" : RU().guilds.echo && p && p.gel ? p.gel : null);
+  const echoes = (c, e) => !!(c && e && (e === "*" || hasEl(c, e)));
 
   // ---------- claims ----------
   // an oni laid on a patient: the other player can't cure them until the claimer's next turn is over.
@@ -176,6 +179,8 @@
     const u = [tot[0] / n, tot[1] / n];
     return u[0] && u[1] ? [[u[0] * m, u[1] * m]] : Array.from({ length: m }, () => u);
   }
+  // the abacus: a little extra for a big brew (ingredients from hand and garden)
+  const feeFor = (tools, ing) => RU().feeTools.reduce((a, t) => a + (tools && tools[t] && ing >= (RU().toolDefs[t].min || 3) ? RU().toolDefs[t].amount || 1 : 0), 0);
   const stepCard = (idx) => ({ id: -1 - idx, el: "V", steps: null, step: RU().stepTools[idx] });
   const toolsLeft = (t) => RU().copies - G.P.filter((p) => p.tools[t]).length;
   const gatherCount = (p) => { const pi = G.P.indexOf(p), extra = limit(pi, "gather") - RU().gather; return Math.max(RU().gather, ...RU().gatherTools.filter((t) => p.tools[t]).map((t) => RU().toolDefs[t].amount)) + extra; };
@@ -233,14 +238,14 @@
       const seenW = new Set();
       x.ward.forEach((w, i) => { if (!wardLeft(w)) return; const c = wardCard(w), k = "w" + ckey(c); if (seenW.has(k) || seenW.size >= 10) return; seenW.add(k); pool.push({ c, g: "w", i, k }); });
     }
-    if (x.echo && qk !== "nervous") garden.forEach((c, i) => { if (hasEl(c, x.echo)) pool.push({ c, g: true, i, k: "e" + ckey(c), echo: true }); });
+    if (x.echo && qk !== "nervous") garden.forEach((c, i) => { if (echoes(c, x.echo)) pool.push({ c, g: true, i, k: "e" + ckey(c), echo: true }); });
     pool.sort((a, b) => (a.k < b.k ? -1 : a.k > b.k ? 1 : 0));
     const owned = r.turnTools.filter((t) => tools[t]);
     let best = null, minD = md([0, 0], pt.t); const seen = new Set(), seq = [];
     const better = (a, b) => !b || a.fame > b.fame || (a.fame === b.fame && (a.handUsed < b.handUsed || (a.handUsed === b.handUsed && a.seq.length < b.seq.length)));
     (function dfs(pos, mask, bonus, hu, ab, em, sm, ing, ec) {
       const d = md(pos, pt.t); if (seq.length && d < minD) minD = d;
-      if (d === 0 && hu >= r.minHandCards && elMet(pt, em) && sm === full && ing >= need && (qk !== "stubborn" || ec >= 2)) { const c = { fame: pt.val + extra + (bonus ? sakV : 0), bonus, handUsed: hu, seq: seq.slice(), ward: seq.filter((q) => q.g === "w").length }; if (better(c, best)) best = c; }
+      if (d === 0 && hu >= r.minHandCards && elMet(pt, em) && sm === full && ing >= need && (qk !== "stubborn" || ec >= 2)) { const c = { fame: pt.val + extra + (bonus ? sakV : 0) + (pt.royal ? 0 : feeFor(tools, ing)), bonus, handUsed: hu, seq: seq.slice(), ward: seq.filter((q) => q.g === "w").length }; if (better(c, best)) best = c; }
       if (seq.length >= maxD) return;
       const key = pos[0] + "," + pos[1] + "|" + mask + "|" + (bonus ? 1 : 0) + "|" + ab + "|" + em + "|" + sm + "|" + Math.min(ing, need) + "|" + Math.min(ec, 2); if (seen.has(key)) return; seen.add(key);
       const avail = owned.filter((t) => !(ab & bit(t)));
@@ -353,7 +358,7 @@
       else if (s.i < 0) { const t = r.stepTools[-1 - s.i]; if (!t || !p.tools[t] || seenG.has(s.i)) return "toolMisuse"; seenG.add(s.i); }
       else if (s.g) {
         const c = p.garden[s.i]; if (!c) return "cardMisuse";
-        if (seenG.has(s.i)) { if (echoed || !echoEl(p) || !hasEl(c, echoEl(p))) return "cardMisuse"; echoed = true; }
+        if (seenG.has(s.i)) { if (echoed || !echoes(c, echoEl(p))) return "cardMisuse"; echoed = true; }
         if (qk === "nervous") return "nervous";
         seenG.add(s.i); em |= cardBits(c); ing++; if (pt.el && (c.el === "V" || hasEl(c, pt.el))) ec++;
       }
@@ -382,13 +387,13 @@
     const used = hIdx.map((i) => p.hand.splice(i, 1)[0]); G.discard.push(...used);
     const spot = spotBonus(pt);
     G.village.splice(k, 1); const arrived = G.pats.length ? G.pats.shift() : null; if (arrived) G.village.push(arrived);
-    const sak = rp.bonus ? limit(pi, "sakuraBonus") : 0, kept = keptClaim(pi, pt);
-    p.cures++; p.fame += pt.val + sak + kept + spot;
+    const sak = rp.bonus ? limit(pi, "sakuraBonus") : 0, kept = keptClaim(pi, pt), fee = feeFor(p.tools, route.filter((r) => !r.g || (r.g === true && r.i >= 0)).length);
+    p.cures++; p.fame += pt.val + sak + kept + spot + fee;
     if (r_ward()) p.ward.push(wardEntry(pt));
     const gift = giveGift(pi, pt);
     if (pi === 0) G.turn.acted = true;
-    log("cure", pi, { who: pt.who, ail: pt.ail, v: pt.val, sak, kept, spot, gift });
-    return { pt, rp, sak, kept, spot, gift, hand: used.length, used, gUsed, wUsed: wUsed.length, tl, arrived: arrived ? arrived.id : null };
+    log("cure", pi, { who: pt.who, ail: pt.ail, v: pt.val, sak, kept, spot, gift, fee });
+    return { pt, rp, sak, kept, spot, gift, fee, hand: used.length, used, gUsed, wUsed: wUsed.length, tl, arrived: arrived ? arrived.id : null };
   }
   // ---------- gifts: some patients give something when cured ----------
   // mon: extra mon · plant: a market card into your garden · oni: an oni back · draw: cards from the deck · tool: your next tool costs 1 less
@@ -584,7 +589,7 @@
     configure, get G() { return G; }, get rules() { return RU(); },
     DIRV, rotK, md, dirsOf, elOfDir, isHaz, stepCells, variants, replay, solve, rotatedCopy,
     bit, toolsOfBits, toolOpts, applyTool, stepCard, toolsLeft, gatherCount, cost, canBuy, buyTool, limit, abilityOf, MODS,
-    wardCard, wardLeft, isAny, needEl, elBit, cardBits, hasEl, inP, reach, solveFor, knownFor, knownPay, doKnownCure, echoEl,
+    wardCard, wardLeft, isAny, isJump, feeFor, echoes, needEl, elBit, cardBits, hasEl, inP, reach, solveFor, knownFor, knownPay, doKnownCure, echoEl,
     newGame, gather, drawBlind, checkRoute, doCure, plantCard, canClaim, claim, barred, claimBonus, canSwap, swapCard, royalStage, doRoyal, needCards, spotBonus, symAll, quirk, checkPt, discardFromHand, endTurn,
     botStep, botNext, botDo, save, load, clearSave,
   };
