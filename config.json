@@ -3,7 +3,8 @@
   "theme": "kusurifuda",
   "themes": {
     "kusurifuda": "themes/kusurifuda/theme.json",
-    "hogwarts": "themes/hogwarts/theme.json"
+    "hogwarts": "themes/hogwarts/theme.json",
+    "neon": "themes/neon/theme.json"
   },
   "language": "en",
   "languages": {

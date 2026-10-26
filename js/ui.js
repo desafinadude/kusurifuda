@@ -746,8 +746,15 @@
         <button class="mb${cont ? "" : " primary"}" data-a="quick"><b>${t("title.quick")}</b><small>${t("title.quickSub")}</small></button>
         ${QUEST ? `<button class="mb" data-a="quest"><b>${t("quest.menu")}</b><small>${questDone() ? t("quest.menuAt", { n: questDone(), total: QUEST.stops.length }) : t("quest.menuNew")}</small></button>` : ""}
       </div>
+      ${titleThemes()}
       <div class="tlinks"><button class="tlink" data-a="rules">${t("menu.howToPlay")}</button>${inst}</div>
     </div></div>`;
+  }
+  // the themes on the title screen: each one's emblem and name, the current one lit; a tap switches
+  function titleThemes() {
+    const ks = Object.keys(CFG.themes || {}); if (CFG.themePicker === false || ks.length < 2) return "";
+    return `<div class="tthemes" role="group" aria-label="${attr(t("themes.title"))}">${ks.map((k) => { const em = THEMES[k] && THEMES[k].assets && THEMES[k].assets.emblem;
+      return `<button class="tth${k === CUR_THEME ? " on" : ""}" data-a="theme" data-i="${attr(k)}" aria-pressed="${k === CUR_THEME}"><span class="te">${em ? `<img src="${attr(em)}" alt="">` : ""}</span><span>${esc(themeName(k))}</span></button>`; }).join("")}</div>`;
   }
   function toTitle() { U.screen = "title"; closeSheet(); applyPlayerColor(); render(); }
   // back to the table: the sheet or the rival's move the saved game was waiting on
@@ -1727,31 +1734,37 @@
   }
   // the road on the map: travelled stops filled, the next one ringed, the chosen one marked
   // o.focus: zoom in on the last leg of the road, from the stop before to this one, walked as you watch
+  // where a stop sits on the map: [longitude, latitude]; a theme can lay its own road (questAt, one per stop)
+  const AT = (st) => { const i = QUEST.stops.indexOf(st); return (T.questAt && T.questAt[i]) || st.at; };
   function questMap(sel, o = {}) {
     const P = QUEST.map.project, stops = QUEST.stops, done = questDone();
     const X = (a) => P.x[0] * a[0] + P.x[1] * a[1] + P.x[2], Y = (a) => P.y[0] * a[0] + P.y[1] * a[1] + P.y[2];
     const pt = (a) => `${X(a).toFixed(1)},${Y(a).toFixed(1)}`;
     let vb = QMAP && QMAP.vb;
-    if (!vb) { const xs = stops.map((st) => X(st.at)), ys = stops.map((st) => Y(st.at)), pad = 0.12 * (Math.max(...ys) - Math.min(...ys)); vb = [Math.min(...xs) - pad, Math.min(...ys) - pad, Math.max(...xs) - Math.min(...xs) + 2 * pad, Math.max(...ys) - Math.min(...ys) + 2 * pad]; }
+    if (!vb) { const xs = stops.map((st) => X(AT(st))), ys = stops.map((st) => Y(AT(st))), pad = 0.12 * (Math.max(...ys) - Math.min(...ys)); vb = [Math.min(...xs) - pad, Math.min(...ys) - pad, Math.max(...xs) - Math.min(...xs) + 2 * pad, Math.max(...ys) - Math.min(...ys) + 2 * pad]; }
+    // a road that runs off the drawing (a theme's own stops) widens the view to take it in
+    { const xs = stops.map((st) => X(AT(st))), ys = stops.map((st) => Y(AT(st))), pad = 0.06 * vb[3];
+      const x0 = Math.min(vb[0], Math.min(...xs) - pad), y0 = Math.min(vb[1], Math.min(...ys) - pad), x1 = Math.max(vb[0] + vb[2], Math.max(...xs) + pad), y1 = Math.max(vb[1] + vb[3], Math.max(...ys) + pad);
+      vb = [x0, y0, x1 - x0, y1 - y0]; }
     const full = vb;
     if (o.focus) {
-      const a = stops[Math.max(0, sel - 1)].at, b = stops[sel].at, cx = (X(a) + X(b)) / 2, cy = (Y(a) + Y(b)) / 2;
+      const a = AT(stops[Math.max(0, sel - 1)]), b = AT(stops[sel]), cx = (X(a) + X(b)) / 2, cy = (Y(a) + Y(b)) / 2;
       const h = Math.max(Math.abs(Y(a) - Y(b)) * 2.4, Math.abs(X(a) - X(b)) * 2.4 / (o.focus || 2), full[3] * 0.3), w = h * (o.focus || 2);
       vb = [cx - w / 2, cy - h / 2, w, h];
     }
     const u = o.focus ? vb[3] / 90 : vb[2] / 170;
-    const road = stops.map((st) => pt(st.at)).join(" "), walked = stops.slice(0, Math.min(done + 1, stops.length)).map((st) => pt(st.at)).join(" ");
+    const road = stops.map((st) => pt(AT(st))).join(" "), walked = stops.slice(0, Math.min(done + 1, stops.length)).map((st) => pt(AT(st))).join(" ");
     const dots = stops.map((st, i) => {
-      const [x, y] = [X(st.at), Y(st.at)], open = i <= done, cls = i < done ? "done" : i === done ? "next" : "ahead";
+      const [x, y] = [X(AT(st)), Y(AT(st))], open = i <= done, cls = i < done ? "done" : i === done ? "next" : "ahead";
       const dot = `<circle class="qd ${cls}${i === sel ? " sel" : ""}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${((i === stops.length - 1 ? 5 : 3.4) * u).toFixed(2)}"/>`;
       return open ? `<g data-a="qsel" data-i="${i}"><title>${esc(stopName(i))}</title><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(9 * u).toFixed(1)}" fill="transparent"/>${dot}</g>` : dot;
     }).join("");
-    const label = (i, dx, anchor) => { const st = stops[i]; return `<text class="ql" x="${(X(st.at) + dx * u).toFixed(1)}" y="${(Y(st.at) + 3.5 * u).toFixed(1)}" font-size="${(10 * u).toFixed(1)}" text-anchor="${anchor}">${esc(stopName(i))}</text>`; };
+    const label = (i, dx, anchor) => { const st = stops[i]; return `<text class="ql" x="${(X(AT(st)) + dx * u).toFixed(1)}" y="${(Y(AT(st)) + 3.5 * u).toFixed(1)}" font-size="${(10 * u).toFixed(1)}" text-anchor="${anchor}">${esc(stopName(i))}</text>`; };
     if (o.focus) {
-      const from = Math.max(0, sel - 1), leg = sel > 0 ? `<polyline class="leg" pathLength="1" points="${pt(stops[from].at)} ${pt(stops[sel].at)}"/>` : "";
-      const back = stops.slice(0, from + 1).map((st) => pt(st.at)).join(" ");
-      const lab = (i, cls) => { const st = stops[i], right = X(st.at) < vb[0] + vb[2] * 0.5; return `<text class="ql ${cls}" x="${(X(st.at) + (right ? 7 : -7) * u).toFixed(1)}" y="${(Y(st.at) + 3.5 * u).toFixed(1)}" font-size="${(9 * u).toFixed(1)}" text-anchor="${right ? "start" : "end"}">${esc(stopName(i))}</text>`; };
-      const dot = (i, cls) => `<circle class="qd ${cls}" cx="${X(stops[i].at).toFixed(1)}" cy="${Y(stops[i].at).toFixed(1)}" r="${((cls === "here" ? 4.6 : 3.2) * u).toFixed(2)}"/>`;
+      const from = Math.max(0, sel - 1), leg = sel > 0 ? `<polyline class="leg" pathLength="1" points="${pt(AT(stops[from]))} ${pt(AT(stops[sel]))}"/>` : "";
+      const back = stops.slice(0, from + 1).map((st) => pt(AT(st))).join(" ");
+      const lab = (i, cls) => { const st = stops[i], right = X(AT(st)) < vb[0] + vb[2] * 0.5; return `<text class="ql ${cls}" x="${(X(AT(st)) + (right ? 7 : -7) * u).toFixed(1)}" y="${(Y(AT(st)) + 3.5 * u).toFixed(1)}" font-size="${(9 * u).toFixed(1)}" text-anchor="${right ? "start" : "end"}">${esc(stopName(i))}</text>`; };
+      const dot = (i, cls) => `<circle class="qd ${cls}" cx="${X(AT(stops[i])).toFixed(1)}" cy="${Y(AT(stops[i])).toFixed(1)}" r="${((cls === "here" ? 4.6 : 3.2) * u).toFixed(2)}"/>`;
       return `<svg class="qmap focus" viewBox="${vb.map((v) => v.toFixed(1)).join(" ")}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${attr(t("quest.arrive.mapAria", { from: stopName(from), place: stopName(sel) }))}">
         ${QMAP ? QMAP.paths.map((p) => `<path class="${p.cls === "border" ? "border" : "land"}" d="${attr(p.d)}"/>`).join("") : ""}
         <polyline class="road" points="${road}"/>${sel > 0 ? `<polyline class="walked" points="${back}"/>` : ""}${leg}

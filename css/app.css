@@ -1008,3 +1008,13 @@ button.trait:focus-visible{outline:2px solid var(--shu-hi);outline-offset:1px}
 .land .barstamp{width:210px;padding:7px 10px 6px;gap:1px}
 .land .barstamp .bo{width:24px;height:24px}
 .land .barstamp b{font-size:12px}.land .barstamp small{font-size:10px}
+
+/* ---------- the theme row on the title screen ---------- */
+.tthemes{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.tth{display:flex;flex-direction:column;align-items:center;gap:5px;width:84px;padding:8px 4px 7px;border-radius:12px;border:1px solid var(--line);background:color-mix(in srgb,var(--parch) 6%,transparent);color:var(--soft);font:inherit;font-size:11px;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:transform .12s,border-color .12s}
+.tth .te{width:52px;height:52px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--parch) 10%,transparent)}
+.tth .te img{width:100%;height:100%;object-fit:cover}
+.tth.on{border-color:var(--gold);color:var(--parch-hi);background:color-mix(in srgb,var(--gold) 14%,transparent)}
+.tth:active{transform:scale(.96)}
+.title.land .tcol{grid-template-areas:"head btns" "themes btns" "links btns"}
+.title.land .tthemes{grid-area:themes}.title.land .tth{width:70px;padding:6px 3px}.title.land .tth .te{width:40px;height:40px}

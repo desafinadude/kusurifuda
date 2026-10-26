@@ -1,0 +1,660 @@
+{
+  "_about": "Kusurifuda after dark: an all-night drugstore under a Tokyo railway arch. Konbini food and sushi as ingredients, quirky city folk as patients, a night train from Sapporo to Shibuya. It extends Kusurifuda and swaps the art and words; made by build/theme-neon.py.",
+  "id": "neon",
+  "name": "Neon",
+  "extends": "../kusurifuda/theme.json",
+  "sprites": "sprites.svg",
+  "assets": {
+    "icon.sakura": "../kusurifuda/icons/sakura.svg",
+    "icon.turn.1": "../kusurifuda/icons/turn-1.svg",
+    "icon.turn.2": "../kusurifuda/icons/turn-2.svg",
+    "icon.turn.3": "../kusurifuda/icons/turn-3.svg",
+    "icon.brand": "../kusurifuda/icons/brand.svg",
+    "icon.cure": "../kusurifuda/icons/cure.svg",
+    "icon.oni": "../kusurifuda/icons/oni.svg",
+    "icon.rival": "../kusurifuda/icons/rival.svg",
+    "icon.cured": "../kusurifuda/icons/cured.svg",
+    "icon.endTurn": "../kusurifuda/icons/endTurn.svg",
+    "icon.market": "../kusurifuda/icons/market.svg",
+    "icon.village": "../kusurifuda/icons/village.svg",
+    "icon.garden": "../kusurifuda/icons/garden.svg",
+    "icon.hand": "../kusurifuda/icons/hand.svg",
+    "icon.fame": "../kusurifuda/icons/fame.svg",
+    "icon.tools": "../kusurifuda/icons/tools.svg",
+    "icon.rules": "../kusurifuda/icons/rules.svg",
+    "icon.win": "../kusurifuda/icons/win.svg",
+    "icon.lose": "../kusurifuda/icons/lose.svg",
+    "icon.tie": "../kusurifuda/icons/tie.svg",
+    "icon.log.buy": "../kusurifuda/icons/log-buy.svg",
+    "icon.log.cure": "../kusurifuda/icons/log-cure.svg",
+    "icon.log.gather": "../kusurifuda/icons/log-gather.svg",
+    "icon.log.blind": "../kusurifuda/icons/log-blind.svg",
+    "icon.log.curse": "../kusurifuda/icons/log-curse.svg",
+    "icon.log.plant": "../kusurifuda/icons/log-plant.svg",
+    "icon.el.W": "../kusurifuda/icons/el-W.svg",
+    "icon.el.F": "../kusurifuda/icons/el-F.svg",
+    "icon.el.E": "../kusurifuda/icons/el-E.svg",
+    "icon.el.A": "../kusurifuda/icons/el-A.svg",
+    "icon.el.V": "icons/el-V.svg",
+    "icon.tl.ladle": "assets/tool-ladle.webp",
+    "icon.tl.mortar": "assets/tool-mortar.webp",
+    "icon.tl.charm": "assets/tool-charm.webp",
+    "icon.tl.basket": "assets/tool-basket.webp",
+    "icon.tl.kettle": "assets/tool-kettle.webp",
+    "icon.tl.abacus": "assets/tool-abacus.webp",
+    "ing.F.1": "cards/ing-F-1.webp",
+    "ing.F.2": "cards/ing-F-2.webp",
+    "ing.F.3": "cards/ing-F-3.webp",
+    "ing.W.1": "cards/ing-W-1.webp",
+    "ing.W.2": "cards/ing-W-2.webp",
+    "ing.W.3": "cards/ing-W-3.webp",
+    "ing.A.1": "cards/ing-A-1.webp",
+    "ing.A.2": "cards/ing-A-2.webp",
+    "ing.A.3": "cards/ing-A-3.webp",
+    "ing.E.1": "cards/ing-E-1.webp",
+    "ing.E.2": "cards/ing-E-2.webp",
+    "ing.E.3": "cards/ing-E-3.webp",
+    "ing.AF.1": "cards/ing-AF-1.webp",
+    "ing.AF.2": "cards/ing-AF-2.webp",
+    "ing.AW.1": "cards/ing-AW-1.webp",
+    "ing.AW.2": "cards/ing-AW-2.webp",
+    "ing.FE.1": "cards/ing-FE-1.webp",
+    "ing.FE.2": "cards/ing-FE-2.webp",
+    "ing.EW.1": "cards/ing-EW-1.webp",
+    "ing.EW.2": "cards/ing-EW-2.webp",
+    "ing.V": "cards/ing-V.webp",
+    "char.herbalist": "people/char-herbalist.webp",
+    "char.merchant": "people/char-merchant.webp",
+    "char.miko": "people/char-miko.webp",
+    "char.kunoichi": "people/char-kunoichi.webp",
+    "guild.lantern": "people/guild-lantern.webp",
+    "guild.train": "people/guild-train.webp",
+    "guild.ramen": "people/guild-ramen.webp",
+    "guild.umbrella": "people/guild-umbrella.webp",
+    "oni.F": "assets/oni-F.webp",
+    "oni.A": "assets/oni-A.webp",
+    "oni.E": "assets/oni-E.webp",
+    "oni.W": "assets/oni-W.webp",
+    "oni": "assets/oni.webp",
+    "sakura": "assets/sakura.webp",
+    "cure": "assets/cure.webp",
+    "seal": "assets/cured.webp",
+    "symptom": "assets/symptom.webp",
+    "royal": "assets/royal.webp",
+    "emblem": "assets/emblem.webp",
+    "quirk.frail": "assets/quirk-frail.webp",
+    "quirk.nervous": "assets/quirk-nervous.webp",
+    "quirk.stubborn": "assets/quirk-stubborn.webp",
+    "quirk.contagious": "assets/quirk-contagious.webp",
+    "tool.ladle": "assets/tool-ladle.webp",
+    "tool.mortar": "assets/tool-mortar.webp",
+    "tool.charm": "assets/tool-charm.webp",
+    "tool.basket": "assets/tool-basket.webp",
+    "tool.kettle": "assets/tool-kettle.webp",
+    "tool.abacus": "assets/tool-abacus.webp",
+    "patient.0": "",
+    "patient.1": "",
+    "patient.2": "",
+    "patient.3": "",
+    "patient.4": "",
+    "patient.5": "",
+    "patient.6": "",
+    "patient.7": "",
+    "patient.8": "",
+    "patient.9": "",
+    "patient.10": "",
+    "patient.11": "",
+    "patient.12": "people/patient-12.webp",
+    "patient.13": "people/patient-13.webp",
+    "patient.14": "people/patient-14.webp",
+    "patient.15": "people/patient-15.webp",
+    "patient.16": "people/patient-16.webp",
+    "patient.17": "people/patient-17.webp",
+    "patient.18": "people/patient-18.webp",
+    "patient.19": "people/patient-19.webp",
+    "patient.20": "people/patient-20.webp",
+    "patient.21": "people/patient-21.webp",
+    "patient.22": "people/patient-22.webp",
+    "patient.23": "people/patient-23.webp",
+    "patient.24": "people/patient-24.webp",
+    "patient.25": "people/patient-25.webp",
+    "patient.26": "people/patient-26.webp",
+    "patient.27": "people/patient-27.webp",
+    "patient.28": "people/patient-28.webp",
+    "patient.29": "people/patient-29.webp",
+    "patient.30": "people/patient-30.webp",
+    "patient.31": "people/patient-31.webp",
+    "patient.32": "people/patient-32.webp",
+    "patient.33": "people/patient-33.webp",
+    "patient.34": "people/patient-34.webp",
+    "patient.35": "people/patient-35.webp",
+    "town.aomori": "towns/aomori.webp",
+    "town.sannohe": "towns/sannohe.webp",
+    "town.morioka": "towns/morioka.webp",
+    "town.hanamaki": "towns/hanamaki.webp",
+    "town.ichinoseki": "towns/ichinoseki.webp",
+    "town.sendai": "towns/sendai.webp",
+    "town.fukushima": "towns/fukushima.webp",
+    "town.shirakawa": "towns/shirakawa.webp",
+    "town.utsunomiya": "towns/utsunomiya.webp",
+    "town.edo": "towns/edo.webp"
+  },
+  "elements": {
+    "F": {
+      "color": "#E85C7A",
+      "ink": "#C13A5C"
+    },
+    "W": {
+      "color": "#3FB0D6",
+      "ink": "#1F7FA6"
+    },
+    "E": {
+      "color": "#6FAE5C",
+      "ink": "#3E7F31"
+    },
+    "A": {
+      "color": "#8C74D8",
+      "ink": "#6550B8"
+    },
+    "V": {
+      "color": "#F2B33D",
+      "ink": "#A8740F",
+      "glyph": "猫",
+      "on": "#1E1914"
+    }
+  },
+  "tools": {
+    "ladle": {
+      "glyph": "図",
+      "art": "tool.ladle"
+    },
+    "mortar": {
+      "glyph": "段",
+      "art": "tool.mortar"
+    },
+    "charm": {
+      "glyph": "輪",
+      "art": "tool.charm"
+    },
+    "basket": {
+      "glyph": "袋",
+      "art": "tool.basket"
+    },
+    "kettle": {
+      "glyph": "温",
+      "art": "tool.kettle"
+    },
+    "abacus": {
+      "glyph": "点",
+      "art": "tool.abacus"
+    }
+  },
+  "guilds": [
+    {
+      "id": "lantern",
+      "art": "guild.lantern",
+      "color": "#E85C7A",
+      "element": "F"
+    },
+    {
+      "id": "train",
+      "art": "guild.train",
+      "color": "#8C74D8",
+      "element": "A"
+    },
+    {
+      "id": "ramen",
+      "art": "guild.ramen",
+      "color": "#6FAE5C",
+      "element": "E"
+    },
+    {
+      "id": "umbrella",
+      "art": "guild.umbrella",
+      "color": "#3FB0D6",
+      "element": "W"
+    }
+  ],
+  "glyphs": {
+    "brand": "薬札"
+  },
+  "map": {
+    "sakura": "#F6D3DC",
+    "cure": "#F2B33D"
+  },
+  "questAt": [
+    [
+      141.354,
+      43.062
+    ],
+    [
+      140.729,
+      41.769
+    ],
+    [
+      140.747,
+      40.822
+    ],
+    [
+      140.87,
+      38.268
+    ],
+    [
+      139.883,
+      36.555
+    ],
+    [
+      139.777,
+      35.714
+    ],
+    [
+      139.773,
+      35.698
+    ],
+    [
+      139.767,
+      35.671
+    ],
+    [
+      139.7,
+      35.69
+    ],
+    [
+      139.702,
+      35.658
+    ]
+  ],
+  "text": {
+    "en": {
+      "terms": {
+        "mon": "yen",
+        "Mon": "Yen"
+      },
+      "app": {
+        "name": "Kusurifuda Neon",
+        "title": "Kusurifuda Neon"
+      },
+      "title": {
+        "tagline": "Cures and curses after dark"
+      },
+      "content": {
+        "elements": {
+          "F": "Hot",
+          "W": "Rain",
+          "E": "Street",
+          "A": "Sky",
+          "V": "Lucky Cat"
+        },
+        "ingredients": {
+          "F": [
+            "Wasabi",
+            "Takoyaki",
+            "Seared Salmon"
+          ],
+          "W": [
+            "Ramune",
+            "Tuna Nigiri",
+            "Fugu"
+          ],
+          "A": [
+            "Hanami Dango",
+            "Transit Card",
+            "Soufflé Pancakes"
+          ],
+          "E": [
+            "Onigiri",
+            "Matcha Wafer",
+            "Katsu Sando"
+          ],
+          "AF": [
+            "Matcha Latte",
+            "Yakitori"
+          ],
+          "AW": [
+            "Shaved Ice",
+            "Mochi Ice Cream"
+          ],
+          "FE": [
+            "Taiyaki",
+            "Curry Bread"
+          ],
+          "EW": [
+            "Miso Soup",
+            "Cup Ramen"
+          ],
+          "V": "Lucky Cat"
+        },
+        "patients": [
+          {
+            "full": "An Old Salaryman",
+            "short": "Old Salaryman"
+          },
+          {
+            "full": "The Konbini Night Clerk",
+            "short": "Konbini Night Clerk"
+          },
+          {
+            "full": "The Sushi Master",
+            "short": "Sushi Master"
+          },
+          {
+            "full": "The Station Master",
+            "short": "Station Master"
+          },
+          {
+            "full": "A Night Taxi Driver",
+            "short": "Night Taxi Driver"
+          },
+          {
+            "full": "The Enka Diva",
+            "short": "Enka Diva"
+          },
+          {
+            "full": "A Karaoke Salaryman",
+            "short": "Karaoke Salaryman"
+          },
+          {
+            "full": "A Yakitori Griller",
+            "short": "Yakitori Griller"
+          },
+          {
+            "full": "A Rockabilly Grandpa",
+            "short": "Rockabilly Grandpa"
+          },
+          {
+            "full": "A Construction Flagman",
+            "short": "Construction Flagman"
+          },
+          {
+            "full": "A Capsule-Hotel Guest",
+            "short": "Capsule-Hotel Guest"
+          },
+          {
+            "full": "The Elevator Lady",
+            "short": "Elevator Lady"
+          },
+          {
+            "full": "A Ramen Stall Owner",
+            "short": "Ramen Stall Owner"
+          },
+          {
+            "full": "The Tuna King",
+            "short": "Tuna King"
+          },
+          {
+            "full": "A Neon-Sign Repairman",
+            "short": "Neon-Sign Repairman"
+          },
+          {
+            "full": "A Curry-Shop Cook",
+            "short": "Curry-Shop Cook"
+          },
+          {
+            "full": "A Country Grandma",
+            "short": "Country Grandma"
+          },
+          {
+            "full": "A Cheer-Squad Leader",
+            "short": "Cheer-Squad Leader"
+          },
+          {
+            "full": "A Food-Sample Lady",
+            "short": "Food-Sample Lady"
+          },
+          {
+            "full": "An Umbrella Repairman",
+            "short": "Umbrella Repairman"
+          },
+          {
+            "full": "A Lost-Property Clerk",
+            "short": "Lost-Property Clerk"
+          },
+          {
+            "full": "The Ramen Emperor",
+            "short": "Ramen Emperor"
+          },
+          {
+            "full": "A Morning-Exercise Grandpa",
+            "short": "Morning-Exercise Grandpa"
+          },
+          {
+            "full": "A Shogi Player",
+            "short": "Shogi Player"
+          },
+          {
+            "full": "A Train Pusher",
+            "short": "Train Pusher"
+          },
+          {
+            "full": "A Shy Office Lady",
+            "short": "Shy Office Lady"
+          },
+          {
+            "full": "A TV Weatherman",
+            "short": "TV Weatherman"
+          },
+          {
+            "full": "An Unlucky Fortune Drawer",
+            "short": "Unlucky Fortune Drawer"
+          },
+          {
+            "full": "The Shopping-Street Mayor",
+            "short": "Shopping-Street Mayor"
+          },
+          {
+            "full": "A Lovestruck Octopus",
+            "short": "Lovestruck Octopus"
+          },
+          {
+            "full": "A Shamisen Busker",
+            "short": "Shamisen Busker"
+          },
+          {
+            "full": "A Lovestruck Bus Driver",
+            "short": "Lovestruck Bus Driver"
+          },
+          {
+            "full": "A Gamer Grandpa",
+            "short": "Gamer Grandpa"
+          },
+          {
+            "full": "A Sweet-Shop Granny",
+            "short": "Sweet-Shop Granny"
+          },
+          {
+            "full": "A Fish-Market Auctioneer",
+            "short": "Fish-Market Auctioneer"
+          },
+          {
+            "full": "A Festival Drummer",
+            "short": "Festival Drummer"
+          }
+        ],
+        "ailments": [
+          "Fever",
+          "Air-con chills",
+          "Sleeplessness",
+          "Heartbreak",
+          "A cough",
+          "Bad luck",
+          "Fox possession",
+          "Smartphone neck",
+          "Lovesickness",
+          "A forgotten password",
+          "Toothache",
+          "Nightmares",
+          "Hiccups",
+          "Stage fright",
+          "Homesickness",
+          "Karaoke throat"
+        ],
+        "tools": {
+          "ladle": {
+            "name": "Train Map",
+            "text": "Once per brew, turn one card to go another way: a quarter turn either way, or a half turn.",
+            "short": "Turn one card any way"
+          },
+          "mortar": {
+            "name": "Escalator",
+            "text": "Once per brew, ride one card one square further or one square shorter.",
+            "short": "One card a square longer or shorter"
+          },
+          "charm": {
+            "name": "Shopping Bike",
+            "text": "Once per brew, pedal one extra step to any square next to you.",
+            "short": "One free step, any way"
+          },
+          "basket": {
+            "name": "Konbini Bag",
+            "text": "When you gather or draw blind, take 4 cards instead of 2.",
+            "short": "Gather 4 instead of 2"
+          },
+          "kettle": {
+            "name": "Microwave",
+            "text": "Once per brew, heat up one card from your garden and play it a second time.",
+            "short": "One garden card twice"
+          },
+          "abacus": {
+            "name": "Point Card",
+            "text": "Every patient you cure with 3 or more ingredients from your hand and garden pays 2 extra {{mon}}.",
+            "short": "+2 for a cure of 3+ ingredients"
+          }
+        },
+        "characters": {
+          "herbalist": {
+            "name": "Grandma Ume",
+            "title": "the Balcony Gardener"
+          },
+          "merchant": {
+            "name": "Auntie Kazuko",
+            "title": "the Bargain Hunter"
+          },
+          "miko": {
+            "name": "Mr. Sato",
+            "title": "the Lottery Winner"
+          },
+          "kunoichi": {
+            "name": "Tetsu",
+            "title": "the Bicycle Courier"
+          }
+        },
+        "guilds": {
+          "lantern": {
+            "name": "Night Market",
+            "motto": "Open till the last train"
+          },
+          "train": {
+            "name": "Last Train",
+            "motto": "Never miss the last one"
+          },
+          "ramen": {
+            "name": "Ramen Alley",
+            "motto": "Fills you up, keeps you going"
+          },
+          "umbrella": {
+            "name": "Rainy Season",
+            "motto": "Fine in any weather"
+          }
+        }
+      },
+      "quest": {
+        "title": "Night Train to Shibuya",
+        "menu": "Night Train to Shibuya",
+        "menuNew": "Ten stops from Sapporo to Shibuya",
+        "done": "You reached Shibuya!",
+        "stops": [
+          {
+            "name": "Sapporo",
+            "line": "Snow and neon.",
+            "story": "Snow falls on the neon crossing, and the ramen alley is full. You open a little stall under the lights; Tokyo is ten stops down the line."
+          },
+          {
+            "name": "Hakodate",
+            "line": "The night market by the harbour.",
+            "story": "Squid stalls glow by the red-brick warehouses. The cases get harder here: longer routes, and symptoms on the way."
+          },
+          {
+            "name": "Aomori",
+            "line": "Giant glowing festival floats.",
+            "story": "Paper warriors and dragons glow above a dancing crowd. The toolmakers come out for the festival and sell to any healer with yen."
+          },
+          {
+            "name": "Sendai",
+            "line": "Streamers in the arcade.",
+            "story": "Huge paper streamers hang in the covered arcade, and the benches are full. The longer they wait, the more they need, and the more they pay."
+          },
+          {
+            "name": "Utsunomiya",
+            "line": "Dumpling alley.",
+            "story": "A steamy alley of tiny dumpling shops, and rival healers who claim the customers they want."
+          },
+          {
+            "name": "Ueno",
+            "line": "Morning exercises in the park.",
+            "story": "At dawn the whole park stretches together. The regulars here are generous: grateful patients bring gifts."
+          },
+          {
+            "name": "Akihabara",
+            "line": "Everybody has caught something.",
+            "story": "The arcades are packed and everyone is sneezing. Every patient is contagious, and if one goes home uncured, both healers pay."
+          },
+          {
+            "name": "Ginza",
+            "line": "A VIP wants a private cure.",
+            "story": "A black car pulls up outside the department store. A VIP asks you, quietly, for a cure in two stages."
+          },
+          {
+            "name": "Shinjuku",
+            "line": "Don't miss the last train.",
+            "story": "Neon alleys, tangled rail lines and the last train at midnight. The bench is short and your rival keeps their cards hidden."
+          },
+          {
+            "name": "Shibuya",
+            "line": "The crossing, the end of the line.",
+            "story": "The great crossing in neon rain. Your VIP is the Ramen Emperor himself, and the best healer in the city is already ahead."
+          }
+        ]
+      },
+      "chest": {
+        "ladle": {
+          "name": "Your own Train Map",
+          "text": "Start each game with the Train Map."
+        },
+        "mortar": {
+          "name": "Your own Escalator",
+          "text": "Start each game with the Escalator."
+        },
+        "kitsune": {
+          "name": "Your own Shopping Bike",
+          "text": "Start each game with the Shopping Bike."
+        },
+        "basket": {
+          "name": "Your own Konbini Bag",
+          "text": "Start each game with the Konbini Bag."
+        },
+        "kettle": {
+          "name": "Your own Microwave",
+          "text": "Start each game with the Microwave."
+        },
+        "abacus": {
+          "name": "Your own Point Card",
+          "text": "Start each game with the Point Card."
+        }
+      },
+      "status": {
+        "needElWhy": "Lucky Cat counts as any element"
+      },
+      "rules": {
+        "needEl": "A cure needs at least one ingredient of the patient's element (the big sign in a card's corner). The Lucky Cat {kitsune} counts as any element. A two-element card counts as either.",
+        "brew": {
+          "p": "Pick a patient (tap it, or swipe the map), then tap a card to preview its move. Play it, or cancel and try another. Tap a numbered chip to go back to that card. Each element moves in a straight line its own way: {dirs}, exactly as many squares as its card shows. A card with two elements moves diagonally between their ways. A Lucky Cat {kitsune} moves one square any way, diagonals too. Straight moves can't pass through an oni {oniG}; diagonals slip past. Nothing may land on an oni or leave the map. Finish <b>exactly</b> on {cure}, using at least {min} hand card. Hand cards are spent; garden cards stay."
+        }
+      },
+      "quirks": {
+        "stubborn": {
+          "how": "Plan for at least two ingredients of their element. A lucky cat counts as one."
+        }
+      }
+    }
+  }
+}
