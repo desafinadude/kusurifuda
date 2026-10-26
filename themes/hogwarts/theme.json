@@ -127,7 +127,11 @@
     "icon.el.F": "",
     "icon.el.E": "",
     "icon.el.A": "",
-    "icon.el.V": ""
+    "icon.el.V": "",
+    "patient.32": "people/patient-9.webp",
+    "patient.33": "people/patient-12.webp",
+    "patient.34": "people/patient-24.webp",
+    "patient.35": "people/patient-11.webp"
   },
   "elements": {
     "W": {
@@ -264,7 +268,10 @@
       "status": {
         "hitsOni": "That path hits an imp {oni}",
         "sakura": "Snitch",
-        "needElWhy": "Unicorn Hair counts as any house"
+        "needElWhy": "Unicorn Hair counts as any house",
+        "quirk": {
+          "stubborn": "Needs two of their house"
+        }
       },
       "stash": {
         "oniLeft": "Imps · {n} left"
@@ -299,6 +306,12 @@
         },
         "end": {
           "p": "Garden holds {garden}; planting into a full garden discards one. Hand limit {hand} at the end of your turn. When someone reaches {end}, the round finishes so both play equally; it also ends once the Hospital Wing is empty. Most {{mon}} wins; ties go to most cures."
+        },
+        "quirks": {
+          "p": "Some patients have a quirk: <b>frail</b> (no diagonals or leaps), <b>nervous</b> (hand cards only), <b>stubborn</b> (two of their house) or <b>contagious</b> (if they go home uncured, both lose {cont}). Some give a gift when cured: {{mon}}, a card for your garden, an imp back, cards from the deck, or a cheaper tool. Every cured patient still joins your ward."
+        },
+        "bench": {
+          "h": "The waiting room"
         }
       },
       "log": {
@@ -502,6 +515,22 @@
           {
             "full": "The Wandmaker",
             "short": "Wandmaker"
+          },
+          {
+            "full": "A Troll Wrestler",
+            "short": "Troll Wrestler"
+          },
+          {
+            "full": "A Castle Carpenter",
+            "short": "Carpenter"
+          },
+          {
+            "full": "The Boathouse Keeper",
+            "short": "Boathouse"
+          },
+          {
+            "full": "A Yule Ball Dancer",
+            "short": "Dancer"
           }
         ],
         "ailments": [
@@ -542,6 +571,16 @@
             "name": "Bottomless Satchel",
             "text": "When you gather or draw blind, take 4 cards instead of 2.",
             "short": "Gather 4 instead of 2"
+          },
+          "kettle": {
+            "name": "Cauldron Ladle",
+            "text": "Once per brew, play one card from your garden a second time.",
+            "short": "One garden card twice"
+          },
+          "abacus": {
+            "name": "Gringotts Ledger",
+            "text": "Every patient you cure with 3 or more ingredients from your hand and garden pays 2 extra {{mon}}.",
+            "short": "+2 for a cure of 3+ ingredients"
           }
         },
         "characters": {
@@ -579,6 +618,22 @@
             "name": "Slytherin",
             "motto": "Ambition finds a way"
           }
+        }
+      },
+      "gifts": {
+        "oni": {
+          "short": "+1 imp",
+          "text": "Gift: one of your imps comes back.",
+          "got": "Gift: an imp back"
+        }
+      },
+      "bench": {
+        "spot0": "Last chance"
+      },
+      "quirks": {
+        "stubborn": {
+          "name": "Stubborn",
+          "text": "The brew needs two ingredients of their house."
         }
       }
     }

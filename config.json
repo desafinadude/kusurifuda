@@ -1,9 +1,8 @@
 {
-  "_about": "Which theme and language to use. Players can switch in Menu › Settings when more than one is listed. quest: the Journey to Edo file; questOn: false hides the quest everywhere (its files stay as they are). themePicker: false hides the theme switch. Aizome and Moonwort still live in themes/ but aren't listed.",
-  "theme": "kusurifuda",
+  "_about": "Which theme and language to use. Players can switch in Menu › Settings when more than one is listed. quest: the Journey to Edo file; questOn: false hides the quest everywhere (its files stay as they are). themePicker: false hides the theme switch. Kusurifuda (Lacquer & Parchment), Hogwarts, Aizome and Moonwort still live in themes/ but aren't listed; Neon builds on Kusurifuda's files. patients: the designed patient deck and royals (made by build/deck.js).",
+  "theme": "neon",
   "themes": {
-    "kusurifuda": "themes/kusurifuda/theme.json",
-    "hogwarts": "themes/hogwarts/theme.json"
+    "neon": "themes/neon/theme.json"
   },
   "language": "en",
   "languages": {
@@ -13,7 +12,8 @@
     }
   },
   "rules": "rules.json",
+  "patients": "patients.json",
   "quest": "quest.json",
-  "questOn": false,
+  "questOn": true,
   "themePicker": true
 }

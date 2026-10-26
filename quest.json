@@ -1,5 +1,5 @@
 {
- "_about": "Quest mode: a journey down the Oshu Kaido from Aomori to Edo. Each stop is one game; win it to travel on. 'rules' are changes to rules.json for that game only (nested keys change just what they name). 'rival' is how the bot plays: depth = the longest cure it looks for (5 = full strength), tools/curse = false stops it buying tools or cursing, headStart = mon it starts with. 'at' is [longitude, latitude] on the journey map. Place names and lines are in the language file under quest.stops.",
+ "_about": "Quest mode: the healer's journey down the Oshu Kaido from Aomori to Edo. Each stop is one game; win it to travel on, and pick a reward for your medicine chest (kept for the rest of the journey). Each stop adds one thing ('intro' names what's new, for the stop card). 'rules' are changes to rules.json for that game only (nested keys change just what they name; patients.tiers picks which tiers of the deck are in play; toolShop/claims false switch those off; quirks.force gives every patient one quirk; royal.you hands you that royal). 'rival' is how the bot plays: depth = the longest cure it looks for (5 = full strength), tools/curse false = it buys no tools / claims nobody, greedy = how readily it claims, headStart = mon it starts with, mods = boosts like a medicine chest's. Bosses are marked boss. 'at' is [longitude, latitude] on the map. Names and lines are in the language file under quest.stops.",
  "map": {
   "_about": "The journey map. 'svg' is the land drawing (its <path class=\"land\"> and <path class=\"border\"> shapes are used, in its own viewBox). 'project' turns [longitude, latitude] into that drawing's coordinates: x = a*lon + b*lat + c for each row, fitted to six capes from Soya to Nojimazaki (about 4 units out at most).",
   "svg": "quest/japan.svg",
@@ -17,405 +17,422 @@
   },
   "credit": "Map: \"Regions and Prefectures of Japan - blank.svg\" by Bigmorr, Wikimedia Commons, public domain (based on a map by Orange Wave)."
  },
+ "chest": {
+  "_about": "Medicine chest rewards: after each win you pick one of three you don't have yet. The chest holds _slots items; when it's full you choose one to leave behind (or leave the new one). mods add to your rules for every later quest game (like an ability); tool means you start each game owning that tool.",
+  "seedling": {
+   "mods": {
+    "startGarden": 1
+   }
+  },
+  "satchel": {
+   "mods": {
+    "handLimit": 1
+   }
+  },
+  "trowel": {
+   "mods": {
+    "gardenMax": 1
+   }
+  },
+  "purse": {
+   "mods": {
+    "startFame": 2
+   }
+  },
+  "charm": {
+   "mods": {
+    "oniPerPlayer": 1
+   }
+  },
+  "almanac": {
+   "mods": {
+    "sakuraBonus": 1
+   }
+  },
+  "apprentice": {
+   "mods": {
+    "gather": 1
+   }
+  },
+  "ladle": {
+   "tool": "ladle"
+  },
+  "mortar": {
+   "tool": "mortar"
+  },
+  "kitsune": {
+   "tool": "charm"
+  },
+  "basket": {
+   "tool": "basket"
+  },
+  "kettle": {
+   "tool": "kettle"
+  },
+  "abacus": {
+   "tool": "abacus"
+  },
+  "_slots": 3
+ },
  "stops": [
   {
    "id": "aomori",
+   "intro": [
+    "basics"
+   ],
+   "rules": {
+    "bench": {
+     "enabled": false
+    },
+    "quirks": {
+     "enabled": false
+    },
+    "gifts": {
+     "enabled": false
+    },
+    "royal": {
+     "enabled": false
+    },
+    "endFame": 12,
+    "patients": {
+     "tiers": [
+      1
+     ]
+    },
+    "toolShop": false,
+    "claims": false
+   },
+   "rival": {
+    "depth": 2,
+    "tools": false,
+    "curse": false
+   },
    "at": [
     140.747,
     40.822
-   ],
-   "rules": {
-    "endFame": 10,
-    "patients": {
-     "oniMin": 0,
-     "oniMax": 2,
-     "maxDistance": 4,
-     "sakuraChance": 0.8
-    }
-   },
-   "rival": {
-    "depth": 2,
-    "tools": false,
-    "curse": false
-   }
-  },
-  {
-   "id": "noheji",
-   "at": [
-    141.128,
-    40.864
-   ],
-   "rules": {
-    "endFame": 11,
-    "patients": {
-     "oniMin": 0,
-     "oniMax": 2,
-     "maxDistance": 4,
-     "sakuraChance": 0.8
-    }
-   },
-   "rival": {
-    "depth": 2,
-    "tools": false,
-    "curse": false
-   }
-  },
-  {
-   "id": "gonohe",
-   "at": [
-    141.311,
-    40.531
-   ],
-   "rules": {
-    "endFame": 12,
-    "patients": {
-     "oniMin": 0,
-     "oniMax": 2,
-     "maxDistance": 4,
-     "sakuraChance": 0.8
-    }
-   },
-   "rival": {
-    "depth": 2,
-    "tools": false,
-    "curse": false
-   }
+   ]
   },
   {
    "id": "sannohe",
+   "intro": [
+    "symptoms"
+   ],
+   "rules": {
+    "bench": {
+     "enabled": false
+    },
+    "quirks": {
+     "enabled": false
+    },
+    "gifts": {
+     "enabled": false
+    },
+    "royal": {
+     "enabled": false
+    },
+    "endFame": 15,
+    "patients": {
+     "tiers": [
+      1,
+      2
+     ]
+    },
+    "toolShop": false,
+    "claims": false
+   },
+   "rival": {
+    "depth": 2,
+    "tools": false,
+    "curse": false
+   },
    "at": [
     141.256,
     40.383
-   ],
-   "rules": {
-    "endFame": 12,
-    "patients": {
-     "oniMin": 0,
-     "oniMax": 2,
-     "maxDistance": 4,
-     "sakuraChance": 0.8
-    }
-   },
-   "rival": {
-    "depth": 2,
-    "tools": false,
-    "curse": false
-   }
-  },
-  {
-   "id": "ichinohe",
-   "at": [
-    141.296,
-    40.213
-   ],
-   "rules": {
-    "endFame": 13,
-    "patients": {
-     "oniMin": 0,
-     "oniMax": 2,
-     "maxDistance": 4,
-     "sakuraChance": 0.8
-    }
-   },
-   "rival": {
-    "depth": 2,
-    "tools": false,
-    "curse": false
-   }
-  },
-  {
-   "id": "numakunai",
-   "at": [
-    141.219,
-    39.966
-   ],
-   "rules": {
-    "endFame": 14,
-    "patients": {
-     "oniMin": 1,
-     "oniMax": 3,
-     "maxDistance": 4,
-     "sakuraChance": 0.8
-    }
-   },
-   "rival": {
-    "depth": 3,
-    "tools": false,
-    "curse": false
-   }
+   ]
   },
   {
    "id": "morioka",
+   "intro": [
+    "tools"
+   ],
+   "rules": {
+    "bench": {
+     "enabled": false
+    },
+    "quirks": {
+     "enabled": false
+    },
+    "gifts": {
+     "enabled": false
+    },
+    "royal": {
+     "enabled": false
+    },
+    "endFame": 18,
+    "patients": {
+     "tiers": [
+      1,
+      2
+     ]
+    },
+    "claims": false
+   },
+   "rival": {
+    "depth": 3,
+    "curse": false
+   },
    "at": [
     141.154,
     39.702
-   ],
-   "rules": {
-    "endFame": 15,
-    "patients": {
-     "oniMin": 1,
-     "oniMax": 3,
-     "maxDistance": 5,
-     "sakuraChance": 0.65
-    }
-   },
-   "rival": {
-    "depth": 3,
-    "tools": false,
-    "curse": false
-   }
+   ]
   },
   {
    "id": "hanamaki",
+   "intro": [
+    "bench"
+   ],
+   "rules": {
+    "bench": {
+     "enabled": true
+    },
+    "quirks": {
+     "enabled": false
+    },
+    "gifts": {
+     "enabled": false
+    },
+    "royal": {
+     "enabled": false
+    },
+    "endFame": 20,
+    "patients": {
+     "tiers": [
+      1,
+      2
+     ]
+    },
+    "claims": false
+   },
+   "rival": {
+    "depth": 4,
+    "curse": false
+   },
    "at": [
     141.117,
     39.389
-   ],
-   "rules": {
-    "endFame": 16,
-    "patients": {
-     "oniMin": 1,
-     "oniMax": 3,
-     "maxDistance": 5,
-     "sakuraChance": 0.65
-    }
-   },
-   "rival": {
-    "depth": 3,
-    "tools": false,
-    "curse": false
-   }
-  },
-  {
-   "id": "mizusawa",
-   "at": [
-    141.139,
-    39.144
-   ],
-   "rules": {
-    "endFame": 16,
-    "patients": {
-     "oniMin": 1,
-     "oniMax": 3,
-     "maxDistance": 5,
-     "sakuraChance": 0.65
-    }
-   },
-   "rival": {
-    "depth": 3,
-    "curse": false
-   }
+   ]
   },
   {
    "id": "ichinoseki",
+   "intro": [
+    "claims",
+    "quirks"
+   ],
+   "rules": {
+    "bench": {
+     "enabled": true
+    },
+    "quirks": {
+     "enabled": true
+    },
+    "gifts": {
+     "enabled": false
+    },
+    "royal": {
+     "enabled": false
+    },
+    "endFame": 22
+   },
+   "rival": {
+    "depth": 4,
+    "greedy": 1
+   },
    "at": [
     141.127,
     38.934
-   ],
-   "rules": {
-    "endFame": 17,
-    "patients": {
-     "oniMin": 1,
-     "oniMax": 3,
-     "maxDistance": 5,
-     "sakuraChance": 0.65
-    }
-   },
-   "rival": {
-    "depth": 4,
-    "curse": false
-   }
+   ]
   },
   {
    "id": "sendai",
+   "intro": [
+    "gifts"
+   ],
+   "rules": {
+    "bench": {
+     "enabled": true
+    },
+    "quirks": {
+     "enabled": true
+    },
+    "gifts": {
+     "enabled": true
+    },
+    "royal": {
+     "enabled": false
+    },
+    "endFame": 24
+   },
+   "rival": {
+    "depth": 5,
+    "greedy": 1
+   },
    "at": [
     140.87,
     38.268
-   ],
-   "rules": {
-    "endFame": 18,
-    "patients": {
-     "oniMin": 1,
-     "oniMax": 4,
-     "maxDistance": 5,
-     "sakuraChance": 0.65
-    }
-   },
-   "rival": {
-    "depth": 4,
-    "curse": false
-   }
-  },
-  {
-   "id": "shiroishi",
-   "at": [
-    140.62,
-    38.002
-   ],
-   "rules": {
-    "endFame": 19,
-    "patients": {
-     "oniMin": 1,
-     "oniMax": 4,
-     "maxDistance": 5,
-     "sakuraChance": 0.65
-    }
-   },
-   "rival": {
-    "depth": 4
-   }
+   ]
   },
   {
    "id": "fukushima",
+   "boss": true,
+   "intro": [
+    "outbreak"
+   ],
+   "rules": {
+    "bench": {
+     "enabled": true
+    },
+    "quirks": {
+     "enabled": true,
+     "force": "contagious",
+     "contagious": 2
+    },
+    "gifts": {
+     "enabled": true
+    },
+    "royal": {
+     "enabled": false
+    },
+    "endFame": 24
+   },
+   "rival": {
+    "depth": 5,
+    "mods": {
+     "handLimit": 1
+    }
+   },
    "at": [
     140.474,
     37.76
-   ],
-   "rules": {
-    "endFame": 19,
-    "patients": {
-     "oniMin": 2,
-     "oniMax": 4,
-     "maxDistance": 6,
-     "sakuraChance": 0.65
-    }
-   },
-   "rival": {
-    "depth": 4
-   }
-  },
-  {
-   "id": "nihonmatsu",
-   "at": [
-    140.431,
-    37.585
-   ],
-   "rules": {
-    "endFame": 20,
-    "patients": {
-     "oniMin": 2,
-     "oniMax": 4,
-     "maxDistance": 6,
-     "sakuraChance": 0.65
-    }
-   },
-   "rival": {}
-  },
-  {
-   "id": "sukagawa",
-   "at": [
-    140.373,
-    37.287
-   ],
-   "rules": {
-    "endFame": 21,
-    "patients": {
-     "oniMin": 2,
-     "oniMax": 4,
-     "maxDistance": 6,
-     "sakuraChance": 0.5
-    }
-   },
-   "rival": {}
+   ]
   },
   {
    "id": "shirakawa",
+   "intro": [
+    "royal"
+   ],
+   "rules": {
+    "bench": {
+     "enabled": true
+    },
+    "quirks": {
+     "enabled": true
+    },
+    "gifts": {
+     "enabled": true
+    },
+    "royal": {
+     "enabled": true
+    },
+    "endFame": 28
+   },
+   "rival": {
+    "depth": 5,
+    "greedy": 1,
+    "mods": {
+     "startGarden": 1
+    }
+   },
    "at": [
     140.211,
     37.126
-   ],
-   "rules": {
-    "endFame": 22,
-    "patients": {
-     "oniMin": 2,
-     "oniMax": 5,
-     "maxDistance": 6,
-     "sakuraChance": 0.5
-    }
-   },
-   "rival": {
-    "headStart": 1
-   }
-  },
-  {
-   "id": "otawara",
-   "at": [
-    140.016,
-    36.871
-   ],
-   "rules": {
-    "endFame": 23,
-    "patients": {
-     "oniMin": 2,
-     "oniMax": 5,
-     "maxDistance": 6,
-     "sakuraChance": 0.5
-    },
-    "openHands": false
-   },
-   "rival": {
-    "headStart": 1
-   }
+   ]
   },
   {
    "id": "utsunomiya",
+   "intro": [
+    "river"
+   ],
+   "rules": {
+    "bench": {
+     "enabled": true,
+     "spots": [
+      {
+       "bonus": 3,
+       "min": 4
+      },
+      {
+       "bonus": 2,
+       "min": 3
+      },
+      {
+       "bonus": 0,
+       "min": 2
+      }
+     ]
+    },
+    "quirks": {
+     "enabled": true
+    },
+    "gifts": {
+     "enabled": true
+    },
+    "royal": {
+     "enabled": true
+    },
+    "endFame": 30,
+    "openHands": false
+   },
+   "rival": {
+    "depth": 5,
+    "headStart": 2,
+    "greedy": 2,
+    "mods": {
+     "startGarden": 1,
+     "handLimit": 1
+    }
+   },
    "at": [
     139.883,
     36.555
-   ],
-   "rules": {
-    "endFame": 23,
-    "patients": {
-     "oniMin": 2,
-     "oniMax": 5,
-     "maxDistance": 6,
-     "sakuraChance": 0.5
-    },
-    "openHands": false
-   },
-   "rival": {
-    "headStart": 2
-   }
-  },
-  {
-   "id": "koga",
-   "at": [
-    139.755,
-    36.178
-   ],
-   "rules": {
-    "endFame": 24,
-    "patients": {
-     "oniMin": 2,
-     "oniMax": 5,
-     "maxDistance": 6,
-     "sakuraChance": 0.5
-    },
-    "openHands": false
-   },
-   "rival": {
-    "headStart": 2
-   }
+   ]
   },
   {
    "id": "edo",
-   "at": [
-    139.774,
-    35.684
+   "boss": true,
+   "intro": [
+    "shogun"
    ],
    "rules": {
-    "endFame": 25,
-    "patients": {
-     "oniMin": 2,
-     "oniMax": 5,
-     "maxDistance": 6,
-     "sakuraChance": 0.5
+    "bench": {
+     "enabled": true
     },
+    "quirks": {
+     "enabled": true
+    },
+    "gifts": {
+     "enabled": true
+    },
+    "royal": {
+     "enabled": true,
+     "you": 21
+    },
+    "endFame": 32,
     "openHands": false
    },
    "rival": {
-    "headStart": 3
-   }
+    "depth": 5,
+    "headStart": 3,
+    "greedy": 2,
+    "mods": {
+     "startGarden": 1,
+     "handLimit": 1,
+     "gather": 1
+    }
+   },
+   "at": [
+    139.774,
+    35.684
+   ]
   }
  ]
 }
