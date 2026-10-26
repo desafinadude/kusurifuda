@@ -772,12 +772,15 @@
   // quick-game options: the knobs the quest turns stop by stop
   const ONI = { few: [0, 2], some: null, many: [2, 5] };
   function quickOpts() {
-    const o = Object.assign({ endFame: PREFS.endFame || BASE_END, depth: 5, tools: true, curse: true, oni: "some", open: PREFS.openHands != null ? !!PREFS.openHands : BASE_OPEN, head: 0 }, PREFS.opts || {});
+    const o = Object.assign({ endFame: PREFS.endFame || BASE_END, depth: 5, tools: true, curse: true, oni: "some", open: PREFS.openHands != null ? !!PREFS.openHands : BASE_OPEN, head: 0,
+      bench: true, quirks: true, gifts: true, royal: true }, PREFS.opts || {});
     return o;
   }
   function startQuick() {
     const o = quickOpts(), settings = { endFame: o.endFame, openHands: !!o.open };
     if (ONI[o.oni]) settings.patients = { oniMin: ONI[o.oni][0], oniMax: ONI[o.oni][1] };
+    // the patient rules that can be switched off for a simpler game
+    ["bench", "quirks", "gifts", "royal"].forEach((k) => { settings[k] = { enabled: !!o[k] }; });
     const players = pickPlayers(); players[1].style = { depth: o.depth, tools: o.tools, curse: o.curse };
     U.screen = null; closeSheet(); startNew(false, { settings, players, headStart: o.head });
   }
@@ -1053,6 +1056,11 @@
         <span class="cap">${t("opts.head")} <small>${t("opts.headSub")}</small></span>${seg("head", [0, 1, 2, 3].map((v) => [v, v]))}
         <span class="cap">${t("opts.oni")} <small>${t("opts.oniSub")}</small></span>${seg("oni", ["few", "some", "many"].map((v) => [v, t("opts.oni" + v[0].toUpperCase() + v.slice(1))]))}
         ${tg("open", t("settings.open"), t("settings.openSub"))}
+        <div class="sect"><div class="hd"><b>${t("opts.patients")}</b></div></div>
+        ${tg("bench", t("opts.bench"), t("opts.benchSub"))}
+        ${tg("quirks", t("opts.quirks"), t("opts.quirksSub"))}
+        ${tg("gifts", t("opts.gifts"), t("opts.giftsSub"))}
+        ${tg("royal", t("opts.royal"), t("opts.royalSub"))}
         ${canContinue() ? `<p class="muted">${t("quest.abandon")}</p>` : ""}
         <div class="btns"><button class="btn" data-a="close">${t("common.back")}</button><button class="btn primary" data-a="quickgo">${t("opts.start")}</button></div>`;
     },
@@ -1122,8 +1130,9 @@
             <div class="qnav"><button class="btn" data-a="qstep" data-i="-1" aria-label="${attr(t("quest.prev"))}" ${i > 0 ? "" : "disabled"}>‹</button><button class="btn" data-a="qstep" data-i="1" aria-label="${attr(t("quest.next"))}" ${i < Math.min(done, stops.length - 1) ? "" : "disabled"}>›</button></div>
           </div></div>
         ${(PREFS.chest || []).length ? `<div class="sect"><div class="hd"><b>${t("chest.title")}</b><span>${t("chest.sub")}</span></div><div class="chests own">${PREFS.chest.map((id) => `<span class="chest on"><b>${t("chest." + id + ".name")}</b><small>${t("chest." + id + ".text")}</small></span>`).join("")}</div></div>` : ""}
+        ${toggleRow("qhard", "", PREFS.questHard, t("quest.hard.name"), t("quest.hard.sub"))}
         ${mid ? `<p class="muted">${t("quest.abandon")}</p>` : ""}
-        <div class="btns">${all ? `<button class="btn" data-a="qrestart">${t("quest.restart")}</button>` : `<button class="btn" data-a="qclose">${t("common.close")}</button>`}<button class="btn primary" data-a="qgo" data-i="${i}">${i < done ? t("quest.playAgain") : t("quest.setOut")}</button></div>`;
+        <div class="btns">${all ? `<button class="btn" data-a="qrestart">${t("quest.restart")}</button>` : `<button class="btn" data-a="qclose">${t("common.close")}</button>`}${PREFS.questHard && i < done && !all ? `<button class="btn primary" data-a="qsel" data-i="${done}">${t("quest.hard.onward", { place: esc(stopName(done)) })}</button>` : `<button class="btn primary" data-a="qgo" data-i="${i}">${i < done ? t("quest.playAgain") : t("quest.setOut")}</button>`}</div>`;
     },
     over() {
       const g = G(), [a, b] = g.P, w = g.winner;
@@ -1136,13 +1145,14 @@
       const chest = offer.length ? `<div class="sect chestsel"><div class="hd"><b>${t("chest.choose")}</b><span>${t("chest.chooseSub")}</span></div><div class="chests">${offer.map((id) => chestItem(id, g.quest.picked === id)).join("")}</div></div>${dropRow}` : "";
       const qbtns = q == null ? "" : w === "you"
         ? `${chest}<div class="btns"><button class="btn" data-a="questmap" data-i="${nxt != null ? nxt : q}">${t("quest.map")}</button>${nxt != null ? `<button class="btn primary" data-a="qgo" data-i="${nxt}" ${picking ? "disabled" : ""}>${picking ? t("chest.pickFirst") : t("quest.onTo", { place: esc(stopName(nxt)) })}</button>` : ""}</div>`
+        : g.quest.lost ? `<div class="btns"><button class="btn" data-a="questmap" data-i="0">${t("quest.map")}</button><button class="btn primary" data-a="qgo" data-i="0">${t("quest.hard.again", { place: esc(stopName(0)) })}</button></div>`
         : `<div class="btns"><button class="btn" data-a="questmap" data-i="${q}">${t("quest.map")}</button><button class="btn primary" data-a="qgo" data-i="${q}">${t("quest.retry")}</button></div>`;
       const names = (p) => RU().toolIds.filter((id) => p.tools[id]).map(toolName).join(", ") || t("rival.none");
       return `<div class="sh end" style="flex-direction:column"><div class="big">${ic(w === "tie" ? "tie" : w === "you" ? "win" : "lose")}</div><h2>${t("over." + w)}</h2></div>
         <div class="end sc"><div><b>${a.fame}</b>${t("over.cures", { who: t("who.you"), n: a.cures })}</div><div><b>${b.fame}</b>${t("over.cures", { who: rivalLabel(), n: b.cures })}</div></div>
         <p class="muted" style="text-align:center">${t("over.tools", { you: esc(names(a)), rival: esc(names(b)) })}</p>
         ${isStandalone() ? "" : `<button class="btn" data-a="installq" style="flex:none;min-height:44px">${t("install.offer")}</button>`}
-        ${q != null ? `<p class="qres">${t(w === "you" ? "quest.won" : "quest.lost", { place: esc(stopName(q)) })}</p>${qbtns}` : `<div class="btns"><button class="btn" data-a="title">${t("menu.main")}</button><button class="btn" data-a="log">${t("act.log")}</button><button class="btn primary" data-a="quickgo">${t("over.again")}</button></div>`}`;
+        ${q != null ? `<p class="qres">${t(w === "you" ? "quest.won" : g.quest.lost ? "quest.hard.lost" : "quest.lost", { place: esc(stopName(q)), n: q })}</p>${qbtns}` : `<div class="btns"><button class="btn" data-a="title">${t("menu.main")}</button><button class="btn" data-a="log">${t("act.log")}</button><button class="btn primary" data-a="quickgo">${t("over.again")}</button></div>`}`;
     },
     install() {
       const pl = platform();
@@ -1321,7 +1331,10 @@
   function showOver() {
     U.busy = false; U.rv = null; U.bo = null; render();
     const w = G().winner; if (w === "you") SFX.win(); else if (w === "rival") SFX.lose(); else SFX.cure();
-    const q = G().quest; if (q && w === "you" && !q.won) { q.won = true; if (q.n < (PREFS.questDone || 0)) q.reward = false; PREFS.questDone = Math.max(PREFS.questDone || 0, q.n + 1); savePrefs(); KF.save(); }
+    const q = G().quest;
+    // hardcore: a lost stop ends the journey; back to the first town with an empty chest
+    if (q && w !== "you" && PREFS.questHard && !q.lost) { q.lost = true; PREFS.questDone = 0; PREFS.chest = []; savePrefs(); KF.save(); }
+    if (q && w === "you" && !q.won) { q.won = true; if (q.n < (PREFS.questDone || 0)) q.reward = false; PREFS.questDone = Math.max(PREFS.questDone || 0, q.n + 1); savePrefs(); KF.save(); }
     openSheet({ type: "over", modal: true, quiet: true });
   }
   function endMyTurn() {
@@ -1454,6 +1467,7 @@
       case "qgo": openSheet({ type: "arrive", i: +i, modal: true }); return;
       case "qbegin": startQuest(+i); return;
       case "qclose": if (!U.screen && g.over) openSheet({ type: "over", modal: true, quiet: true }); else closeSheet(); return;
+      case "qhard": PREFS.questHard = !PREFS.questHard; savePrefs(); SFX.toggle(); renderSheet(); return;
       case "qrestart": PREFS.questDone = 0; PREFS.chest = []; savePrefs(); s.sel = 0; SFX.toggle(); renderSheet(); return;
       case "qchest": { const q = g && g.quest; if (!q || q.picked) return; q.picked = i; if ((PREFS.chest || []).length < chestSlots()) { q.kept = true; PREFS.chest = [...(PREFS.chest || []), i]; savePrefs(); } KF.save(); SFX.fame(); renderSheet(); return; }
       case "qdrop": { const q = g && g.quest; if (!q || !q.picked || q.kept) return; q.kept = true; if (i) PREFS.chest = [...(PREFS.chest || []).filter((x) => x !== i), q.picked]; savePrefs(); KF.save(); SFX.toggle(); renderSheet(); return; }

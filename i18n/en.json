@@ -1092,6 +1092,13 @@
       "expect": "What to expect",
       "begin": "Begin",
       "mapAria": "The road from {from} to {place}"
+    },
+    "hard": {
+      "name": "Hardcore",
+      "sub": "Lose a stop and the journey is over: back to the first town, medicine chest emptied. No retries, no replays.",
+      "lost": "The journey ends in {place}. Back to the start.",
+      "again": "Start again from {place}",
+      "onward": "Onward to {place}"
     }
   },
   "title": {
@@ -1124,7 +1131,16 @@
     "oniMany": "Many",
     "start": "Start the game",
     "you": "You",
-    "rules": "Rules"
+    "rules": "Rules",
+    "patients": "Patients",
+    "bench": "Waiting bench",
+    "benchSub": "Patients who wait need more ingredients and pay more; the last one goes home each round.",
+    "quirks": "Quirks",
+    "quirksSub": "Some patients are frail, nervous, stubborn or contagious.",
+    "gifts": "Gifts",
+    "giftsSub": "Some patients thank you with something extra.",
+    "royal": "Royal patient",
+    "royalSub": "Each healer gets a private two-stage patient who pays big at the end."
   },
   "table": {
     "you": "Your table",
