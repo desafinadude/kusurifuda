@@ -95,7 +95,6 @@ theme = {
     "id": "neon", "name": "Neon", "extends": "../kusurifuda/theme.json", "sprites": "sprites.svg",
     "assets": assets,
     "elements": {"V": {"glyph": "猫"}},
-    "stylesheet": "theme.css",
     "tools": {k: {"glyph": v[3], "art": f"tool.{k}"} for k, v in TOOLS.items()},
     "guilds": [{"id": g, "art": f"guild.{g}", "color": COLORS[e][0], "element": e} for g, e, n, m in GUILDS],
     "glyphs": {"brand": "薬札"},

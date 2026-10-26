@@ -1,6 +1,6 @@
 /* Kusurifuda service worker — precaches the whole game so it plays offline.
    Version is a hash of the app files, so any change ships a fresh cache. */
-const VERSION = "dbdccfa2ca";
+const VERSION = "9952a1287a";
 // the live game and the beta (/beta/) share an origin, so their caches are named apart and never cleared by each other
 const BETA = /\/beta\/$/.test(self.registration.scope);
 const PFX = BETA ? "kusurifuda-beta-" : "kusurifuda-";
@@ -431,7 +431,6 @@ const PRECACHE = [
  "themes/neon/people/patient-8.webp",
  "themes/neon/people/patient-9.webp",
  "themes/neon/sprites.svg",
- "themes/neon/theme.css",
  "themes/neon/theme.json",
  "themes/neon/towns/aomori.webp",
  "themes/neon/towns/edo.webp",
