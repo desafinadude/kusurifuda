@@ -1,4 +1,4 @@
-/* Neon: every ingredient card wears a frame in its element's colour; a diagonal card's frame is split
+/* Neon: every ingredient card wears a frame (kept for the look) in its element's colour; a diagonal card's frame is split
    corner to corner (the first element top-right, the second bottom-left), as Kusurifuda's own cards are */
 .ic.paper.el-F{--ce:var(--F)}.ic.paper.el-W{--ce:var(--W)}.ic.paper.el-E{--ce:var(--E)}.ic.paper.el-A{--ce:var(--A)}.ic.paper.el-V{--ce:var(--V)}
 .ic.paper.el2-F{--ce2:var(--F)}.ic.paper.el2-W{--ce2:var(--W)}.ic.paper.el2-E{--ce2:var(--E)}.ic.paper.el2-A{--ce2:var(--A)}
