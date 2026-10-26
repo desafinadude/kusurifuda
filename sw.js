@@ -1,6 +1,6 @@
 /* Kusurifuda service worker — precaches the whole game so it plays offline.
    Version is a hash of the app files, so any change ships a fresh cache. */
-const VERSION = "4755b03084";
+const VERSION = "941f0fa1d2";
 // the live game and the beta (/beta/) share an origin, so their caches are named apart and never cleared by each other
 const BETA = /\/beta\/$/.test(self.registration.scope);
 const PFX = BETA ? "kusurifuda-beta-" : "kusurifuda-";
@@ -394,6 +394,10 @@ const PRECACHE = [
  "themes/neon/people/guild-ramen.webp",
  "themes/neon/people/guild-train.webp",
  "themes/neon/people/guild-umbrella.webp",
+ "themes/neon/people/patient-0.webp",
+ "themes/neon/people/patient-1.webp",
+ "themes/neon/people/patient-10.webp",
+ "themes/neon/people/patient-11.webp",
  "themes/neon/people/patient-12.webp",
  "themes/neon/people/patient-13.webp",
  "themes/neon/people/patient-14.webp",
@@ -402,6 +406,7 @@ const PRECACHE = [
  "themes/neon/people/patient-17.webp",
  "themes/neon/people/patient-18.webp",
  "themes/neon/people/patient-19.webp",
+ "themes/neon/people/patient-2.webp",
  "themes/neon/people/patient-20.webp",
  "themes/neon/people/patient-21.webp",
  "themes/neon/people/patient-22.webp",
@@ -412,12 +417,19 @@ const PRECACHE = [
  "themes/neon/people/patient-27.webp",
  "themes/neon/people/patient-28.webp",
  "themes/neon/people/patient-29.webp",
+ "themes/neon/people/patient-3.webp",
  "themes/neon/people/patient-30.webp",
  "themes/neon/people/patient-31.webp",
  "themes/neon/people/patient-32.webp",
  "themes/neon/people/patient-33.webp",
  "themes/neon/people/patient-34.webp",
  "themes/neon/people/patient-35.webp",
+ "themes/neon/people/patient-4.webp",
+ "themes/neon/people/patient-5.webp",
+ "themes/neon/people/patient-6.webp",
+ "themes/neon/people/patient-7.webp",
+ "themes/neon/people/patient-8.webp",
+ "themes/neon/people/patient-9.webp",
  "themes/neon/sprites.svg",
  "themes/neon/theme.json",
  "themes/neon/towns/aomori.webp",
