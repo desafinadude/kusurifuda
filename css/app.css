@@ -1028,3 +1028,5 @@ button.trait:focus-visible{outline:2px solid var(--shu-hi);outline-offset:1px}
 .pvbtn:focus-visible{outline:2px solid var(--shu-hi);outline-offset:2px}
 .pvbig{display:flex;justify-content:center;margin:-2px 0 4px}
 .pvbig .ppor.pvimg{width:300px;height:300px;border-radius:16px;border-width:2.5px}
+/* one continuous table on a wide screen: the game's own screens let the window's table show through */
+#app.wide .scr.lacquer{background:transparent}

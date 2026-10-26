@@ -1786,7 +1786,9 @@
   }
   async function boot() {
     $("#app").classList.add("lacquer"); // the table under the game, seen at the sides of a wide screen
-    $("#stage").innerHTML = '<div id="scr"></div><div id="shl"></div><div id="tsl"></div>' + steamLayer();
+    $("#stage").innerHTML = '<div id="scr"></div><div id="shl"></div><div id="tsl"></div>';
+    // the steam drifts over the whole window, table edges included, not just the game in the middle
+    $("#app").insertAdjacentHTML("beforeend", steamLayer());
     setSteam();
     try { await loadAll(); }
     catch (e) { $("#scr").innerHTML = `<div class="loadfail"><b>Kusurifuda could not load its files.</b><small>${esc(e.message)}</small></div>`; console.error(e); return; }
