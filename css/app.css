@@ -678,7 +678,7 @@ details.more summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(-
 .tplot:disabled{opacity:.45}
 .stash{width:128px;flex-shrink:0;display:flex;flex-direction:column;gap:12px}
 .stash .s{display:flex;flex-direction:column;gap:4px}
-.stash .s>span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.stash .s>span:first-child{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .coins{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
 .coin{width:28px;height:36px;border-radius:4px;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center}
 .coin i{width:18px;height:18px;border-radius:50%;background:var(--shu);color:var(--parch-hi);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:800;font-size:11px;font-style:normal}
@@ -980,3 +980,31 @@ button.trait:focus-visible{outline:2px solid var(--shu-hi);outline-offset:1px}
 .tabl .tray:has(.tgrid2){overflow-y:auto;overscroll-behavior:contain}
 .tabl .tray .tgrid2:has(> .tbig:nth-child(5)) .tbig{min-height:60px;padding:6px 10px}
 .tabl .tray .tgrid2:has(> .tbig:nth-child(5)) .tbig .ti{width:46px;height:46px}
+/* a wide screen: the game sits in the middle of the table, a little raised */
+#app.wide #stage{box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 60px rgba(0,0,0,.55)}
+
+/* ---------- the tray's garden/ward tabs, oni count and tools ---------- */
+.gtabs{display:inline-flex;gap:2px;padding:2px;border-radius:999px;background:color-mix(in srgb,var(--parch) 8%,transparent);border:1px solid var(--line-2)}
+.gtab{position:relative;display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border:0;border-radius:999px;background:none;color:var(--muted);font:inherit;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;line-height:16px}
+.gtab b{font-weight:700;letter-spacing:0;color:inherit;opacity:.85}
+.gtab[aria-selected="true"]{background:var(--parch);color:var(--ink)}
+.gtab:not([aria-selected="true"]):hover{color:var(--parch)}
+.gtab .dot{position:absolute;top:2px;right:3px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.traybar .gard .lbl{align-items:center}
+.land .gtabs{padding:1px}.land .gtab{padding:2px 9px;font-size:9.5px}
+.stash .s{gap:5px}
+.onic{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:9px;border:1.5px solid var(--shu);background:var(--oni-card)}
+.onic .ai{width:26px;height:26px}
+.onic b{font-family:var(--serif);font-weight:800;font-size:18px;line-height:1;color:var(--parch-hi)}
+.onic.none{opacity:.45;border-style:dashed}
+.stash .tls{min-height:0;overflow-y:auto;scrollbar-width:none}
+.stash .tls::-webkit-scrollbar{display:none}
+.stash .none{font-size:11.5px;color:var(--muted);font-style:italic}
+.tabl .traybar .gard{min-width:304px}
+/* the landscape phone: a short board head, pills on one sliding line, and a stamp that fits the small board */
+.land .bhead .traits{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%}
+.land .bhead .traits::-webkit-scrollbar{display:none}
+.land .bhead .t small{display:none}
+.land .barstamp{width:210px;padding:7px 10px 6px;gap:1px}
+.land .barstamp .bo{width:24px;height:24px}
+.land .barstamp b{font-size:12px}.land .barstamp small{font-size:10px}

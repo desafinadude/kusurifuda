@@ -554,7 +554,8 @@
   },
   "stash": {
     "oniLeft": "Oni · {n} left",
-    "noneYet": "None yet"
+    "noneYet": "None yet",
+    "oni": "Oni"
   },
   "reward": {
     "title": "{name} is cured",
@@ -1020,52 +1021,52 @@
     "stops": [
       {
         "name": "Aomori",
-        "line": "The ferry from Ezo lands you among the herring sheds. Fishermen with chills and coughs queue at your little stall.",
+        "line": "Where the northern ferry lands.",
         "story": "The ferry from Ezo lands you on the windy northern tip of Honshū, among herring sheds and drying nets. Edo is ten stops down the Ōshū road, and every journey starts with one small stall."
       },
       {
         "name": "Sannohe",
-        "line": "The road climbs into the mountains. The cases get harder: longer routes, and symptoms to treat on the way.",
+        "line": "The road climbs into the snowy hills.",
         "story": "A quiet hill town under the ruins of an old castle, where the road starts to climb and the snow comes early. Woodcutters and charcoal burners bring you the season's aches."
       },
       {
         "name": "Morioka",
-        "line": "A castle town with a busy market, where the toolmakers sell to any healer with coin.",
+        "line": "A castle town of smiths and tools.",
         "story": "A castle town of iron kettles and stone bridges, where three rivers meet. The smiths here will sell their tools to any healer with coin."
       },
       {
         "name": "Hanamaki",
-        "line": "Hot springs, and a waiting bench full of bathers. The longer they wait, the more they need, and the more they pay.",
+        "line": "Hot springs and a crowded waiting bench.",
         "story": "Steam rises from the hot springs, and the bathhouse bench is full of soaking, grumbling patients. They're in no hurry, but every round they wait makes them harder to please."
       },
       {
         "name": "Ichinoseki",
-        "line": "A shrine town of odd cases and rival healers who claim the patients they want.",
+        "line": "A river gorge full of rival healers.",
         "story": "Below the gorge, the tea houses send dumplings across the river on ropes. Here you meet healers who mark their patients with an oni and stand guard over them."
       },
       {
         "name": "Sendai",
-        "line": "The great merchant city of the north. Grateful patients here bring gifts.",
+        "line": "The merchant city of gifts.",
         "story": "The great castle city of the north, rich with merchants and summer lanterns. Well-off patients pay their thanks in gifts."
       },
       {
         "name": "Fukushima",
-        "line": "An outbreak! Every patient is contagious. Whoever lets them go home uncured, everyone pays.",
+        "line": "A fever sweeps the silk town.",
         "story": "A fever has swept through the silk town. Every patient is contagious, and if one is sent home uncured, both healers pay."
       },
       {
         "name": "Shirakawa",
-        "line": "The great barrier gate. A noble traveller asks you, privately, for a cure in stages.",
+        "line": "The barrier gate, and a noble guest.",
         "story": "The old barrier gate between north and south, where every traveller shows their papers. A noble guest asks you, quietly, for a cure in two stages."
       },
       {
         "name": "Utsunomiya",
-        "line": "The river crossing: the ferry won't wait, the bench is short, and your rival keeps their cards close.",
+        "line": "A river ferry that won't wait.",
         "story": "The roads from Nikkō and the north meet here at the river. The ferry won't wait, the bench is short, and your rival keeps their cards hidden."
       },
       {
         "name": "Edo",
-        "line": "The Shōgun's court. Cure the Shōgun himself, and beat the best healer in the land.",
+        "line": "The Shōgun's city, at the end of the road.",
         "story": "The end of the road: the Shōgun's city, a million people and the best healers in the land. Your royal patient is the Shōgun himself."
       }
     ],

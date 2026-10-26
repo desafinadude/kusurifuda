@@ -383,17 +383,22 @@
 
   // ---------- layout fitting ----------
   const BASE = { port: [390, 740, 1.6], land: [800, 370, 1.7], tabl: [1120, 760, 1.6] };
+  // the game is at most MAX_W wide; on a wider screen it sits in the middle of an empty table
+  // (a very tall screen gets a little more, so it keeps the tablet layout rather than the phone's)
+  const MAX_W = 1200;
   function fit() {
     const app = $("#app"), cs = getComputedStyle(app);
-    const vw = app.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const full = app.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     const vh = app.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    const vw = Math.min(full, Math.max(MAX_W, Math.ceil(vh * 0.9))), side = Math.floor((full - vw) / 2);
+    app.classList.toggle("wide", side > 0);
     const layout = vw / vh < 0.85 ? "port" : vh < 600 ? "land" : "tabl";
     const [bw, bh, mx] = BASE[layout];
     const scale = Math.min(vw / bw, vh / bh, mx);
     const sw = Math.round(vw / scale), sh = Math.round(vh / scale);
     const st = $("#stage");
     st.style.width = sw + "px"; st.style.height = sh + "px";
-    st.style.left = cs.paddingLeft; st.style.top = cs.paddingTop;
+    st.style.left = parseFloat(cs.paddingLeft) + side + "px"; st.style.top = cs.paddingTop;
     st.style.transform = `scale(${scale})`;
     const changed = layout !== U.layout || sw !== U.sw || sh !== U.sh;
     Object.assign(U, { layout, sw, sh, scale });
@@ -424,7 +429,7 @@
       const showPos = !rivalTurn && (U.route.length > 0 || U.pend);
       svg = mapSVG(pt, { icons: true, trail: rivalTurn ? null : rs.rp.trail, pos: showPos ? rs.rp.pos : null, prev: rivalTurn ? null : rs.prev, label: t("board.mapAria", { name: whoOf(pt), cure: gl("cure") }) });
     }
-    const port = U.layout !== "land";
+    const port = true; // every layout uses the compact head now: icons by the mon, the name and pills beside the portrait
     const ck = claimKey(pt), cursedChip = !ck ? "" : port ? `<span class="chip cur${pt.claim.p === 0 ? " mine" : ""} icon" role="img" aria-label="${attr(t(ck))}" title="${attr(t(ck))}">${oniArt(pt.claim.p)}</span>` : `<span class="chip cur${pt.claim.p === 0 ? " mine" : ""}">${oniArt(pt.claim.p)}${t(ck)}</span>`;
     const sakChip = pt.bonus && port ? `<span class="sakic" role="img" aria-label="${attr(t("status.sakura"))}">${art("sakura")}</span>` : pt.bonus ? `<span class="chip sak">${art("sakura")}+${KF.limit(G().cur, "sakuraBonus")}</span>` : "";
     const elChip = pt.el ? `<span class="chip elc" title="${attr(KF.needEl(pt) ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }))}" style="--ec:${EL(pt.el).color}">${ptChip(pt, true)}${KF.needEl(pt) ? `<span>${t("patient.needs", { el: elName(pt.el) })}</span>` : ""}</span>` : "";
@@ -649,12 +654,21 @@
         <section class="rcol">
           <div class="lbl"><span>${mkt ? t("label.marketDeck", { n: g.deck.length }) : t("label.handN", { n: me().hand.length, max: KF.limit(0, "handLimit") })}</span>${mkt && canTrade() ? `<button class="linkbtn" data-a="trade" ${KF.canSwap(0) && !U.anim ? "" : "disabled"}>⇄ ${tradeLabel()}</button>` : ""}<button class="linkbtn" data-a="tab" data-i="${mkt ? "hand" : "market"}">${mkt ? t("label.toHand") : t("label.toMarket")}</button></div>
           <div class="hrow"><div class="crow${(mkt ? g.market.length : me().hand.length) >= 5 ? " spread" : ""}">${row}</div></div>
-          <div class="lbl"><span>${U.gview === "ward" ? t("label.wardN", { n: wardReady() }) : t("label.gardenN", { n: me().garden.length, max: KF.limit(0, "gardenMax") })}</span>${RU().ward.enabled ? `<button class="linkbtn" data-a="gview">${U.gview === "ward" ? t("label.toGarden") : t("label.toWard")}</button>` : `<span>${esc(owned)}</span>`}</div>
+          <div class="lbl">${gardTabs(RU().ward.enabled ? "" : esc(owned))}</div>
           <div class="grow${U.gview === "ward" ? " wardrow" : ""}">${U.gview === "ward" ? wardCards(0.667, "w") : gardenCards(0.667, "g", plots)}</div>
           ${phoneActs()}
         </section>
       </div></div>`;
   }
+  // garden and ward share one spot: two tabs, the one showing lit, each with its count
+  function gardTabs(alt) {
+    const w = U.gview === "ward", ready = wardReady();
+    if (!RU().ward.enabled) return `<span>${withGl(t("label.garden"), "garden")} ${me().garden.length}/${KF.limit(0, "gardenMax")}</span>${alt ? `<span class="n">${alt}</span>` : ""}`;
+    const tab = (k, on, label, n, dot) => `<button class="gtab" role="tab" data-a="gview" data-i="${k}" aria-selected="${on}">${label}<b>${n}</b>${dot ? '<i class="dot"></i>' : ""}</button>`;
+    return `<div class="gtabs" role="tablist">${tab("garden", !w, t("label.garden"), `${me().garden.length}/${KF.limit(0, "gardenMax")}`)}${tab("ward", w, t("label.ward"), ready, !w && ready > 0)}</div>`;
+  }
+  // oni left to lay: one oni and a count
+  const oniCount = () => `<span class="onic${me().oni ? "" : " none"}" role="img" aria-label="${attr(t("stash.oniLeft", { n: me().oni }))}">${oniArt(0)}<b>×${me().oni}</b></span>`;
   // the tablet: the village as a column of named patients, the board as big as it fits, and a side column with
   // the hand always showing above the phone's tabs (garden, ward, market with its tools) and action bar
   function patRow(pt, k) {
@@ -693,10 +707,10 @@
       </div>
       <div class="traybar">
         <div class="hand"><div class="lbl"><span>${withGl(t("label.yourHand"), "hand")} ${me().hand.length}/${KF.limit(0, "handLimit")}</span><span class="n">${t("hand.tapToPreview")}</span></div><div class="crow${me().hand.length >= 6 ? " spread" : ""}">${handCards(rowU(me().hand.length, handW, 1, 1), "h")}</div></div>
-        <div class="gard"><div class="lbl"><span>${U.gview === "ward" ? `${t("label.ward")} · ${wardReady()}` : `${withGl(t("label.garden"), "garden")} ${me().garden.length}/${KF.limit(0, "gardenMax")}`}</span>${RU().ward.enabled ? `<button class="linkbtn" data-a="gview">${U.gview === "ward" ? t("label.toGarden") : t("label.toWard")}</button>` : `<span class="n">${t("garden.neverUsedUp")}</span>`}</div><div class="crow${U.gview === "ward" ? " wardrow" : ""}">${U.gview === "ward" ? wardCards(Math.min(1, rowU(Math.max(4, me().ward.length), 300, 1, 1)), "w") : gardenCards(1, "g", plot)}</div></div>
+        <div class="gard"><div class="lbl">${gardTabs(U.gview === "ward" ? "" : t("garden.neverUsedUp"))}</div><div class="crow${U.gview === "ward" ? " wardrow" : ""}">${U.gview === "ward" ? wardCards(Math.min(1, rowU(Math.max(4, me().ward.length), 300, 1, 1)), "w") : gardenCards(1, "g", plot)}</div></div>
         <div class="stash">
-          <div class="s"><span>${t("stash.oniLeft", { n: me().oni })}</span><div class="onis">${Array.from({ length: KF.limit(0, "oniPerPlayer") }, (_, i) => `<span class="oc${i >= me().oni ? " gone" : ""}">${oniArt(0)}</span>`).join("")}</div></div>
-          <div class="s"><span>${t("label.tools")}</span>${RU().toolIds.filter((id) => me().tools[id]).map((id) => `<span class="tpill">${toolPic(id)}${esc(toolName(id))}</span>`).join("") || `<span class="empty" style="font-size:11px">${t("stash.noneYet")}</span>`}</div>
+          <div class="s"><span>${t("stash.oni")}</span>${oniCount()}</div>
+          <div class="s tls"><span>${t("label.tools")}</span>${RU().toolIds.filter((id) => me().tools[id]).map((id) => `<span class="tpill">${toolPic(id)}${esc(toolName(id))}</span>`).join("") || `<span class="none">${t("stash.noneYet")}</span>`}</div>
         </div>
         <div class="tacts">${brew}</div>
       </div></div>`;
@@ -1445,7 +1459,7 @@
       case "ward": tapIngredient("w", +i); return;
       case "known": doKnown(); return;
       case "claim": doClaim(); return;
-      case "gview": U.gview = U.gview === "ward" ? "garden" : "ward"; SFX.open(); render(); return;
+      case "gview": { const v = i || (U.gview === "ward" ? "garden" : "ward"); if (v !== U.gview) { U.gview = v; SFX.open(); render(); } return; }
       case "dturn": turnAny(); return;
       case "pplay": if (U.pend) commitPend(); return;
       case "pcancel": U.pend = null; U.turnSel = {}; U.msg = null; SFX.cancel(); render(); return;
@@ -1750,6 +1764,7 @@
       ${dots}${label(0, -7, "end")}${label(stops.length - 1, 8, "start")}</svg>`;
   }
   async function boot() {
+    $("#app").classList.add("lacquer"); // the table under the game, seen at the sides of a wide screen
     $("#stage").innerHTML = '<div id="scr"></div><div id="shl"></div><div id="tsl"></div>' + steamLayer();
     setSteam();
     try { await loadAll(); }
