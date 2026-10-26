@@ -1,6 +1,6 @@
 /* Kusurifuda service worker — precaches the whole game so it plays offline.
    Version is a hash of the app files, so any change ships a fresh cache. */
-const VERSION = "c8b8e54743";
+const VERSION = "4d0f2941f2";
 // the live game and the beta (/beta/) share an origin, so their caches are named apart and never cleared by each other
 const BETA = /\/beta\/$/.test(self.registration.scope);
 const PFX = BETA ? "kusurifuda-beta-" : "kusurifuda-";
@@ -195,8 +195,10 @@ const PRECACHE = [
  "themes/kusurifuda/icons/rules.svg",
  "themes/kusurifuda/icons/sakura.svg",
  "themes/kusurifuda/icons/tie.svg",
+ "themes/kusurifuda/icons/tl-abacus.svg",
  "themes/kusurifuda/icons/tl-basket.svg",
  "themes/kusurifuda/icons/tl-charm.svg",
+ "themes/kusurifuda/icons/tl-kettle.svg",
  "themes/kusurifuda/icons/tl-ladle.svg",
  "themes/kusurifuda/icons/tl-mortar.svg",
  "themes/kusurifuda/icons/tools.svg",

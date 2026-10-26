@@ -139,7 +139,9 @@
     "oni.E": "assets/oni-E.webp",
     "oni.W": "assets/oni-W.webp",
     "cure": "assets/cure.webp",
-    "seal": "assets/cured.webp"
+    "seal": "assets/cured.webp",
+    "icon.tl.kettle": "icons/tl-kettle.svg",
+    "icon.tl.abacus": "icons/tl-abacus.svg"
   },
   "elements": {
     "W": {
