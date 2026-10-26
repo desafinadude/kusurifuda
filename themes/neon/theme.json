@@ -140,29 +140,11 @@
     "town.edo": "towns/edo.webp"
   },
   "elements": {
-    "F": {
-      "color": "#E85C7A",
-      "ink": "#C13A5C"
-    },
-    "W": {
-      "color": "#3FB0D6",
-      "ink": "#1F7FA6"
-    },
-    "E": {
-      "color": "#6FAE5C",
-      "ink": "#3E7F31"
-    },
-    "A": {
-      "color": "#8C74D8",
-      "ink": "#6550B8"
-    },
     "V": {
-      "color": "#F2B33D",
-      "ink": "#A8740F",
-      "glyph": "猫",
-      "on": "#1E1914"
+      "glyph": "猫"
     }
   },
+  "stylesheet": "theme.css",
   "tools": {
     "ladle": {
       "glyph": "図",
@@ -193,25 +175,25 @@
     {
       "id": "lantern",
       "art": "guild.lantern",
-      "color": "#E85C7A",
+      "color": "#B23A24",
       "element": "F"
     },
     {
       "id": "train",
       "art": "guild.train",
-      "color": "#8C74D8",
+      "color": "#A2BCC8",
       "element": "A"
     },
     {
       "id": "ramen",
       "art": "guild.ramen",
-      "color": "#6FAE5C",
+      "color": "#7A5626",
       "element": "E"
     },
     {
       "id": "umbrella",
       "art": "guild.umbrella",
-      "color": "#3FB0D6",
+      "color": "#2F5D8A",
       "element": "W"
     }
   ],
@@ -279,10 +261,6 @@
       },
       "content": {
         "elements": {
-          "F": "Hot",
-          "W": "Rain",
-          "E": "Street",
-          "A": "Sky",
           "V": "Lucky Cat"
         },
         "ingredients": {

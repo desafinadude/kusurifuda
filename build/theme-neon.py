@@ -5,7 +5,7 @@ APP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EN = json.load(open(f"{APP}/i18n/en.json", encoding="utf-8"))
 KU = json.load(open(f"{APP}/themes/kusurifuda/theme.json", encoding="utf-8"))
 
-ELS = {"F": "Hot", "W": "Rain", "E": "Street", "A": "Sky", "V": "Lucky Cat"}
+ELS = {"V": "Lucky Cat"}  # fire, water, earth and air stay as they are
 INGREDIENTS = {
     "F": ["Wasabi", "Takoyaki", "Seared Salmon"], "W": ["Ramune", "Tuna Nigiri", "Fugu"],
     "A": ["Hanami Dango", "Transit Card", "Soufflé Pancakes"], "E": ["Onigiri", "Matcha Wafer", "Katsu Sando"],
@@ -30,7 +30,8 @@ TOOLS = {
 CHARS = {"herbalist": ("Grandma Ume", "the Balcony Gardener"), "merchant": ("Auntie Kazuko", "the Bargain Hunter"), "miko": ("Mr. Sato", "the Lottery Winner"), "kunoichi": ("Tetsu", "the Bicycle Courier")}
 GUILDS = [("lantern", "F", "Night Market", "Open till the last train"), ("train", "A", "Last Train", "Never miss the last one"),
     ("ramen", "E", "Ramen Alley", "Fills you up, keeps you going"), ("umbrella", "W", "Rainy Season", "Fine in any weather")]
-COLORS = {"F": ("#E85C7A", "#C13A5C"), "W": ("#3FB0D6", "#1F7FA6"), "E": ("#6FAE5C", "#3E7F31"), "A": ("#8C74D8", "#6550B8"), "V": ("#F2B33D", "#A8740F")}
+# the elements keep Kusurifuda's own colours: guilds take their element's colour from there
+COLORS = {e: (v["color"], v.get("ink", v["color"])) for e, v in KU["elements"].items() if not e.startswith("_")}
 # the night-train journey: same ten stops and rules as the Journey to Edo, a different road
 STOPS = [
     ("Sapporo", [141.354, 43.062], "Snow and neon.", "Snow falls on the neon crossing, and the ramen alley is full. You open a little stall under the lights; Tokyo is ten stops down the line."),
@@ -93,7 +94,8 @@ theme = {
     "_about": "Kusurifuda after dark: an all-night drugstore under a Tokyo railway arch. Konbini food and sushi as ingredients, quirky city folk as patients, a night train from Sapporo to Shibuya. It extends Kusurifuda and swaps the art and words; made by build/theme-neon.py.",
     "id": "neon", "name": "Neon", "extends": "../kusurifuda/theme.json", "sprites": "sprites.svg",
     "assets": assets,
-    "elements": {e: dict({"color": c, "ink": i}, **({"glyph": "猫", "on": "#1E1914"} if e == "V" else {})) for e, (c, i) in COLORS.items()},
+    "elements": {"V": {"glyph": "猫"}},
+    "stylesheet": "theme.css",
     "tools": {k: {"glyph": v[3], "art": f"tool.{k}"} for k, v in TOOLS.items()},
     "guilds": [{"id": g, "art": f"guild.{g}", "color": COLORS[e][0], "element": e} for g, e, n, m in GUILDS],
     "glyphs": {"brand": "薬札"},

@@ -306,7 +306,7 @@
     const way = !c.ward && c.el !== "V" && steps
       ? `<span class="lv${els.length > 1 ? " two" : ""}"><b>${Math.round(KF.reach({ steps }))}</b>${els.map((e) => `<i style="color:${EL(e).ink}">${elIc(e)}</i>`).join("")}</span>`
       : `<span class="lv pic">${pathSVG(c, steps, Math.round(13 * u))}</span>`;
-    return `<${tagName} class="ic paper el-${c.el}${c.ward ? " wd" : ""}${own ? " own" : ""}${o.cls ? " " + o.cls : ""}${o.noAnim ? "" : fresh("c" + c.id + (o.zone || ""))}" style="--u:${u.toFixed(3)}" ${o.act ? `data-a="${o.act}"` : ""} ${o.i != null ? `data-i="${o.i}"` : ""} aria-label="${attr(`${elsTxt}: ${cardName(c)}, ${stepTxt}${o.tag ? ", " + o.tag : ""}`)}" ${o.disabled ? "disabled" : ""} ${o.pressed != null ? `aria-pressed="${o.pressed}"` : ""}>
+    return `<${tagName} class="ic paper el-${c.el}${c.el2 ? " el2-" + c.el2 : ""}${c.ward ? " wd" : ""}${own ? " own" : ""}${o.cls ? " " + o.cls : ""}${o.noAnim ? "" : fresh("c" + c.id + (o.zone || ""))}" style="--u:${u.toFixed(3)}" ${o.act ? `data-a="${o.act}"` : ""} ${o.i != null ? `data-i="${o.i}"` : ""} aria-label="${attr(`${elsTxt}: ${cardName(c)}, ${stepTxt}${o.tag ? ", " + o.tag : ""}`)}" ${o.disabled ? "disabled" : ""} ${o.pressed != null ? `aria-pressed="${o.pressed}"` : ""}>
       <div class="face"${own || (themed && !c.ward) ? "" : ` style="background:${bg}"`}>${pic}</div>
       <div class="lab">${way}<span class="nm">${esc(cardName(c))}</span></div>${tag}</${tagName}>`;
   }
