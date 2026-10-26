@@ -324,7 +324,7 @@
   const quirkArt = (q) => (ASSET["quirk." + q] || SPR["quirk." + q] ? `<span class="qi">${art("quirk." + q)}</span>` : "");
   function traits(pt) {
     const out = [], r = RU(), q = KF.quirk(pt), k = benchIdx(pt);
-    if (pt.royal) { const ro = me().royal; out.push(pill("ry", "royal", t("rules.royal.h"), t("royal.tag", { n: ro.stage + 1, of: ro.stages.length }))); }
+    if (pt.royal) { const ro = me().royal; out.push(pill("ry", "royal", t("rules.royal.h"), (ASSET.royal || SPR.royal ? `<span class="qi">${art("royal")}</span>` : "") + t("royal.tag", { n: ro.stage + 1, of: ro.stages.length }))); }
     else if (r.bench.enabled && k >= 0 && r.bench.spots[k]) { const sp = r.bench.spots[k]; out.push(pill("bn" + (k === 0 ? " last" : ""), "bench", t("bench.tip", { n: sp.min, b: sp.bonus }), `${t("bench.spot" + Math.min(k, 3))}${sp.bonus ? ` +${sp.bonus}` : ""} · ${t("bench.needs", { n: KF.needCards(pt) })}`)); }
     if (q) out.push(pill("q", "q." + q, t("quirks." + q + ".text", { n: r.quirks.contagious }), quirkArt(q) + t("quirks." + q + ".name")));
     if (r.gifts.enabled && pt.gift) out.push(pill("g", "g." + pt.gift, t("gifts." + pt.gift + ".text", { n: giftN(pt.gift) }), giftIcon(pt.gift) + t("gifts." + pt.gift + ".short", { n: giftN(pt.gift) })));
@@ -939,7 +939,7 @@
         const k = pt ? benchIdx(pt) : -1, sp = r.bench.spots[k] || r.bench.spots[0];
         head = `<span class="qbig">${KF.needCards(pt) || sp.min}</span>`; title = t("bench.spot" + Math.min(Math.max(k, 0), 3)); text = t("bench.tip", { n: sp.min, b: sp.bonus }); more = t("bench.how");
       } else {
-        head = `<span class="qbig">♛</span>`; title = t("rules.royal.h"); text = t("royal.how", { pay: me().royal.pay });
+        head = ASSET.royal || SPR.royal ? art("royal") : `<span class="qbig">♛</span>`; title = t("rules.royal.h"); text = t("royal.how", { pay: me().royal.pay });
       }
       return `<div class="sh trh"><div class="stamp tri">${head}</div><div><h2>${title}</h2>${pt ? `<div class="sub">${esc(whoOf(pt))}</div>` : ""}</div></div>
         <p class="trt">${text}</p>${more && more.indexOf(".how") < 0 ? `<p class="muted">${more}</p>` : ""}
