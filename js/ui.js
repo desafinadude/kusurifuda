@@ -391,7 +391,7 @@
     const full = app.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     const vh = app.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     const vw = Math.min(full, Math.max(MAX_W, Math.ceil(vh * 0.9))), side = Math.floor((full - vw) / 2);
-    app.classList.toggle("wide", side > 0);
+    app.classList.toggle("wide", side > 0); app.style.setProperty("--side", side + "px");
     const layout = vw / vh < 0.85 ? "port" : vh < 600 ? "land" : "tabl";
     const [bw, bh, mx] = BASE[layout];
     const scale = Math.min(vw / bw, vh / bh, mx);
@@ -446,7 +446,7 @@
   // the phone's board head: name and ailment on the left; the element, sakura and curable marks as small icons by the mon
   function phoneHead(pt, rivalTurn, rvChip, chips) {
     const icons = rivalTurn ? rvChip : hintBadges(pt, "inhead") + chips;
-    return `<div class="bhead">${ptAvatar(pt, "big")}<div class="t"><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small>${traits(pt)}</div><div class="bside">${icons ? `<div class="bic">${icons}</div>` : ""}${monVal(pt.royal ? me().royal.pay : payNow(pt), "big")}</div></div>`;
+    return `<div class="bhead"><button class="pvbtn" data-a="pview" aria-label="${attr(t("patient.viewPortrait", { name: whoOf(pt) }))}">${ptAvatar(pt, "big")}</button><div class="t"><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small>${traits(pt)}</div><div class="bside">${icons ? `<div class="bic">${icons}</div>` : ""}${monVal(pt.royal ? me().royal.pay : payNow(pt), "big")}</div></div>`;
   }
   function rivalStrip() {
     const r = U.rv || { say: t("rival.thinking"), sub: "" };
@@ -943,6 +943,13 @@
       return `<div class="sh"><div class="stamp por">${ptPortrait(pt)}<span class="cst${ASSET.seal || SPR.seal ? " pic" : ""}">${ASSET.seal || SPR.seal ? art("seal") : ic("cured")}</span></div><div><h2>${t("reward.title", { name: esc(whoOf(pt)) })}</h2><div class="sub">${subs.length ? subs.join(" · ") : esc(ailOf(pt))}</div></div></div>
         <div class="gainrow">${monIc("em")}<div><b>${t("reward.fame", { n: gain })}</b><small>${t("reward.track", { from: p.fame - gain, to: p.fame })}</small></div></div>${gift}${joins}
         ${btns}`;
+    },
+    // a patient's portrait, large
+    pview(s) {
+      const pt = s.pt;
+      return `<div class="pvbig">${ptPortrait(pt, "pvimg")}</div>
+        <div class="sh"><div><h2>${esc(whoOf(pt))}</h2><div class="sub">${esc(ailOf(pt))}</div>${traits(pt)}</div></div>
+        <div class="btns"><button class="btn primary" data-a="close">${t("common.close")}</button></div>`;
     },
     // a reminder of what a patient's pill means: their quirk, gift, symptoms, place on the bench or royal stages
     trait(s) {
@@ -1495,6 +1502,7 @@
       case "pr": s.r = +i; SFX.tap(me().garden[+i].el); renderSheet(); return;
       case "pldo": KF.plantCard(0, s.h, s.r); resetRoute(); closeSheet(); SFX.plant(); render(); return;
       case "tools": openSheet({ type: "tools" }); return;
+      case "pview": { const pt = curPt(); if (pt) openSheet({ type: "pview", pt }); return; }
       case "trait": openSheet({ type: "trait", k: i, pt: curPt() }); return;
       case "buy": {
         if (!myTurn() || g.turn.bought) return;

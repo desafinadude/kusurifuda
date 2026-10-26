@@ -980,8 +980,12 @@ button.trait:focus-visible{outline:2px solid var(--shu-hi);outline-offset:1px}
 .tabl .tray:has(.tgrid2){overflow-y:auto;overscroll-behavior:contain}
 .tabl .tray .tgrid2:has(> .tbig:nth-child(5)) .tbig{min-height:60px;padding:6px 10px}
 .tabl .tray .tgrid2:has(> .tbig:nth-child(5)) .tbig .ti{width:46px;height:46px}
-/* a wide screen: the game sits in the middle of the table, a little raised */
-#app.wide #stage{box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 60px rgba(0,0,0,.55)}
+/* a wide screen: the game sits flat in the middle of the table; the table's edges soften, just a little */
+#app.wide::before,#app.wide::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50}
+#app.wide::before{backdrop-filter:blur(2.5px);-webkit-backdrop-filter:blur(2.5px);
+  -webkit-mask:linear-gradient(90deg,#000,transparent calc(var(--side,0px) * .8),transparent calc(100% - var(--side,0px) * .8),#000);
+  mask:linear-gradient(90deg,#000,transparent calc(var(--side,0px) * .8),transparent calc(100% - var(--side,0px) * .8),#000)}
+#app.wide::after{background:radial-gradient(ellipse 75% 95% at 50% 50%,transparent 62%,rgba(0,0,0,.32) 100%)}
 
 /* ---------- the tray's garden/ward tabs, oni count and tools ---------- */
 .gtabs{display:inline-flex;gap:2px;padding:2px;border-radius:999px;background:color-mix(in srgb,var(--parch) 8%,transparent);border:1px solid var(--line-2)}
@@ -1018,3 +1022,9 @@ button.trait:focus-visible{outline:2px solid var(--shu-hi);outline-offset:1px}
 .tth:active{transform:scale(.96)}
 .title.land .tcol{grid-template-areas:"head btns" "themes btns" "links btns"}
 .title.land .tthemes{grid-area:themes}.title.land .tth{width:70px;padding:6px 3px}.title.land .tth .te{width:40px;height:40px}
+
+/* tap a patient's portrait in the board head to see it large */
+.pvbtn{padding:0;border:0;background:none;cursor:zoom-in;border-radius:10px;flex-shrink:0}
+.pvbtn:focus-visible{outline:2px solid var(--shu-hi);outline-offset:2px}
+.pvbig{display:flex;justify-content:center;margin:-2px 0 4px}
+.pvbig .ppor.pvimg{width:300px;height:300px;border-radius:16px;border-width:2.5px}

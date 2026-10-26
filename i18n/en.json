@@ -419,7 +419,8 @@
     "becomes": "Cured, joins your ward as {move}",
     "moveAria": "{el} {move}",
     "claimedByYou": "Claimed by you: cure them on your next turn",
-    "claimedByRival": "Claimed by {{rival}}: you can't cure them yet"
+    "claimedByRival": "Claimed by {{rival}}: you can't cure them yet",
+    "viewPortrait": "See {name}'s portrait"
   },
   "hints": {
     "you": "You can cure this patient now",
@@ -645,7 +646,8 @@
     "quick": "Quick game",
     "trade": "Trade at the market",
     "trait": "About this patient",
-    "arrive": "Arriving"
+    "arrive": "Arriving",
+    "pview": "Patient"
   },
   "themeNames": {
     "_about": "Optional: names for the themes in config.json. A theme without one shows the name in its theme.json.",
