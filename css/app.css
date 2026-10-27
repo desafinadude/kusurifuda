@@ -1030,3 +1030,24 @@ button.trait:focus-visible{outline:2px solid var(--shu-hi);outline-offset:1px}
 .pvbig .ppor.pvimg{width:300px;height:300px;border-radius:16px;border-width:2.5px}
 /* one continuous table on a wide screen: the game's own screens let the window's table show through */
 #app.wide .scr.lacquer{background:transparent}
+
+/* ---------- your move is done: a slim ribbon over the board, nothing hidden ---------- */
+.donerib{align-self:stretch;display:flex;align-items:center;gap:6px;margin:-2px 0 0;padding:5px 10px;border-radius:8px;background:color-mix(in srgb,var(--gold) 22%,var(--parch));border:1px solid color-mix(in srgb,var(--gold) 70%,transparent);font-size:11.5px;line-height:1.25;color:var(--ink);animation:bubin .25s ease-out}
+.donerib svg{width:14px;height:14px;flex-shrink:0;color:var(--shu)}
+.donerib b{white-space:nowrap}
+.donerib span{color:var(--brown);min-width:0}
+.tabl .donerib{font-size:13px;padding:6px 12px}
+
+/* ---------- the phone's kit: oni left and tools, beside the main button ---------- */
+.acts.withkit{grid-template-columns:auto 1fr!important}
+.kit{display:flex;align-items:center;gap:8px;height:100%;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--ink);color:var(--parch);font:inherit;cursor:pointer}
+.kit .ko{display:flex;align-items:center;gap:3px}
+.kit .ko .ai,.kit .ko>svg{width:24px;height:24px}
+.kit .ko b{font-family:var(--serif);font-weight:800;font-size:16px;line-height:1}
+.kit .ko.none{opacity:.45}
+.kit .kt{display:flex;align-items:center;gap:2px;padding-left:8px;border-left:1px solid var(--line-2)}
+.kit .kt i{display:flex;width:24px;height:24px;border-radius:5px;background:var(--parch);overflow:hidden}
+.kit .kt i>*{width:100%;height:100%}
+.kit .kt i .tglyph{font-size:15px}
+.kit .kt b{font-size:11px;margin-left:2px}
+.tabl .strip:not(.rvs) .srow{max-width:58%}.tabl .strip:not(.rvs) .ctrls{flex-shrink:0}

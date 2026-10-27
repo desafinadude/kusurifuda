@@ -170,6 +170,7 @@
   const selKey = () => (U.sel === ROYAL ? "royal" : U.sel);
   const myTurn = () => { const g = G(); return g && !g.over && g.cur === 0 && !U.busy && !U.anim && g.phase === "main"; };
   const canAct = () => myTurn() && !G().turn.acted;
+  const canPlan = () => myTurn() && !U.busy; // route previews: still allowed once the move is spent, for planning
   const nTake = () => KF.gatherCount(me());
   const usedIn = (g, i) => U.route.some((r) => r.g === g && r.i === i);
   const usedFlags = () => U.route.reduce((a, r) => a | (r.f || 0), 0);
@@ -435,10 +436,10 @@
     const elChip = pt.el ? `<span class="chip elc" title="${attr(KF.needEl(pt) ? t("patient.needsAria", { el: elName(pt.el) }) : t("patient.becomes", { move: moveName(pt.mv) }))}" style="--ec:${EL(pt.el).color}">${ptChip(pt, true)}${KF.needEl(pt) ? `<span>${t("patient.needs", { el: elName(pt.el) })}</span>` : ""}</span>` : "";
     const rvChip = rivalTurn ? `<span class="chip rvc">${gl("rival") || ASSET["icon.rival"] ? ic("rival") + " " : ""}${t("board.rivalTurn")}</span>` : "";
     const n = g.village.length, dots = n > 1 && !rivalTurn && !U.bo ? `<div class="dots" aria-hidden="true">${g.village.map((_, i) => `<i class="${i === U.sel ? "on" : ""}"></i>`).join("")}</div>` : "";
-    const off = !rivalTurn && !U.bo && KF.barred(0, pt);
+    const off = !rivalTurn && !U.bo && KF.barred(0, pt), done = !rivalTurn && !U.bo && !U.anim && myTurn() && G().turn.acted;
     return `<section class="boardp paper${rivalTurn ? " rv" : ""}${off ? " barred" : ""}${KF.quirk(pt) === "frail" || KF.quirk(pt) === "nervous" ? " q-" + KF.quirk(pt) : ""}"><div class="frame"></div><div class="motif">${art("boardMotif")}</div>
       ${port ? phoneHead(pt, rivalTurn, rvChip, cursedChip + sakChip) : `<div class="bhead"><span class="badge ring">${pt.royal ? me().royal.pay : payNow(pt)}</span><div class="t"><b>${esc(whoOf(pt))}</b><small>${esc(ailOf(pt))}</small>${traits(pt)}</div>${rvChip}${rivalTurn ? "" : hintBadges(pt, "inhead") + elChip + cursedChip + sakChip}</div>`}
-      <div class="bwrap" ${n > 1 ? `aria-roledescription="${attr(t("board.swipe"))}"` : ""}><div class="board${U.shake ? " shake" : ""}${U.enter ? (U.enter > 0 ? " from-r" : " from-l") : ""}"><div class="bsvg">${svg}</div>
+      ${done && !off ? `<div class="donerib" role="status">${ICON.check(14)}<b>${t("status.actionDone")}</b><span>${U.route.length || U.pend ? t("status.planningOnly") : doneLine()}</span></div>` : ""}<div class="bwrap" ${n > 1 ? `aria-roledescription="${attr(t("board.swipe"))}"` : ""}><div class="board${U.shake ? " shake" : ""}${U.enter ? (U.enter > 0 ? " from-r" : " from-l") : ""}"><div class="bsvg">${svg}</div>
         ${["up", "right", "down", "left"].map((d, i) => { const e = KF.elOfDir(d); return e ? `<span class="cmp ${"nesw"[i]}" aria-hidden="true" style="color:${EL(e).ink};--ec:${EL(e).color};--eo:${onEl(e)}">${elIc(e)}</span>` : ""; }).join("")}
         ${rivalTurn && U.rv && U.rv.pop ? `<div class="rvpop paper">${U.rv.pop}</div>` : ""}${off ? `<div class="barstamp"><span class="bo">${oniArt(1)}</span><b>${t("status.claimedByRival")}</b><small>${t("status.claimedByRivalSub")}</small></div>` : ""}</div>${dots}</div>
       ${rivalTurn ? rivalStrip() : strip(rs)}</section>`;
@@ -454,16 +455,16 @@
     return `<div class="strip rvs"><div class="srow">${portrait(1, "rvsf")}${chips ? `<div class="seqs">${chips}</div>` : ""}<span class="stxt" aria-live="polite">${r.say}${r.think ? '<span class="think"><i></i><i></i><i></i></span>' : ""}${r.sub ? `<small>${r.sub}</small>` : ""}</span>${U.busy ? `<button class="cbtn ghost" data-a="fast" aria-label="${attr(t("rival.speedUp"))}">${U.speed < 1 ? t("rival.fast") : t("rival.skip")}</button>` : ""}</div></div>`;
   }
   function strip(rs) {
-    const chips = U.route.map((r, j) => chipFor(cardAt(r.g, r.i), r.opt, j + 1, { f: r.f, btn: canAct() ? "chip" : null, aria: t("brew.backTo", { n: j + 1 }) }));
+    const chips = U.route.map((r, j) => chipFor(cardAt(r.g, r.i), r.opt, j + 1, { f: r.f, btn: canPlan() ? "chip" : null, aria: t("brew.backTo", { n: j + 1 }) }));
     if (U.pend) { const c = cardAt(U.pend.g, U.pend.i); if (c) chips.push(chipFor(c, pendSteps() || c.steps, U.route.length + 1, { btn: "pcancel", cls: "pend", x: true, aria: t("brew.cancelPreview") })); }
     const s = statusText(rs);
     const kw = rs && canAct() && !U.route.length && !U.pend ? KF.knownFor(0, U.sel) : -1;
     const known = kw >= 0 ? `<button class="cbtn known" data-a="known">${ic("cured")}<span><b>${t("act.known")}</b><small>${t("act.knownSub", { n: KF.knownPay(rs.pt), name: esc(whoOf({ who: me().ward[kw].who }, true)) })}</small></span></button>` : "";
-    const pt = curPt(), cl = myTurn() && !U.anim && pt && KF.canClaim(0, U.sel) ? `<button class="cbtn claim" data-a="claim">${oniArt(0)}<span><b>${t("act.claim")}</b><small>${t("act.claimSub", { n: KF.claimBonus(0) })}</small></span></button>` : "";
+    const pt = curPt(), cl = myTurn() && !U.anim && !U.route.length && !U.pend && pt && KF.canClaim(0, U.sel) ? `<button class="cbtn claim" data-a="claim">${oniArt(0)}<span><b>${t("act.claim")}</b><small>${t("act.claimSub", { n: KF.claimBonus(0) })}</small></span></button>` : "";
     return `<div class="strip"><div class="srow">${known}${cl}${chips.length ? `<div class="seqs">${chips.join("")}</div>` : ""}<span class="stxt${s.bad ? " bad" : ""}" aria-live="polite">${s.t}${s.s ? `<small>${s.s}</small>` : ""}</span></div>${controls(rs)}</div>`;
   }
   function controls(rs) {
-    if (!canAct() || !rs) return "";
+    if (!canPlan() || !rs || (G().turn.acted && !U.route.length && !U.pend)) return "";
     const left = [], right = [];
     const pc = U.pend && cardAt(U.pend.g, U.pend.i);
     if (pc && isPick(pc)) left.push(`<button class="sbtn turn" data-a="dturn" aria-label="${attr(t("brew.turnAny"))}">${ICON.turn()}</button>`);
@@ -480,7 +481,7 @@
     return `<div class="ctrls"><div class="cl">${left.join("")}</div><div class="cr">${right.join("")}</div></div>`;
   }
   function toolToggles() {
-    const p = me(), uf = usedFlags(), on = canAct() && curPt(), r = RU(), out = [];
+    const p = me(), uf = usedFlags(), on = canPlan() && curPt(), r = RU(), out = [];
     r.turnTools.forEach((id) => {
       if (!p.tools[id]) return;
       const used = uf & KF.bit(id), idx = U.turnSel[id], sel = idx != null;
@@ -494,6 +495,11 @@
     });
     return out.join("");
   }
+  // after the action: what's still free this turn, then the end of it
+  function doneLine() {
+    const g = G(), free = [!g.turn.planted ? t("status.freePlant") : null, !g.turn.claimed && me().oni > 0 ? t("status.freeClaim") : null, !g.turn.bought ? t("status.freeBuy") : null].filter(Boolean);
+    return free.length ? t("status.thenFree", { list: free.join(", ") }) : t("status.thenEnd");
+  }
   function statusText(rs) {
     const g = G(), cure = ic("cure");
     if (g.over) return { t: t("status.gameOver") };
@@ -501,10 +507,7 @@
     if (U.msg) return { t: U.msg, bad: U.msgBad };
     const cp = curPt();
     if (!g.turn.acted && cp && KF.barred(0, cp)) return { t: "" }; // the stamp on the board says it
-    if (g.turn.acted) {
-      const free = [!g.turn.planted ? t("status.freePlant") : null, !g.turn.claimed && me().oni > 0 ? t("status.freeClaim") : null, !g.turn.bought ? t("status.freeBuy") : null].filter(Boolean);
-      return { t: t("status.actionDone"), s: free.length ? t("status.thenFree", { list: free.join(", ") }) : t("status.thenEnd") };
-    }
+    if (g.turn.acted && !U.route.length && !U.pend) return { t: "" }; // the ribbon on the board says it
     if (U.mkt.length) { const n = nTake(), left = n - U.mkt.length; return left > 0 ? { t: t("status.pickMore", { n: left }) } : { t: t("status.takeThese", { n }), s: t("status.thenDone") }; }
     if (!rs) return { t: "" };
     if (U.pend) {
@@ -584,6 +587,11 @@
   const tradeBtn = (u) => (canTrade() ? `<button class="ic plotc trd" style="--u:${u}" data-a="trade" ${KF.canSwap(0) && !U.anim ? "" : "disabled"} aria-label="${attr(t("trade.aria"))}"><b class="sw">⇄</b>${tradeLabel()}</button>` : "");
 
   // ---------- actions bar (phone) ----------
+  // the phone's reminder of what you carry: oni left to lay and the tools you own; tap for your table
+  function kitBtn() {
+    const tl = RU().toolIds.filter((id) => me().tools[id]);
+    return `<button class="kit" data-a="mytable" aria-label="${attr(t("kit.aria", { n: me().oni, tools: tl.map(toolName).join(", ") || t("stash.noneYet") }))}"><span class="ko${me().oni ? "" : " none"}">${oniArt(0)}<b>×${me().oni}</b></span>${tl.length ? `<span class="kt">${tl.slice(0, 3).map((id) => `<i>${toolPic(id)}</i>`).join("")}${tl.length > 3 ? `<b>+${tl.length - 3}</b>` : ""}</span>` : ""}</button>`;
+  }
   function phoneActs() {
     const g = G(), mine = myTurn(), rs = routeState();
     const ab = (a, icon, label, o = {}) => `<button class="ab${o.cls ? " " + o.cls : ""}" data-a="${a}" ${o.dis ? "disabled" : ""}>${icon}${label}</button>`;
@@ -596,9 +604,10 @@
       return `<div class="acts" style="grid-template-columns:${tl ? "0.8fr " : ""}1fr 1.2fr">${tl}${ab("blind", ICON.blind(), t("act.drawBlind", { n }), { cls: "row" })}${ab("take", "", `${k("market")}${t("act.takeN", { n, have: U.mkt.length })}`, { cls: "primary", dis: U.mkt.length !== n })}</div>`;
     }
     if (U.layout !== "land") {
-      if (mine && g.turn.acted) return `<div class="acts${tl ? "" : " one"}"${tl ? ' style="grid-template-columns:0.8fr 2.2fr"' : ""}>${tl}${ab("end", "", `${k("endTurn")}${t("act.endTurn")}`, { cls: "primary glow" + (tl ? " row" : "") })}</div>`;
+      const kit = U.layout === "port" && !tl ? kitBtn() : "";
+      if (mine && g.turn.acted) return `<div class="acts${tl ? "" : " one"}${kit ? " withkit" : ""}"${tl ? ' style="grid-template-columns:0.8fr 2.2fr"' : ""}>${tl}${kit}${ab("end", "", `${k("endTurn")}${t("act.endTurn")}`, { cls: "primary glow" + (tl ? " row" : "") })}</div>`;
       const go = rs && rs.ready && mine;
-      return `<div class="acts one">${ab("brew", "", `${k("cure")}${t("act.brew")}`, { cls: "primary" + (go ? " glow" : ""), dis: !go })}</div>`;
+      return `<div class="acts one${kit ? " withkit" : ""}">${kit}${ab("brew", "", `${k("cure")}${t("act.brew")}`, { cls: "primary" + (go ? " glow" : ""), dis: !go })}</div>`;
     }
     if (mine && g.turn.acted) {
       return `<div class="acts">${ab("plant", ICON.plant(), t("act.plant"), { dis: plantDis })}${ab("tools", ICON.tools(), t("act.tools"))}${ab("log", ICON.log(), t("act.log"))}${ab("end", "", `${k("endTurn")}${t("act.endTurn")}`, { cls: "primary glow" })}</div>`;
@@ -1360,7 +1369,6 @@
   function shakeBoard(msg) { U.shake = true; SFX.bad(); say(msg, true); if (navigator.vibrate) try { navigator.vibrate(30); } catch (e) {} }
   function tapIngredient(g, i) {
     if (G().cur !== 0 || U.busy) return say(t("msg.waitTurn"), true);
-    if (G().turn.acted) return say(t("msg.actionUsed"), true);
     if (!curPt()) return;
     if (KF.barred(0, curPt())) return shakeBoard(t("status.claimedByRival"));
     const ban = banOf(g, cardAt(g, i)); if (ban) return shakeBoard(t("status.quirk." + ban));
