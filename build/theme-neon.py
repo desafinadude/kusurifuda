@@ -100,8 +100,8 @@ theme = {
     "glyphs": {"brand": "薬札"},
     "map": {"sakura": "#F6D3DC", "cure": "#F2B33D"},
     "questAt": [at for n, at, l, s in STOPS],
-    # the picture behind the whole game: image, how much to darken it (0-1) so the screens stay readable, and where to anchor it
-    "background": {"image": "assets/background.webp", "dim": 0.5, "position": "center"},
+    # optional picture behind the whole game, e.g. {"image": "assets/background.webp", "dim": 0.5, "position": "center"};
+    # left out, so Neon keeps Kusurifuda's wood table
     "text": {"en": text},
 }
 os.makedirs(f"{APP}/themes/neon", exist_ok=True)
