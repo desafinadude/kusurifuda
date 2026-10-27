@@ -245,6 +245,11 @@
       35.658
     ]
   ],
+  "background": {
+    "image": "assets/background.webp",
+    "dim": 0.5,
+    "position": "center"
+  },
   "text": {
     "en": {
       "terms": {
