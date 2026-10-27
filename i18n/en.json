@@ -439,7 +439,7 @@
   "status": {
     "gameOver": "Game over",
     "yourTurn": "Your turn",
-    "actionDone": "Your move is done",
+    "actionDone": "Move done",
     "freePlant": "plant",
     "freeBuy": "buy a tool",
     "thenFree": "You can still {list}, or end your turn",
@@ -495,7 +495,8 @@
       "frail": "Too frail for leaps",
       "nervous": "Hand cards only",
       "stubborn": "Needs two of their element"
-    }
+    },
+    "planningOnly": "Planning only: you can brew again next turn"
   },
   "brew": {
     "backTo": "Go back to card {n}",

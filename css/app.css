@@ -1031,13 +1031,12 @@ button.trait:focus-visible{outline:2px solid var(--shu-hi);outline-offset:1px}
 /* one continuous table on a wide screen: the game's own screens let the window's table show through */
 #app.wide .scr.lacquer{background:transparent}
 
-/* ---------- your move is done: cards and maps rest, the board says so ---------- */
-.spent .ic:not(.plotc){filter:grayscale(.85) brightness(.85);opacity:.55;transition:filter .3s,opacity .3s}
-.spent .pc .map{filter:grayscale(.8);opacity:.6}
-.boardp.spentturn .bsvg,.boardp.spentturn .cmp{filter:grayscale(.9);opacity:.4;transition:filter .3s,opacity .3s}
-.barstamp.donestamp{border-color:var(--gold);transform:translate(-50%,-50%) rotate(-3deg)}
-.barstamp.donestamp .bo{color:var(--shu);display:flex;align-items:center;justify-content:center}
-.barstamp.donestamp .bo svg{width:30px;height:30px}
+/* ---------- your move is done: a slim ribbon over the board, nothing hidden ---------- */
+.donerib{align-self:stretch;display:flex;align-items:center;gap:6px;margin:-2px 0 0;padding:5px 10px;border-radius:8px;background:color-mix(in srgb,var(--gold) 22%,var(--parch));border:1px solid color-mix(in srgb,var(--gold) 70%,transparent);font-size:11.5px;line-height:1.25;color:var(--ink);animation:bubin .25s ease-out}
+.donerib svg{width:14px;height:14px;flex-shrink:0;color:var(--shu)}
+.donerib b{white-space:nowrap}
+.donerib span{color:var(--brown);min-width:0}
+.tabl .donerib{font-size:13px;padding:6px 12px}
 
 /* ---------- the phone's kit: oni left and tools, beside the main button ---------- */
 .acts.withkit{grid-template-columns:auto 1fr!important}
@@ -1051,3 +1050,4 @@ button.trait:focus-visible{outline:2px solid var(--shu-hi);outline-offset:1px}
 .kit .kt i>*{width:100%;height:100%}
 .kit .kt i .tglyph{font-size:15px}
 .kit .kt b{font-size:11px;margin-left:2px}
+.tabl .strip:not(.rvs) .srow{max-width:58%}.tabl .strip:not(.rvs) .ctrls{flex-shrink:0}
