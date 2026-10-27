@@ -495,8 +495,7 @@
       "frail": "Too frail for leaps",
       "nervous": "Hand cards only",
       "stubborn": "Needs two of their element"
-    },
-    "planningOnly": "Planning only: you can brew again next turn"
+    }
   },
   "brew": {
     "backTo": "Go back to card {n}",
