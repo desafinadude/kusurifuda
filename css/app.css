@@ -1031,7 +1031,10 @@ button.trait:focus-visible{outline:2px solid var(--shu-hi);outline-offset:1px}
 /* one continuous table on a wide screen: the game's own screens let the window's table show through */
 #app.wide .scr.lacquer{background:transparent}
 
-/* ---------- your move is done: a slim ribbon over the board, nothing hidden ---------- */
+/* ---------- your move is done: a slim ribbon over the board; your cards and the maps lose most of their colour ---------- */
+.spent :is(.hand,.gard,.tray,.rcol) .ic:not(.plotc),.spent .vill .pc .map,.spent .vlist .pc .map,.spent .vgrid .pc .map{filter:saturate(.25) brightness(.92);transition:filter .3s}
+.spent .side .ic:not(.plotc){filter:saturate(.25) brightness(.92)}
+.boardp.spentturn .bsvg,.boardp.spentturn .cmp{filter:saturate(.25) brightness(.95);opacity:.8;transition:filter .3s,opacity .3s}
 .donerib{align-self:stretch;display:flex;align-items:center;gap:6px;margin:-2px 0 0;padding:5px 10px;border-radius:8px;background:color-mix(in srgb,var(--gold) 22%,var(--parch));border:1px solid color-mix(in srgb,var(--gold) 70%,transparent);font-size:11.5px;line-height:1.25;color:var(--ink);animation:bubin .25s ease-out}
 .donerib svg{width:14px;height:14px;flex-shrink:0;color:var(--shu)}
 .donerib b{white-space:nowrap}
