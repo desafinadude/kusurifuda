@@ -1030,3 +1030,24 @@ button.trait:focus-visible{outline:2px solid var(--shu-hi);outline-offset:1px}
 .pvbig .ppor.pvimg{width:300px;height:300px;border-radius:16px;border-width:2.5px}
 /* one continuous table on a wide screen: the game's own screens let the window's table show through */
 #app.wide .scr.lacquer{background:transparent}
+
+/* ---------- your move is done: cards and maps rest, the board says so ---------- */
+.spent .ic:not(.plotc){filter:grayscale(.85) brightness(.85);opacity:.55;transition:filter .3s,opacity .3s}
+.spent .pc .map{filter:grayscale(.8);opacity:.6}
+.boardp.spentturn .bsvg,.boardp.spentturn .cmp{filter:grayscale(.9);opacity:.4;transition:filter .3s,opacity .3s}
+.barstamp.donestamp{border-color:var(--gold);transform:translate(-50%,-50%) rotate(-3deg)}
+.barstamp.donestamp .bo{color:var(--shu);display:flex;align-items:center;justify-content:center}
+.barstamp.donestamp .bo svg{width:30px;height:30px}
+
+/* ---------- the phone's kit: oni left and tools, beside the main button ---------- */
+.acts.withkit{grid-template-columns:auto 1fr!important}
+.kit{display:flex;align-items:center;gap:8px;height:100%;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--ink);color:var(--parch);font:inherit;cursor:pointer}
+.kit .ko{display:flex;align-items:center;gap:3px}
+.kit .ko .ai,.kit .ko>svg{width:24px;height:24px}
+.kit .ko b{font-family:var(--serif);font-weight:800;font-size:16px;line-height:1}
+.kit .ko.none{opacity:.45}
+.kit .kt{display:flex;align-items:center;gap:2px;padding-left:8px;border-left:1px solid var(--line-2)}
+.kit .kt i{display:flex;width:24px;height:24px;border-radius:5px;background:var(--parch);overflow:hidden}
+.kit .kt i>*{width:100%;height:100%}
+.kit .kt i .tglyph{font-size:15px}
+.kit .kt b{font-size:11px;margin-left:2px}

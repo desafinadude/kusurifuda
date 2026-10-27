@@ -439,7 +439,7 @@
   "status": {
     "gameOver": "Game over",
     "yourTurn": "Your turn",
-    "actionDone": "Action done",
+    "actionDone": "Your move is done",
     "freePlant": "plant",
     "freeBuy": "buy a tool",
     "thenFree": "You can still {list}, or end your turn",
@@ -1328,5 +1328,8 @@
       "name": "Your own Abacus",
       "text": "Start each game with the Abacus."
     }
+  },
+  "kit": {
+    "aria": "Your table: {n} oni left; tools: {tools}"
   }
 }
