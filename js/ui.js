@@ -1568,6 +1568,7 @@
     if (th.assets) { own.assets = {}; Object.keys(th.assets).forEach((k) => { if (!k.startsWith("_")) own.assets[k] = fix(th.assets[k]); }); }
     if (th.sprites) own.sprites = fix(th.sprites);
     if (th.stylesheet) own.stylesheet = fix(th.stylesheet);
+    if (isObj(th.background) && th.background.image) own.background = Object.assign({}, th.background, { image: fix(th.background.image) });
     // textures and card faces: {"image": path, ...} objects, or element overrides given as a bare path
     ["textures", "cards"].forEach((grp) => {
       if (!th[grp]) return;
@@ -1593,6 +1594,13 @@
       return `${sel}{background-image:url("${img}")${under};background-size:${o.size || "100% 100%"};background-repeat:${tile ? "repeat" : "no-repeat"};background-position:${o.position || "center"}${o.color ? `;background-color:${o.color}` : ""}}`;
     };
     const out = [];
+    // a theme's background picture: covers the whole window behind the game, darkened by "dim" (0-1)
+    const bg = th.background;
+    if (isObj(bg) && bg.image) {
+      const d = Math.max(0, Math.min(1, +bg.dim || 0));
+      out.push(`.lacquer{background:linear-gradient(rgba(0,0,0,${d}),rgba(0,0,0,${d})),url("${bg.image}") ${bg.position || "center"}/cover no-repeat,${bg.color || "#0E0D10"}!important}`);
+      out.push(`#app.wide .scr.lacquer{background:transparent!important}`);
+    }
     Object.entries(SURF).forEach(([k, sel]) => { const o = th.textures && th.textures[k]; if (isObj(o) && o.image) out.push(one(sel, o, o.image)); });
     Object.entries(CARDS).forEach(([k, sel]) => {
       const o = th.cards && th.cards[k]; if (!isObj(o)) return;
